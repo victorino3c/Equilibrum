@@ -1,7 +1,7 @@
 import { Link, Tabs } from 'expo-router';
 
-import { HeaderButton } from '../../components/HeaderButton';
-import { TabBarIcon } from '../../components/TabBarIcon';
+import { HeaderButton } from '../../../components/HeaderButton';
+import { TabBarIcon } from '../../../components/TabBarIcon';
 
 export default function TabLayout() {
   return (
@@ -12,7 +12,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
+          tabBarLabel: 'Tab',
+          tabBarLabelPosition: 'below-icon',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>

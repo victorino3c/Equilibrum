@@ -19,7 +19,7 @@ export const EditScreenInfo = ({ path }: { path: string }) => {
 };
 
 const styles = {
-  codeHighlightContainer: `rounded-md px-1`,
+  codeHighlightContainer: `rounded-md px-1 py-2 bg-gray-100`,
   getStartedContainer: `items-center mx-12`,
   getStartedText: `text-lg leading-6 text-center`,
   helpContainer: `items-center mx-5 mt-4`,

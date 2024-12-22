@@ -17,6 +17,8 @@
       "tsconfigPaths": true
     },
 
+    "newArchEnabled": true,
+
     "orientation": "portrait",
     "icon": "./assets/icon.png",
 
