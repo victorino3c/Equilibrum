@@ -10,7 +10,7 @@ export default function SignIn() {
   }
 
   if (session) {
-    return <Redirect href="/(protected)/(tabs)" />;
+    return <Redirect href="/(protected)/(tabs)/(health)" />;
   }
 
   return (

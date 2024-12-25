@@ -1,32 +1,55 @@
 import { Link, Tabs } from 'expo-router';
 
+import TabBar from '~/src/components/TabBar';
+
+import { View } from 'react-native';
+
+import { useFonts } from 'expo-font';
+
 import { HeaderButton } from '../../../components/HeaderButton';
-import { TabBarIcon } from '../../../components/TabBarIcon';
 
 export default function TabLayout() {
+  const [fontsLoaded] = useFonts({
+    IcoMoon: require('~/assets/fonts/icomoon.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: 'black',
-      }}>
+    <Tabs tabBar={(props) => <TabBar {...props} />}>
       <Tabs.Screen
-        name="index"
+        name="(exercise)"
         options={{
-          tabBarLabel: 'Tab',
-          tabBarLabelPosition: 'below-icon',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false,
+          tabBarLabel: 'Exercise',
+        }}
+      />
+      <Tabs.Screen
+        name="(nutrition)"
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Nutrition',
+        }}
+      />
+      <Tabs.Screen
+        name="(health)"
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Health',
+        }}
+      />
+      <Tabs.Screen
+        name="(profile)"
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Profile',
           headerRight: () => (
             <Link href="/modal" asChild>
               <HeaderButton />
             </Link>
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
     </Tabs>
