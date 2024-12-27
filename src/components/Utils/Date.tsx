@@ -27,11 +27,17 @@ const Date = ({ date, onSelectDate, selected }: DateProps) => {
     <TouchableOpacity
       onPress={() => onSelectDate(fullDate)}
       style={[styles.card, selected === fullDate && { borderColor: '#6608ff' }]}>
-      <Text style={[styles.big, selected === fullDate && { color: '#000' }]}>{day}</Text>
+      <Text style={[styles.big, date === moment().format('YYYY-MM-DD') && { color: '#E37D7D' }]}>
+        {day}
+      </Text>
       <Text
         style={[
           styles.medium,
-          selected === fullDate && { color: '#000', fontWeight: '400', fontSize: 20 },
+          date === moment().format('YYYY-MM-DD') && {
+            color: '#E37D7D',
+            fontWeight: '500',
+            fontSize: 18,
+          },
         ]}>
         {dayNumber}
       </Text>

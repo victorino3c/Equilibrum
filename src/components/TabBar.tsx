@@ -4,8 +4,6 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const icons: { [key: string]: (props: any) => JSX.Element } = {

@@ -55,7 +55,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
-        router.push('/(protected)/(tabs)');
+        router.push('/(protected)/(tabs)/(health)');
       }
     });
 
@@ -71,7 +71,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     if (error) {
       alert(error.message);
     } else {
-      router.push('/(protected)/(tabs)');
+      router.push('/(protected)/(tabs)/(health)');
     }
     setLoading(false);
   };
@@ -83,7 +83,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     if (error) {
       alert(error.message);
     } else {
-      router.push('/(protected)/(tabs)');
+      router.push('/(protected)/(tabs)/(health)');
     }
     setLoading(false);
   };

@@ -1,14 +1,17 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Link } from 'expo-router';
 import React from 'react';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 type EjercicioProps = {
   Entrenamiento: any;
+  Fecha: moment.Moment;
 };
 
-const Ejercicio = ({ Entrenamiento }: EjercicioProps) => {
+const Ejercicio = ({ Entrenamiento, Fecha }: EjercicioProps) => {
   if (Entrenamiento === null) {
     return (
       <View style={styles.container}>
@@ -20,23 +23,38 @@ const Ejercicio = ({ Entrenamiento }: EjercicioProps) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tituloView}>
-        <View style={[styles.izq, Entrenamiento.Imagen && { flex: 1 }]}>
-          <Text style={styles.titulo}>
-            {Entrenamiento.Nombre} • {Entrenamiento.Calorias} kcal
-          </Text>
-          <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+    <Link href="/Ejercicio/DetallesEntrenamiento" asChild>
+      <TouchableOpacity style={styles.container}>
+        <View style={styles.tituloView}>
+          <View style={[styles.izq, Entrenamiento.Imagen && { flex: 1 }]}>
+            <Text style={styles.titulo}>{Entrenamiento.Nombre} </Text>
+            <Text style={styles.titulo}>• {Entrenamiento.Calorias} kcal</Text>
+            <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+          </View>
+          {Entrenamiento.Imagen && <Feather name="image" size={24} color="#777777" />}
         </View>
-        {Entrenamiento.Imagen && <Feather name="image" size={24} color="black" />}
-      </View>
-      <View style={styles.tituloView}>
-        <Text style={styles.text}>
-          #{Entrenamiento.Numero}
-          {Entrenamiento}
-        </Text>
-      </View>
-    </View>
+        <View style={styles.tituloView}>
+          <Text style={styles.text}>
+            #{Entrenamiento.Numero} • {Fecha.format('dddd D, MMMM, YYYY').toLowerCase()}
+          </Text>
+        </View>
+        <View style={styles.separator} />
+        <View style={[styles.tituloView, { justifyContent: 'space-between' }]}>
+          <View style={styles.info}>
+            <AntDesign name="clockcircleo" size={24} color="#6608ff" />
+            <Text style={styles.textInfo}>{Entrenamiento.Duracion} h</Text>
+          </View>
+          <View style={styles.info}>
+            <Text style={{ fontFamily: 'IcoMoon', fontSize: 24, color: '#6608ff' }}>&#xe901;</Text>
+            <Text style={styles.textInfo}>{Entrenamiento.Volumen} kg</Text>
+          </View>
+          <View style={styles.info}>
+            <Text style={{ fontSize: 24, color: '#6608ff' }}>S</Text>
+            <Text style={styles.textInfo}>{Entrenamiento.Series} series</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Link>
   );
 };
 
@@ -58,18 +76,35 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  info: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 5,
+  },
   izq: {
     flexDirection: 'row',
+    maxWidth: '65%',
   },
   tituloView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  separator: {
+    borderBottomColor: '#AAAAAA',
+    borderBottomWidth: 1,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
   titulo: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: 'medium',
   },
   text: {
     fontSize: 16,
+  },
+  textInfo: {
+    fontSize: 20,
+    fontWeight: 'medium',
   },
 });

@@ -23,5 +23,16 @@ export const Entrenamientos: Record<string, EntrenamientosType> = {
     Series: 24,
     Volumen: 11560,
   },
+  '2024-12-27': {
+    Nombre: 'Pecho/Triceps',
+    Descripcion: 'Duro de pilotes',
+    Imagen: 'null',
+    Sensacion: 4,
+    Numero: '12',
+    Calorias: 512,
+    Duracion: '2:13',
+    Series: 24,
+    Volumen: 11560,
+  },
   // Añadir más ejercicios según sea necesario
 };

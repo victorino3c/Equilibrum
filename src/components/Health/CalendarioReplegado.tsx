@@ -36,7 +36,9 @@ const CalendarioReplegado = ({
     setCurrentMonth(moment().format('MMMM YYYY'));
 
     // scroll to the end of the scroll view
-    scrollViewRef.current?.scrollToEnd({ animated: false });
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   }, []);
 
   return (
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingVertical: 10,
     marginHorizontal: 10,
-    marginVertical: 15,
+    marginBottom: 15,
     borderRadius: 15,
     elevation: 5,
     shadowColor: '#000000',
@@ -90,8 +92,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 21,
+    fontWeight: 'light',
   },
   dateSection: {
     width: '100%',

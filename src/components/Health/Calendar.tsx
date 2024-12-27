@@ -1,36 +1,53 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { Calendar } from 'react-native-calendars';
 import Feather from '@expo/vector-icons/Feather';
+import moment from 'moment';
 
 type CustomCalendarProps = {
+  selectedDate: string;
   onCalendarChange: (value: string) => void;
+  setSelectedDate: (value: moment.Moment) => void;
 };
 
-export default function CustomCalendar({ onCalendarChange }: CustomCalendarProps) {
-  const [selectedDate, setSelectedDate] = useState('2024-12-23');
+export default function CustomCalendar({
+  selectedDate,
+  onCalendarChange,
+  setSelectedDate,
+}: CustomCalendarProps) {
+  const [markedDates, setMarkedDates] = useState({});
 
-  const markedDates = {
-    '2024-12-21': { selected: true, marked: true, selectedColor: '#6608ff' },
-    '2024-12-22': { selected: true, marked: true, selectedColor: '#6608ff' },
-    '2024-12-01': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
-    '2024-12-02': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
-    '2024-12-03': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
-    // Add more marked dates as needed
-  };
+  useEffect(() => {
+    const today = moment().format('YYYY-MM-DD');
+    const newMarkedDates = {
+      ...markedDates,
+      [today]: {
+        customStyles: {
+          container: { backgroundColor: '#00adf5' },
+          text: { color: 'white' },
+        },
+      },
+    };
+    setMarkedDates(newMarkedDates);
+  }, []);
+
+  const renderArrow = (direction: 'left' | 'right') => (
+    <Feather name={`chevron-${direction}`} size={24} color="black" />
+  );
 
   return (
     <View style={styles.container}>
       <Calendar
         current={selectedDate}
-        minDate={'2024-01-01'}
-        maxDate={'2024-12-31'}
-        onDayPress={(day: { dateString: string }) => setSelectedDate(day.dateString)}
+        minDate={moment().subtract(1, 'year').format('YYYY-MM-DD')}
+        maxDate={moment().format('YYYY-MM-DD')}
+        onDayPress={(day: { dateString: string }) => setSelectedDate(moment(day.dateString))}
         monthFormat={'MMMM yyyy'}
         hideExtraDays={true}
         firstDay={1}
         markedDates={markedDates}
+        markingType={'custom'}
+        renderArrow={renderArrow}
         theme={{
           calendarBackground: '#ffffff',
           textSectionTitleColor: '#b6c1cd',
@@ -39,19 +56,17 @@ export default function CustomCalendar({ onCalendarChange }: CustomCalendarProps
           todayTextColor: '#00adf5',
           dayTextColor: '#2d4150',
           textDisabledColor: '#d9e1e8',
-          dotColor: '#00adf5',
-          selectedDotColor: '#000000',
           arrowColor: 'grey',
-          monthTextColor: 'grey',
+          monthTextColor: 'black',
           indicatorColor: 'grey',
-          textDayFontFamily: 'monospace',
-          textMonthFontFamily: 'monospace',
-          textDayHeaderFontFamily: 'monospace',
+          textDayFontFamily: Platform.OS === 'ios' ? 'San Francisco' : 'Roboto',
+          textMonthFontFamily: Platform.OS === 'ios' ? 'San Francisco' : 'Roboto',
+          textDayHeaderFontFamily: Platform.OS === 'ios' ? 'San Francisco' : 'Roboto',
           textDayFontWeight: '300',
-          textMonthFontWeight: 'bold',
+          textMonthFontWeight: 'light',
           textDayHeaderFontWeight: '300',
-          textDayFontSize: 16,
-          textMonthFontSize: 20,
+          textDayFontSize: 17,
+          textMonthFontSize: 21,
           textDayHeaderFontSize: 16,
         }}
       />
@@ -67,7 +82,7 @@ export default function CustomCalendar({ onCalendarChange }: CustomCalendarProps
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
-    marginVertical: 15,
+    marginBottom: 15,
     paddingHorizontal: 20,
     backgroundColor: 'white',
     borderRadius: 15,
