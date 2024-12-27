@@ -44,7 +44,7 @@ export default Formula;
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
-    marginBottom: '5%',
+    marginBottom: 15,
     padding: 20,
     backgroundColor: 'white',
     borderRadius: 15,

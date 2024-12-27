@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 
-export default function CustomCalendar() {
-  const [selectedDate, setSelectedDate] = useState('2024-02-21');
+import Feather from '@expo/vector-icons/Feather';
+
+type CustomCalendarProps = {
+  onCalendarChange: (value: string) => void;
+};
+
+export default function CustomCalendar({ onCalendarChange }: CustomCalendarProps) {
+  const [selectedDate, setSelectedDate] = useState('2024-12-23');
 
   const markedDates = {
-    '2024-02-21': { selected: true, marked: true, selectedColor: '#9c27b0' },
-    '2024-02-22': { selected: true, marked: true, selectedColor: '#9c27b0' },
-    '2024-02-01': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
-    '2024-02-02': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
-    '2024-02-03': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
+    '2024-12-21': { selected: true, marked: true, selectedColor: '#6608ff' },
+    '2024-12-22': { selected: true, marked: true, selectedColor: '#6608ff' },
+    '2024-12-01': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
+    '2024-12-02': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
+    '2024-12-03': { marked: true, dotColor: '#00adf5', selectedDotColor: '#00adf5' },
     // Add more marked dates as needed
   };
 
   return (
     <View style={styles.container}>
       <Calendar
-        current={'2024-02-01'}
+        current={selectedDate}
         minDate={'2024-01-01'}
         maxDate={'2024-12-31'}
         onDayPress={(day: { dateString: string }) => setSelectedDate(day.dateString)}
@@ -34,10 +40,10 @@ export default function CustomCalendar() {
           dayTextColor: '#2d4150',
           textDisabledColor: '#d9e1e8',
           dotColor: '#00adf5',
-          selectedDotColor: '#ffffff',
-          arrowColor: 'orange',
-          monthTextColor: 'blue',
-          indicatorColor: 'blue',
+          selectedDotColor: '#000000',
+          arrowColor: 'grey',
+          monthTextColor: 'grey',
+          indicatorColor: 'grey',
           textDayFontFamily: 'monospace',
           textMonthFontFamily: 'monospace',
           textDayHeaderFontFamily: 'monospace',
@@ -45,18 +51,37 @@ export default function CustomCalendar() {
           textMonthFontWeight: 'bold',
           textDayHeaderFontWeight: '300',
           textDayFontSize: 16,
-          textMonthFontSize: 16,
+          textMonthFontSize: 20,
           textDayHeaderFontSize: 16,
         }}
       />
+      <View style={styles.centered}>
+        <TouchableOpacity onPress={() => onCalendarChange('R')}>
+          <Feather name="chevron-up" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-    padding: 10,
+    marginHorizontal: 10,
+    marginVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    elevation: 5,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

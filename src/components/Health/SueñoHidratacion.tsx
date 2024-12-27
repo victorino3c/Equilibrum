@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import React from 'react';
+import { useState } from 'react';
+
+import Feather from '@expo/vector-icons/Feather';
 import Slider from '@react-native-community/slider';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Feather from '@expo/vector-icons/Feather';
 
-export default function WaterIntakeSlider() {
+const SueñoHidratacion = () => {
+  const [sueño, setsueño] = useState('-');
+
   const [value, setValue] = useState(1.5); // Set initial value
   const maxValue = 3.3; // Maximum value for the slider
 
@@ -26,6 +30,24 @@ export default function WaterIntakeSlider() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.sueño}>
+        <View style={styles.inner}>
+          <Feather name="moon" size={24} color="#6608ff" />
+          <Text className="px-2 text-xl font-bold">Horas de sueño</Text>
+          <Feather name="info" size={16} color="grey" />
+        </View>
+        <View style={styles.inner}>
+          <View style={styles.input}>
+            <TextInput
+              onPress={() => (sueño === '-' ? setsueño('') : null)}
+              onChangeText={(text) => setsueño(text)}
+              value={sueño}
+              className="font-regular text-center text-xl"
+            />
+          </View>
+          <Text className="text-lg">/ 8 horas</Text>
+        </View>
+      </View>
       <View style={styles.inner}>
         <Ionicons name="water-outline" size={24} color="#6608ff" />
         <Text className="px-2 text-xl font-bold">Hidratación</Text>
@@ -47,12 +69,15 @@ export default function WaterIntakeSlider() {
       </View>
     </View>
   );
-}
+};
+
+export default SueñoHidratacion;
 
 const styles = StyleSheet.create({
   container: {
+    marginBottom: 15,
+    justifyContent: 'space-between',
     marginHorizontal: 10,
-    marginBottom: 10,
     padding: 20,
     backgroundColor: 'white',
     borderRadius: 15,
@@ -65,6 +90,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  sueño: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  inner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    backgroundColor: 'lightgrey',
+    borderRadius: 10,
+    marginHorizontal: 5,
+    width: 40,
+  },
+  emoji: {
+    fontSize: 30,
+    marginRight: 5,
+  },
+  slider: {
+    flex: 1,
+  },
+  track: {
+    height: 10,
+    borderRadius: 5,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -74,20 +125,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginVertical: 5,
-  },
-  emoji: {
-    fontSize: 30,
-    marginRight: 10,
-  },
-  slider: {
-    flex: 1,
-  },
-  track: {
-    height: 10,
-    borderRadius: 5,
-  },
-  inner: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    paddingLeft: 32,
   },
 });

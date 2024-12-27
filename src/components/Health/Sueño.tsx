@@ -34,7 +34,7 @@ export default Sueño;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 15,
     justifyContent: 'space-between',
     marginHorizontal: 10,
     padding: 20,
