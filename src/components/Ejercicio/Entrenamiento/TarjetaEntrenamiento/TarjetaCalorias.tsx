@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   logo: {
-    height: 40,
+    height: 50,
     aspectRatio: 1,
     borderColor: 'black',
     borderRadius: 100,
@@ -86,12 +86,14 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
   },
   footerItem: {
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
   },
   footerText: {
-    marginTop: 5,
     fontSize: 14,
   },
   seriesText: {

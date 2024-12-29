@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import ResumenEstadisticasNutricion from '../../Nutricion/ResumenEstadisticas';
+import { Link } from 'expo-router';
 
 type NutricionProps = {
   Nutricion: any;
@@ -23,65 +24,67 @@ const Nutricion = ({ Nutricion, Fecha }: NutricionProps) => {
   }
 
   return (
-    <View style={styles.container}>
-      <ResumenEstadisticasNutricion Nutricion={Nutricion} card={false} />
-      <View style={styles.periodView}>
-        <View style={styles.tituloView}>
-          <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
-            <Text style={styles.titulo}>Desayuno • {Nutricion.Calorias} kcal</Text>
-            <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+    <Link href={`/Nutricion/DetallesNutricion?fecha=${Fecha.format('YYYY-MM-DD')}`} asChild>
+      <TouchableOpacity style={styles.container}>
+        <ResumenEstadisticasNutricion Nutricion={Nutricion} card={false} />
+        <View style={styles.periodView}>
+          <View style={styles.tituloView}>
+            <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
+              <Text style={styles.titulo}>Desayuno • {Nutricion.Calorias} kcal</Text>
+              <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+            </View>
+            {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
           </View>
-          {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
-        </View>
-        <View style={styles.tituloView}>
-          <Text style={styles.text}>
-            {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
-          </Text>
-        </View>
-      </View>
-      <View style={styles.periodView}>
-        <View style={styles.tituloView}>
-          <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
-            <Text style={styles.titulo}>Comida • {Nutricion.Calorias} kcal</Text>
-            <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+          <View style={styles.tituloView}>
+            <Text style={styles.text}>
+              {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
+            </Text>
           </View>
-          {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
         </View>
-        <View style={styles.tituloView}>
-          <Text style={styles.text}>
-            {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
-          </Text>
-        </View>
-      </View>
-      <View style={styles.periodView}>
-        <View style={styles.tituloView}>
-          <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
-            <Text style={styles.titulo}>Cena • {Nutricion.Calorias} kcal</Text>
-            <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+        <View style={styles.periodView}>
+          <View style={styles.tituloView}>
+            <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
+              <Text style={styles.titulo}>Comida • {Nutricion.Calorias} kcal</Text>
+              <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+            </View>
+            {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
           </View>
-          {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
-        </View>
-        <View style={styles.tituloView}>
-          <Text style={styles.text}>
-            {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
-          </Text>
-        </View>
-      </View>
-      <View style={styles.periodView}>
-        <View style={styles.tituloView}>
-          <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
-            <Text style={styles.titulo}>Snacks • {Nutricion.Calorias} kcal</Text>
-            <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+          <View style={styles.tituloView}>
+            <Text style={styles.text}>
+              {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
+            </Text>
           </View>
-          {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
         </View>
-        <View style={styles.tituloView}>
-          <Text style={styles.text}>
-            {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
-          </Text>
+        <View style={styles.periodView}>
+          <View style={styles.tituloView}>
+            <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
+              <Text style={styles.titulo}>Cena • {Nutricion.Calorias} kcal</Text>
+              <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+            </View>
+            {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
+          </View>
+          <View style={styles.tituloView}>
+            <Text style={styles.text}>
+              {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
+            </Text>
+          </View>
         </View>
-      </View>
-    </View>
+        <View style={styles.periodView}>
+          <View style={styles.tituloView}>
+            <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>
+              <Text style={styles.titulo}>Snacks • {Nutricion.Calorias} kcal</Text>
+              <Ionicons name="flame-outline" size={24} color="#FF6F15" />
+            </View>
+            {Nutricion.Imagen && <Feather name="image" size={24} color="#777777" />}
+          </View>
+          <View style={styles.tituloView}>
+            <Text style={styles.text}>
+              {Nutricion.Proteinas} P | {Nutricion.Carbohidratos} C | {Nutricion.Grasas} G
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Link>
   );
 };
 

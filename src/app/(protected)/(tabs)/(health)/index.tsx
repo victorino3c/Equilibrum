@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 //TEMP
 import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
-import { Nutriciones, NutricionType } from '~/assets/nutricion/nutricion';
+import { NutricionType, findNutricionByDate } from '~/assets/nutricion/nutricion';
 
 import Formula from '~/src/components/Health/Formula';
 import SueñoHidratacion from '~/src/components/Health/SueñoHidratacion';
@@ -29,7 +29,7 @@ export default function Health() {
 
   const getNutricion = (date: string): NutricionType | null => {
     //forma de obtener datos
-    return Nutriciones[date] || null;
+    return findNutricionByDate(date);
   };
 
   useEffect(() => {

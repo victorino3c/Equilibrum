@@ -33,17 +33,22 @@ const Date = ({ date, visualization, onSelectDate, selected }: DateProps) => {
         visualization === 2 && { borderColor: '#A1FF08' },
         visualization === 1 && { borderColor: '#34E5E5' },
       ]}>
-      <Text style={[styles.big, date === moment().format('YYYY-MM-DD') && { color: '#E37D7D' }]}>
+      <Text
+        style={[
+          styles.big,
+          date === moment().format('YYYY-MM-DD') && { /*color: '#E37D7D'*/ fontWeight: '500' },
+          date === selected && { color: '#e37d7d' },
+        ]}>
         {day}
       </Text>
       <Text
         style={[
           styles.medium,
           date === moment().format('YYYY-MM-DD') && {
-            color: '#E37D7D',
             fontWeight: '500',
             fontSize: 18,
           },
+          date === selected && { color: '#e37d7d' },
         ]}>
         {dayNumber}
       </Text>

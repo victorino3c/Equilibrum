@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { findEjercicioById } from '~/assets/ejercicio/entrenamientos';
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { MaterialIcons, Feather } from '@expo/vector-icons';
 import CuerpoResumenEjercicioCardio from './CuerpoResumenEjercicioCardio';
 import CuerpoResumenEjercicioFuerza from './CuerpoResumenEjercicioFuerza';
 import CuerpoResumenEjercicioCalistenia from './CuerpoResumenEjercicioCalistenia';
@@ -53,8 +53,18 @@ const ResumenEjercicio = ({ idEjercicio, idEntrenamiento, editar }: ResumenEjerc
         ) : null}
       </View>
       {editar && (
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
-          <MaterialIcons name="edit" size={30} color="#6608ff" />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 10,
+            alignItems: 'center',
+            marginTop: 10,
+          }}>
+          <Feather name="plus-circle" size={45} color="#6608ff" />
+          <Text style={{ fontSize: 20, color: '#6608ff', textAlign: 'center', fontWeight: 'bold' }}>
+            Añadir Alimento
+          </Text>
         </View>
       )}
     </View>

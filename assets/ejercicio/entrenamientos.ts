@@ -50,7 +50,7 @@ export enum TipoEjercicio {
   Calistenia = 'Calistenia',
 }
 
-export const Entrenamientos: Record<string, EntrenamientosType> = {
+export const Entrenamientos: Record<number, EntrenamientosType> = {
   1: {
     fecha: '2024-12-26',
     idUsuario: 'victorino_3c',

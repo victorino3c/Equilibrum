@@ -2,17 +2,18 @@ import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import React from 'react';
 
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import moment from 'moment';
 
 type TarjetaDuracionProps = {
   username: string;
-  entrenamientoNumber: string;
-  kcal: number;
-  duration: string;
-  weight: string;
-  series: number;
+  fecha: string;
+  calorias: number;
+  proteinas: number;
+  grasas: number;
+  carbohidratos: number;
 };
 
-const TarjetaDuracion = (props: TarjetaDuracionProps) => {
+const TarjetaProteinas = (props: TarjetaDuracionProps) => {
   return (
     <View
       style={{
@@ -24,32 +25,34 @@ const TarjetaDuracion = (props: TarjetaDuracionProps) => {
         <View style={styles.logo}></View>
         <View>
           <Text style={styles.username}>{props.username}</Text>
-          <Text style={styles.entrenamientoNumber}>Entrenamiento #{props.entrenamientoNumber}</Text>
+          <Text style={styles.entrenamientoNumber}>
+            {moment(props.fecha).format('DD MMM, YYYY').toLowerCase()}
+          </Text>
         </View>
       </View>
       <View style={styles.body}>
-        <FontAwesome name="clock-o" size={55} color="#6608ff" />
-        <Text style={styles.kcal}>{props.duration} h</Text>
+        <Text style={[styles.footerText, styles.seriesText, { fontSize: 55 }]}>P</Text>
+        <Text style={styles.kcal}>{props.proteinas} g</Text>
       </View>
       <View style={styles.footer}>
         <View style={styles.footerItem}>
           <Ionicons name="flame-outline" size={24} color="#6608ff" />
-          <Text style={styles.footerText}>{props.kcal} kcal</Text>
+          <Text style={styles.footerText}>{props.calorias} kcal</Text>
         </View>
         <View style={styles.footerItem}>
-          <MaterialIcons name="fitness-center" size={24} color="#6608ff" />
-          <Text style={styles.footerText}>{props.weight}</Text>
+          <Text style={[styles.footerText, styles.seriesText]}>C</Text>
+          <Text style={styles.footerText}>{props.carbohidratos} g</Text>
         </View>
         <View style={styles.footerItem}>
-          <Text style={[styles.footerText, styles.seriesText]}>S</Text>
-          <Text style={{ fontSize: 14 }}>{props.series} series</Text>
+          <Text style={[styles.footerText, styles.seriesText]}>G</Text>
+          <Text style={styles.footerText}>{props.grasas} g</Text>
         </View>
       </View>
     </View>
   );
 };
 
-export default TarjetaDuracion;
+export default TarjetaProteinas;
 
 const styles = StyleSheet.create({
   header: {
@@ -89,12 +92,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerItem: {
-    alignItems: 'center',
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
   footerText: {
-    fontSize: 14,
+    fontSize: 20,
   },
   seriesText: {
     fontSize: 24,

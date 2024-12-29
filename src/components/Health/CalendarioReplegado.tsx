@@ -4,8 +4,8 @@ import moment from 'moment';
 import Date from '../Utils/Date';
 
 //TEMP
-import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
-import { Nutriciones, NutricionType } from '~/assets/nutricion/nutricion';
+import { findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
+import { findNutricionByDate } from '~/assets/nutricion/nutricion';
 
 import Feather from '@expo/vector-icons/Feather';
 
@@ -36,7 +36,7 @@ const CalendarioReplegado = ({
       var visualization = training ? 1 : 0;
 
       // Check if the date has a nutrition
-      const nutrition = Nutriciones[date.format('YYYY-MM-DD')];
+      const nutrition = findNutricionByDate(date.format('YYYY-MM-DD'));
       visualization += nutrition ? 2 : 0;
 
       _dates.push({ date: date, visualization: visualization });
@@ -89,7 +89,6 @@ export default CalendarioReplegado;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    paddingVertical: 10,
     marginHorizontal: 10,
     marginBottom: 15,
     borderRadius: 15,
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
   },
   dateSection: {
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   scroll: {
     flex: 1,
