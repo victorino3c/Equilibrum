@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
@@ -88,6 +89,8 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: '10%',
     paddingVertical: 15,
+    //opacity: 0.9,
+    //overflow: 'hidden',
   },
   tab: {
     flex: 1,

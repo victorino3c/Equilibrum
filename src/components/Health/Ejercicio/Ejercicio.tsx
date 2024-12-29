@@ -23,7 +23,7 @@ const Ejercicio = ({ Entrenamiento, Fecha }: EjercicioProps) => {
   }
 
   return (
-    <Link href="/Ejercicio/DetallesEntrenamiento" asChild>
+    <Link href={`/Ejercicio/DetallesEntrenamiento?fecha=${Fecha.format('YYYY-MM-DD')}`} asChild>
       <TouchableOpacity style={styles.container}>
         <View style={styles.tituloView}>
           <View style={[styles.izq, Entrenamiento.Imagen && { flex: 1 }]}>

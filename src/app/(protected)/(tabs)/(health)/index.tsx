@@ -2,7 +2,11 @@ import { Text, View, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 
 //TEMP
-import { Entrenamientos, EntrenamientosType } from '~/assets/ejercicio/entrenamientos';
+import {
+  Entrenamientos,
+  EntrenamientosType,
+  findEntrenamientoByDate,
+} from '~/assets/ejercicio/entrenamientos';
 import { Nutriciones, NutricionType } from '~/assets/nutricion/nutricion';
 
 import Formula from '~/src/components/Health/Formula';
@@ -24,8 +28,7 @@ export default function Health() {
   const [nutricion, setNutricion] = useState<any>(null);
 
   const getEjercicio = (date: string): EntrenamientosType | null => {
-    //forma de obtener datos
-    return Entrenamientos[date] || null;
+    return findEntrenamientoByDate(date);
   };
 
   const getNutricion = (date: string): NutricionType | null => {
@@ -36,16 +39,15 @@ export default function Health() {
   useEffect(() => {
     setEjercicio(getEjercicio(selectedDate.format('YYYY-MM-DD')));
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
-    console.log('Selected date:', selectedDate.format('YYYY-MM-DD'));
+    //console.log('Selected date:', selectedDate.format('YYYY-MM-DD'));
   }, [selectedDate, calendar]);
 
   return (
     <View className="flex-1">
       <ScrollView
         contentContainerStyle={{ paddingBottom: 70 }}
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}>
-        <Formula objective="2400" nutricion="1800" exercise="0" />
-        <SueñoHidratacion />
         {calendar === 'R' ? (
           <CalendarioReplegado
             onSelectDate={(date) => setSelectedDate(date)}
@@ -59,6 +61,8 @@ export default function Health() {
             onCalendarChange={setCalendar}
           />
         )}
+        <Formula objective="2400" nutricion="1800" exercise="0" />
+        <SueñoHidratacion />
         <TwoOptionsButton
           option1="Ejercicio"
           option2="Nutricion"

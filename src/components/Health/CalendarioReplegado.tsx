@@ -38,7 +38,7 @@ const CalendarioReplegado = ({
     // scroll to the end of the scroll view
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+    }, 1);
   }, []);
 
   return (

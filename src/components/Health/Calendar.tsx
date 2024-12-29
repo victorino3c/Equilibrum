@@ -22,10 +22,9 @@ export default function CustomCalendar({
     const newMarkedDates = {
       ...markedDates,
       [today]: {
-        customStyles: {
-          container: { backgroundColor: '#00adf5' },
-          text: { color: 'white' },
-        },
+        marked: true,
+        dotColor: '#6608ff',
+        text: { color: 'black' },
       },
     };
     setMarkedDates(newMarkedDates);
@@ -53,7 +52,7 @@ export default function CustomCalendar({
           textSectionTitleColor: '#b6c1cd',
           selectedDayBackgroundColor: '#9c27b0',
           selectedDayTextColor: '#ffffff',
-          todayTextColor: '#00adf5',
+          //todayTextColor: '#00adf5',
           dayTextColor: '#2d4150',
           textDisabledColor: '#d9e1e8',
           arrowColor: 'grey',
