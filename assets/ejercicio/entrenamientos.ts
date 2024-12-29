@@ -73,12 +73,26 @@ export const Entrenamientos: Record<string, EntrenamientosType> = {
     //Descripcion: 'Duro de pilotes',
     Imagen: 'null',
     Sensacion: 4,
-    Numero: '12',
+    Numero: '13',
     Calorias: 512,
     Duracion: '2:13',
     Series: 24,
     Volumen: 11560,
   },
+  3: {
+    fecha: '2024-12-28',
+    idUsuario: 'victorino_3c',
+    Nombre: 'Pecho/Triceps',
+    //Descripcion: 'Duro de pilotes',
+    Imagen: 'null',
+    Sensacion: 4,
+    Numero: '142',
+    Calorias: 212,
+    Duracion: '2:13',
+    Series: 24,
+    Volumen: 11560,
+  },
+
   // Añadir más ejercicios según sea necesario
 };
 
@@ -353,4 +367,15 @@ export const getCaloriasByEjercicioAndEntrenamiento = (
   const caloriasPorRepeticion = findEjercicioById(idEjercicio)?.CaloriasxRepeticion;
 
   return repeticiones * (caloriasPorRepeticion || 0);
+};
+
+export const getEntrenamientoDatesByUser = (idUsuario: string): string[] => {
+  // Get the dates of the trainings for the user
+  const dates: string[] = [];
+  for (const key in Entrenamientos) {
+    if (Entrenamientos[key].idUsuario === idUsuario) {
+      dates.push(Entrenamientos[key].fecha);
+    }
+  }
+  return dates;
 };

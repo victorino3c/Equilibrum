@@ -3,6 +3,10 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-nati
 import moment from 'moment';
 import Date from '../Utils/Date';
 
+//TEMP
+import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
+import { Nutriciones, NutricionType } from '~/assets/nutricion/nutricion';
+
 import Feather from '@expo/vector-icons/Feather';
 
 interface CalendarioReplegadoProps {
@@ -16,7 +20,7 @@ const CalendarioReplegado = ({
   onCalendarChange,
   selected,
 }: CalendarioReplegadoProps) => {
-  const [dates, setDates] = useState<moment.Moment[]>([]);
+  const [dates, setDates] = useState<{ date: moment.Moment; visualization: number }[]>([]);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentMonth, setCurrentMonth] = useState<string>('');
   const scrollViewRef = useRef<ScrollView>(null);
@@ -26,8 +30,18 @@ const CalendarioReplegado = ({
     const _dates = [];
     for (let i = 10; i >= 0; i--) {
       const date = moment().subtract(i, 'days');
-      _dates.push(date);
+
+      // Check if the date has a training
+      const training = findEntrenamientoByDate(date.format('YYYY-MM-DD'));
+      var visualization = training ? 1 : 0;
+
+      // Check if the date has a nutrition
+      const nutrition = Nutriciones[date.format('YYYY-MM-DD')];
+      visualization += nutrition ? 2 : 0;
+
+      _dates.push({ date: date, visualization: visualization });
     }
+
     setDates(_dates);
   };
 
@@ -52,7 +66,8 @@ const CalendarioReplegado = ({
             {dates.map((date, index) => (
               <Date
                 key={index}
-                date={date.format('YYYY-MM-DD')}
+                date={date.date.format('YYYY-MM-DD')}
+                visualization={date.visualization}
                 onSelectDate={(dateString) => onSelectDate(moment(dateString))}
                 selected={selected.format('YYYY-MM-DD')}
               />

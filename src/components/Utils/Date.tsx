@@ -3,11 +3,12 @@ import moment from 'moment';
 
 interface DateProps {
   date: string;
+  visualization: number;
   onSelectDate: (date: string) => void;
   selected: string;
 }
 
-const Date = ({ date, onSelectDate, selected }: DateProps) => {
+const Date = ({ date, visualization, onSelectDate, selected }: DateProps) => {
   /**
    * use moment to compare the date to today
    * if today, show 'Today'
@@ -26,7 +27,12 @@ const Date = ({ date, onSelectDate, selected }: DateProps) => {
   return (
     <TouchableOpacity
       onPress={() => onSelectDate(fullDate)}
-      style={[styles.card, selected === fullDate && { borderColor: '#6608ff' }]}>
+      style={[
+        styles.card,
+        visualization === 3 && { borderColor: '#6608ff' },
+        visualization === 2 && { borderColor: '#A1FF08' },
+        visualization === 1 && { borderColor: '#34E5E5' },
+      ]}>
       <Text style={[styles.big, date === moment().format('YYYY-MM-DD') && { color: '#E37D7D' }]}>
         {day}
       </Text>

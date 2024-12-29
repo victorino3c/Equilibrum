@@ -2,11 +2,7 @@ import { Text, View, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 
 //TEMP
-import {
-  Entrenamientos,
-  EntrenamientosType,
-  findEntrenamientoByDate,
-} from '~/assets/ejercicio/entrenamientos';
+import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { Nutriciones, NutricionType } from '~/assets/nutricion/nutricion';
 
 import Formula from '~/src/components/Health/Formula';

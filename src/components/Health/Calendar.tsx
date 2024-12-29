@@ -4,6 +4,9 @@ import { Calendar } from 'react-native-calendars';
 import Feather from '@expo/vector-icons/Feather';
 import moment from 'moment';
 
+//TEMP
+import { getEntrenamientoDatesByUser } from '~/assets/ejercicio/entrenamientos';
+
 type CustomCalendarProps = {
   selectedDate: string;
   onCalendarChange: (value: string) => void;
@@ -19,7 +22,7 @@ export default function CustomCalendar({
 
   useEffect(() => {
     const today = moment().format('YYYY-MM-DD');
-    const newMarkedDates = {
+    var newMarkedDates = {
       ...markedDates,
       [today]: {
         marked: true,
@@ -27,6 +30,20 @@ export default function CustomCalendar({
         text: { color: 'black' },
       },
     };
+
+    const entrenamientos = getEntrenamientoDatesByUser('victorino_3c');
+
+    entrenamientos.forEach((date) => {
+      newMarkedDates = {
+        ...newMarkedDates,
+        [date]: {
+          selected: true,
+          selectedColor: '#6608ff',
+          text: { color: 'white' },
+        },
+      };
+    });
+
     setMarkedDates(newMarkedDates);
   }, []);
 
@@ -50,7 +67,7 @@ export default function CustomCalendar({
         theme={{
           calendarBackground: '#ffffff',
           textSectionTitleColor: '#b6c1cd',
-          selectedDayBackgroundColor: '#9c27b0',
+          selectedDayBackgroundColor: '#6608ff',
           selectedDayTextColor: '#ffffff',
           //todayTextColor: '#00adf5',
           dayTextColor: '#2d4150',
