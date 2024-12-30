@@ -4,13 +4,19 @@ import { useEffect, useState } from 'react';
 //TEMP
 import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { NutricionType, findNutricionByDate } from '~/assets/nutricion/nutricion';
+import {
+  getObjetivosByUsername,
+  getObjetivosDiariosByUsername,
+  objetivosDiariosType,
+  objetivosType,
+} from '~/assets/health/health';
 
 import Formula from '~/src/components/Health/Formula';
 import SueñoHidratacion from '~/src/components/Health/SueñoHidratacion';
 import Sueño from '~/src/components/Health/Sueño';
 import Agua from '~/src/components/Health/Agua';
 import CustomCalendar from 'src/components/Health/Calendar';
-import CalendarioReplegado from '~/src/components/Health/CalendarioReplegado';
+import CalendarioReplegado from '~/src/components/Utils/CalendarioReplegado';
 import moment from 'moment';
 import TwoOptionsButton from '~/src/components/Buttons/TwoOptions';
 import Ejercicio from '~/src/components/Health/Ejercicio/Ejercicio';
@@ -22,6 +28,9 @@ export default function Health() {
   const [mode, setMode] = useState<string>('Ejercicio');
   const [ejercicio, setEjercicio] = useState<any>(null);
   const [nutricion, setNutricion] = useState<any>(null);
+  const [objetivos, setObjetivos] = useState<objetivosType | null>(null);
+  const [objetivosDiarios, setObjetivosDiarios] = useState<objetivosDiariosType | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getEjercicio = (date: string): EntrenamientosType | null => {
     return findEntrenamientoByDate(date);
@@ -33,10 +42,27 @@ export default function Health() {
   };
 
   useEffect(() => {
+    setObjetivos(getObjetivosByUsername('victorino_3c'));
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
     setEjercicio(getEjercicio(selectedDate.format('YYYY-MM-DD')));
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
-    //console.log('Selected date:', selectedDate.format('YYYY-MM-DD'));
+    setObjetivosDiarios(
+      getObjetivosDiariosByUsername('victorino_3c', selectedDate.format('YYYY-MM-DD'))
+    );
+    setLoading(false);
   }, [selectedDate, calendar]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1">
@@ -57,8 +83,17 @@ export default function Health() {
             onCalendarChange={setCalendar}
           />
         )}
-        <Formula objective="2400" nutricion="1800" exercise="0" />
-        <SueñoHidratacion />
+        <Formula
+          objective={objetivos?.calorias.toString() || '0'}
+          nutricion={nutricion?.Calorias || 0}
+          exercise={ejercicio?.Calorias || 0}
+        />
+        <SueñoHidratacion
+          fecha={selectedDate.format('YYYY-MM-DD')}
+          objetivoHidratacion={objetivos?.agua || 3.3}
+          objetivoSueño={objetivos?.sueño || 0}
+          objetivosDiarios={objetivosDiarios}
+        />
         <TwoOptionsButton
           option1="Ejercicio"
           option2="Nutricion"

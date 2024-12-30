@@ -1,32 +1,83 @@
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
+
+import moment from 'moment';
 
 import Feather from '@expo/vector-icons/Feather';
 import Slider from '@react-native-community/slider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const SueñoHidratacion = () => {
-  const [sueño, setsueño] = useState('-');
+//TEMP
+import { objetivos, objetivosDiariosType } from '~/assets/health/health';
 
-  const [value, setValue] = useState(1.5); // Set initial value
-  const maxValue = 3.3; // Maximum value for the slider
+type SueñoHidratacionProps = {
+  fecha: string;
+  objetivoHidratacion: number;
+  objetivoSueño: number;
+  objetivosDiarios: objetivosDiariosType | null;
+};
+
+const SueñoHidratacion = ({
+  fecha,
+  objetivoHidratacion,
+  objetivoSueño,
+  objetivosDiarios,
+}: SueñoHidratacionProps) => {
+  const [sueño, setsueño] = useState('-');
+  const [value, setValue] = useState(0);
 
   // Define the color of the slider based on the value
   const getSliderColor = (value: number) => {
     if (value === 0) return '#d3d3d3'; // Grey color for 0 value
-    if (value < maxValue) return '#00c6fb'; // Light blue for intermediate values
+    if (value < objetivoHidratacion) return '#00c6fb'; // Light blue for intermediate values
     return '#00c6fb'; // Full blue for maximum value
   };
 
   // Define the emoji based on the value
   const getEmoji = (value: number) => {
-    if (value <= 0.2 * maxValue) return '😫';
-    if (value <= 0.4 * maxValue) return '😪';
-    if (value <= 0.6 * maxValue) return '😐';
-    if (value <= 0.8 * maxValue) return '😄';
-    return '😁';
+    if (value <= 0.2 * objetivoHidratacion) return '😫';
+    if (value <= 0.4 * objetivoHidratacion) return '😪';
+    if (value <= 0.6 * objetivoHidratacion) return '😐';
+    if (value <= 0.8 * objetivoHidratacion) return '😄';
+    if (value <= objetivoHidratacion) return '😁';
+    return null;
   };
+
+  if (moment().format('YYYY-MM-DD') !== fecha) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.sueño}>
+          <View style={styles.inner}>
+            <Feather name="moon" size={24} color="#6608ff" />
+            <Text className="px-2 text-xl font-bold">Horas de sueño</Text>
+            <Feather name="info" size={16} color="grey" />
+          </View>
+          <View style={styles.inner}>
+            <View>
+              <Text className="font-regular text-center text-xl">
+                {objetivosDiarios?.sueño || '-'}{' '}
+              </Text>
+            </View>
+            <Text className="text-lg">/ {objetivoSueño} horas</Text>
+          </View>
+        </View>
+        <View style={styles.inner}>
+          <Ionicons name="water-outline" size={24} color="#6608ff" />
+          <Text className="px-2 text-xl font-bold">Hidratación</Text>
+          <Feather name="info" size={16} color="grey" />
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={[styles.emoji, { fontSize: 50 }]}>
+            {getEmoji(objetivosDiarios?.agua || objetivoHidratacion + 1) || ''}
+          </Text>
+          <Text style={{ fontSize: 24 }}>
+            {objetivosDiarios?.agua || '-'} / {objetivoHidratacion} Litros
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -45,7 +96,7 @@ const SueñoHidratacion = () => {
               className="font-regular text-center text-xl"
             />
           </View>
-          <Text className="text-lg">/ 8 horas</Text>
+          <Text className="text-lg">/ {objetivoSueño} horas</Text>
         </View>
       </View>
       <View style={styles.inner}>
@@ -53,13 +104,13 @@ const SueñoHidratacion = () => {
         <Text className="px-2 text-xl font-bold">Hidratación</Text>
         <Feather name="info" size={16} color="grey" />
       </View>
-      <Text style={styles.amountText}>{`${value.toFixed(1)} / ${maxValue} Litros`}</Text>
+      <Text style={styles.amountText}>{`${value.toFixed(1)} / ${objetivoHidratacion} Litros`}</Text>
       <View style={styles.row}>
         <Text style={styles.emoji}>{getEmoji(value)}</Text>
         <Slider
           style={styles.slider}
           minimumValue={0}
-          maximumValue={maxValue}
+          maximumValue={objetivoHidratacion}
           minimumTrackTintColor={getSliderColor(value)}
           maximumTrackTintColor="#d3d3d3"
           thumbTintColor={getSliderColor(value)}

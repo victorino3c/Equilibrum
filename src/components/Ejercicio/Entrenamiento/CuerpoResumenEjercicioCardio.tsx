@@ -1,19 +1,29 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 //TEMP
-import { findSeriesCardioByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
+import {
+  findSeriesCardioByEntrenamientoAndEjercicio,
+  getSeriesRutinaCardioByRutinaAndEjercicio,
+} from '~/assets/ejercicio/entrenamientos';
 
 type CuerpoResumenEjercicioCardioProps = {
   idEjercicio: number;
-  idEntrenamiento: number | null;
+  idEntrenamiento?: number;
+  idRutina?: number;
 };
 
 const CuerpoResumenEjercicioCardio = ({
   idEjercicio,
   idEntrenamiento,
+  idRutina,
 }: CuerpoResumenEjercicioCardioProps) => {
-  const series =
-    findSeriesCardioByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio) || [];
+  if (!idRutina && !idEntrenamiento) {
+    return <Text>No hay datos</Text>;
+  }
+  const series = idEntrenamiento
+    ? findSeriesCardioByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio)
+    : getSeriesRutinaCardioByRutinaAndEjercicio(idRutina || -1, idEjercicio);
 
   return (
     <View>
@@ -24,7 +34,7 @@ const CuerpoResumenEjercicioCardio = ({
         <Text style={styles.cabecera}> KCAL </Text>
       </View>
       <FlatList
-        data={series}
+        data={series as Array<{ Distancia: number; Tiempo: string; Calorias: number }>}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.titulos}>

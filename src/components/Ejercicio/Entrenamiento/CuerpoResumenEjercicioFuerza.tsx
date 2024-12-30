@@ -1,19 +1,28 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 
 //TEMP
-import { findSeriesFuerzaByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
+import {
+  findSeriesFuerzaByEntrenamientoAndEjercicio,
+  getSeriesRutinaFuerzaByRutinaAndEjercicio,
+} from '~/assets/ejercicio/entrenamientos';
 
 type CuerpoResumenEjercicioFuerzaProps = {
   idEjercicio: number;
-  idEntrenamiento: number | null;
+  idEntrenamiento?: number;
+  idRutina?: number;
 };
 
 const CuerpoResumenEjercicioFuerza = ({
   idEjercicio,
   idEntrenamiento,
+  idRutina,
 }: CuerpoResumenEjercicioFuerzaProps) => {
-  const series =
-    findSeriesFuerzaByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio) || [];
+  if (!idRutina && !idEntrenamiento) {
+    return <Text>No hay datos</Text>;
+  }
+  const series = idEntrenamiento
+    ? findSeriesFuerzaByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio)
+    : getSeriesRutinaFuerzaByRutinaAndEjercicio(idRutina || -1, idEjercicio);
 
   return (
     <View>
@@ -23,7 +32,7 @@ const CuerpoResumenEjercicioFuerza = ({
         <Text style={styles.cabecera}>PESO </Text>
       </View>
       <FlatList
-        data={series}
+        data={series as Array<{ Repeticiones: number; Peso: number }>}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.titulos}>

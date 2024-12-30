@@ -511,6 +511,28 @@ export const getEjerciciosByRutina = (idRutina: number): EjercicioType[] => {
   return ejercicios;
 };
 
+export const getEjerciciosByRutinaAndUser = (
+  nombreRutina: string,
+  idUsuario: string
+): EjercicioType[] => {
+  // Get the exercises for the routine
+  const rutina = getRutinasByUser(idUsuario).find((rutina) => rutina.Nombre === nombreRutina);
+  if (rutina) {
+    return getEjerciciosByRutina(rutina.id);
+  }
+  return [];
+};
+
+export const getRutinaIdByNombre = (nombreRutina: string): number | null => {
+  // Get the routine id by name
+  for (const key in Rutinas) {
+    if (Rutinas[key].Nombre === nombreRutina) {
+      return parseInt(key);
+    }
+  }
+  return null;
+};
+
 export const getSeriesRutinaCardioByRutinaAndEjercicio = (
   idRutina: number,
   idEjercicio: number

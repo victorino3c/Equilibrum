@@ -9,11 +9,17 @@ import CuerpoResumenEjercicioCalistenia from './CuerpoResumenEjercicioCalistenia
 
 type ResumenEjercicioProps = {
   idEjercicio: number;
-  idEntrenamiento: number;
+  idEntrenamiento?: number;
+  idRutina?: number;
   editar?: boolean;
 };
 
-const ResumenEjercicio = ({ idEjercicio, idEntrenamiento, editar }: ResumenEjercicioProps) => {
+const ResumenEjercicio = ({
+  idEjercicio,
+  idEntrenamiento,
+  idRutina,
+  editar,
+}: ResumenEjercicioProps) => {
   const Ejercicio = findEjercicioById(idEjercicio);
 
   return (
@@ -37,18 +43,21 @@ const ResumenEjercicio = ({ idEjercicio, idEntrenamiento, editar }: ResumenEjerc
           <CuerpoResumenEjercicioCardio
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
+            idRutina={idRutina}
           />
         ) : null}
         {Ejercicio?.tipo === 'Fuerza' ? (
           <CuerpoResumenEjercicioFuerza
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
+            idRutina={idRutina}
           />
         ) : null}
         {Ejercicio?.tipo === 'Calistenia' ? (
           <CuerpoResumenEjercicioCalistenia
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
+            idRutina={idRutina}
           />
         ) : null}
       </View>

@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import Date from '../Utils/Date';
 
-//TEMP
+import { useFocusEffect } from '@react-navigation/native';
+
+// TEMP
 import { findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { findNutricionByDate } from '~/assets/nutricion/nutricion';
 
@@ -13,31 +15,37 @@ interface CalendarioReplegadoProps {
   onSelectDate: (date: moment.Moment) => void;
   onCalendarChange: (tipo: string) => void;
   selected: moment.Moment;
+  tipo?: string;
 }
 
 const CalendarioReplegado = ({
   onSelectDate,
   onCalendarChange,
   selected,
+  tipo,
 }: CalendarioReplegadoProps) => {
   const [dates, setDates] = useState<{ date: moment.Moment; visualization: number }[]>([]);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [currentMonth, setCurrentMonth] = useState<string>('');
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // get the dates from today to 10 days from now, format them as strings and store them in state
+  // Get the dates from today to 10 days from now, format them as strings, and store them in state
   const getDates = () => {
     const _dates = [];
     for (let i = 10; i >= 0; i--) {
       const date = moment().subtract(i, 'days');
+      let visualization = 0;
 
       // Check if the date has a training
-      const training = findEntrenamientoByDate(date.format('YYYY-MM-DD'));
-      var visualization = training ? 1 : 0;
+      if (tipo !== 'Nutricion') {
+        const training = findEntrenamientoByDate(date.format('YYYY-MM-DD'));
+        visualization = training ? 1 : 0;
+      }
 
       // Check if the date has a nutrition
-      const nutrition = findNutricionByDate(date.format('YYYY-MM-DD'));
-      visualization += nutrition ? 2 : 0;
+      if (tipo !== 'Ejercicio') {
+        const nutrition = findNutricionByDate(date.format('YYYY-MM-DD'));
+        visualization += nutrition ? 2 : 0;
+      }
 
       _dates.push({ date: date, visualization: visualization });
     }
@@ -45,15 +53,21 @@ const CalendarioReplegado = ({
     setDates(_dates);
   };
 
-  useEffect(() => {
-    getDates();
-    setCurrentMonth(moment().format('MMMM YYYY'));
+  useFocusEffect(
+    React.useCallback(() => {
+      getDates();
+      setCurrentMonth(moment().format('MMMM YYYY'));
 
-    // scroll to the end of the scroll view
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 1);
-  }, []);
+      // Use a small timeout to ensure the scroll view has rendered its content
+      const timer = setTimeout(() => {
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }
+      }, 200); // Adjust the timeout duration as needed
+
+      return () => clearTimeout(timer);
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

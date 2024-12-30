@@ -33,16 +33,16 @@ const TarjetaCalorias = (props: TarjetaCaloriasProps) => {
       </View>
       <View style={styles.footer}>
         <View style={styles.footerItem}>
-          <FontAwesome name="clock-o" size={24} color="#6608ff" />
-          <Text style={styles.footerText}>{props.duration}</Text>
+          <FontAwesome name="clock-o" size={30} color="#6608ff" />
+          <Text style={styles.footerText}>{props.duration} h</Text>
         </View>
         <View style={styles.footerItem}>
-          <MaterialIcons name="fitness-center" size={24} color="#6608ff" />
+          <MaterialIcons name="fitness-center" size={30} color="#6608ff" />
           <Text style={styles.footerText}>{props.weight}</Text>
         </View>
         <View style={styles.footerItem}>
           <Text style={[styles.footerText, styles.seriesText]}>S</Text>
-          <Text style={{ fontSize: 14 }}>{props.series} series</Text>
+          <Text style={{ fontSize: 18 }}>{props.series} series</Text>
         </View>
       </View>
     </View>
@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
   footerItem: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
+    gap: 5,
   },
   footerText: {
-    fontSize: 14,
+    fontSize: 18,
   },
   seriesText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#6608ff',
     marginTop: 0,

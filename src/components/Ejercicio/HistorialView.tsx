@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 import CustomCalendar from 'src/components/Ejercicio/Calendar';
-import CalendarioReplegado from '~/src/components/Ejercicio/CalendarioReplegado';
+import CalendarioReplegado from '~/src/components/Utils/CalendarioReplegado';
 import Ejercicio from '~/src/components/Health/Ejercicio/Ejercicio';
 
 //TEMP
