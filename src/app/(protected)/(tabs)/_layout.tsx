@@ -16,6 +16,9 @@ export default function TabLayout() {
     return null;
   }
 
+  // Default the Health tab to be selected
+  const initialTab = '(health)';
+
   return (
     <>
       <StatusBar style="light" />

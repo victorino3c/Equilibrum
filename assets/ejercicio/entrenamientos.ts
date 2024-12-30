@@ -14,6 +14,13 @@ export type EntrenamientosType = {
   Volumen: number;
 };
 
+export type RutinaType = {
+  id: number;
+  idUsuario: string;
+  Nombre: string;
+  Ejercicios: number[];
+};
+
 export type EjercicioType = {
   id: number;
   tipo: TipoEjercicio;
@@ -40,6 +47,27 @@ export type SerieFuerzaType = {
 
 export type SerieCalisteniaType = {
   idEntrenamiento: number;
+  idEjercicio: number;
+  Repeticiones: number;
+};
+
+export type SerieRutinaCardioType = {
+  idRutina: number;
+  idEjercicio: number;
+  Distancia: number;
+  Tiempo: string;
+  Calorias: number;
+};
+
+export type SerieRutinaFuerzaType = {
+  idRutina: number;
+  idEjercicio: number;
+  Repeticiones: number;
+  Peso: number;
+};
+
+export type SerieRutinaCalisteniaType = {
+  idRutina: number;
   idEjercicio: number;
   Repeticiones: number;
 };
@@ -94,6 +122,23 @@ export const Entrenamientos: Record<number, EntrenamientosType> = {
   },
 
   // Añadir más ejercicios según sea necesario
+};
+
+export const Rutinas: Record<number, RutinaType> = {
+  1: {
+    id: 1,
+    idUsuario: 'victorino_3c',
+    Nombre: 'Pecho/Triceps',
+    Ejercicios: [3, 4, 5],
+  },
+
+  2: {
+    id: 2,
+    idUsuario: 'victorino_3c',
+    Nombre: 'Espalda/Biceps',
+    Ejercicios: [1, 6],
+  },
+  // Añadir más rutinas según sea necesario
 };
 
 export const Ejercicios: Record<number, EjercicioType> = {
@@ -199,6 +244,66 @@ export const SeriesCalistenia: Record<number, SerieCalisteniaType> = {
   3: {
     idEntrenamiento: 1,
     idEjercicio: 5,
+    Repeticiones: 12,
+  },
+};
+
+export const SeriesRutinaCardio: Record<number, SerieRutinaCardioType> = {
+  1: {
+    idRutina: 2,
+    idEjercicio: 1,
+    Distancia: 5,
+    Tiempo: '30:00',
+    Calorias: 250,
+  },
+};
+
+export const SeriesRutinaFuerza: Record<number, SerieRutinaFuerzaType> = {
+  1: {
+    idRutina: 1,
+    idEjercicio: 3,
+    Repeticiones: 12,
+    Peso: 50,
+  },
+  2: {
+    idRutina: 1,
+    idEjercicio: 4,
+    Repeticiones: 12,
+    Peso: 50,
+  },
+  3: {
+    idRutina: 1,
+    idEjercicio: 4,
+    Repeticiones: 12,
+    Peso: 50,
+  },
+  4: {
+    idRutina: 1,
+    idEjercicio: 4,
+    Repeticiones: 12,
+    Peso: 50,
+  },
+};
+
+export const SeriesRutinaCalistenia: Record<number, SerieRutinaCalisteniaType> = {
+  1: {
+    idRutina: 1,
+    idEjercicio: 5,
+    Repeticiones: 12,
+  },
+  2: {
+    idRutina: 1,
+    idEjercicio: 6,
+    Repeticiones: 12,
+  },
+  3: {
+    idRutina: 2,
+    idEjercicio: 6,
+    Repeticiones: 12,
+  },
+  4: {
+    idRutina: 2,
+    idEjercicio: 6,
     Repeticiones: 12,
   },
 };
@@ -378,4 +483,78 @@ export const getEntrenamientoDatesByUser = (idUsuario: string): string[] => {
     }
   }
   return dates;
+};
+
+export const getRutinasByUser = (idUsuario: string): RutinaType[] => {
+  // Get the routines for the user
+  const rutinas: RutinaType[] = [];
+  for (const key in Rutinas) {
+    if (Rutinas[key].idUsuario === idUsuario) {
+      rutinas.push(Rutinas[key]);
+    }
+  }
+  return rutinas;
+};
+
+export const getEjerciciosByRutina = (idRutina: number): EjercicioType[] => {
+  // Get the exercises for the routine
+  const ejercicios: EjercicioType[] = [];
+  const ejerciciosId = Rutinas[idRutina].Ejercicios;
+  if (ejerciciosId) {
+    ejerciciosId.forEach((id) => {
+      const ejercicio = findEjercicioById(id);
+      if (ejercicio) {
+        ejercicios.push(ejercicio);
+      }
+    });
+  }
+  return ejercicios;
+};
+
+export const getSeriesRutinaCardioByRutinaAndEjercicio = (
+  idRutina: number,
+  idEjercicio: number
+): SerieRutinaCardioType[] => {
+  const series: SerieRutinaCardioType[] = [];
+  for (const key in SeriesRutinaCardio) {
+    if (
+      SeriesRutinaCardio[key].idRutina === idRutina &&
+      SeriesRutinaCardio[key].idEjercicio === idEjercicio
+    ) {
+      series.push(SeriesRutinaCardio[key]);
+    }
+  }
+  return series;
+};
+
+export const getSeriesRutinaFuerzaByRutinaAndEjercicio = (
+  idRutina: number,
+  idEjercicio: number
+): SerieRutinaFuerzaType[] => {
+  const series: SerieRutinaFuerzaType[] = [];
+  for (const key in SeriesRutinaFuerza) {
+    if (
+      SeriesRutinaFuerza[key].idRutina === idRutina &&
+      SeriesRutinaFuerza[key].idEjercicio === idEjercicio
+    ) {
+      series.push(SeriesRutinaFuerza[key]);
+    }
+  }
+  return series;
+};
+
+export const getSeriesRutinaCalisteniaByRutinaAndEjercicio = (
+  idRutina: number,
+  idEjercicio: number
+): SerieRutinaCalisteniaType[] => {
+  const series: SerieRutinaCalisteniaType[] = [];
+  for (const key in SeriesRutinaCalistenia) {
+    if (
+      SeriesRutinaCalistenia[key].idRutina === idRutina &&
+      SeriesRutinaCalistenia[key].idEjercicio === idEjercicio
+    ) {
+      series.push(SeriesRutinaCalistenia[key]);
+    }
+  }
+  return series;
 };
