@@ -16,7 +16,7 @@ const ResumenHistoriaNutricion = ({ idNutricion }: ResumenHistoriaNutricionProps
   // Get the exercises for the training
   const nutricion = findPeriodosByNutricion(idNutricion) || [];
 
-  if (Nutricion.length === 0) {
+  if (nutricion.length === 0) {
     return null;
   }
 
@@ -28,7 +28,7 @@ const ResumenHistoriaNutricion = ({ idNutricion }: ResumenHistoriaNutricionProps
 
   return (
     <View style={styles.container}>
-      <Text style={styles.tittle}>Resumen entrenamiento</Text>
+      <Text style={styles.tittle}>Resumen nutrición</Text>
       <Timeline
         data={data}
         circleSize={15}

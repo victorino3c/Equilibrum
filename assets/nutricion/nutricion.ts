@@ -77,6 +77,19 @@ export const Nutriciones: Record<number, NutricionType> = {
     Imagen: 'https://via.placeholder.com/150',
   },
   // Añadir más ejercicios según sea necesario
+  3: {
+    fecha: '2024-12-29',
+    idUsuario: 'victorino_3c',
+    ObjetivoCalorias: 2200,
+    Calorias: 1802,
+    ObjetivoProteinas: 100,
+    Proteinas: 80,
+    ObjetivoGrasas: 102,
+    Grasas: 75,
+    ObjetivoCarbohidratos: 110,
+    Carbohidratos: 40,
+    Imagen: 'https://via.placeholder.com/150',
+  },
 };
 
 export const Periodos: Record<number, PeriodoType> = {
@@ -300,4 +313,14 @@ export const findPeriodoById = (id: number): PeriodoType | null => {
 
 export const findNutricionById = (id: number): NutricionType | null => {
   return Nutriciones[id] || null;
+};
+
+export const getNutricionDatesByUser = (idUsuario: string): string[] => {
+  const dates: string[] = [];
+  for (const key in Nutriciones) {
+    if (Nutriciones[key].idUsuario === idUsuario) {
+      dates.push(Nutriciones[key].fecha);
+    }
+  }
+  return dates;
 };

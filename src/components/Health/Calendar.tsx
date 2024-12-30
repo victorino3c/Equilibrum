@@ -6,6 +6,13 @@ import moment from 'moment';
 
 //TEMP
 import { getEntrenamientoDatesByUser } from '~/assets/ejercicio/entrenamientos';
+import { getNutricionDatesByUser } from '~/assets/nutricion/nutricion';
+
+const Colores = {
+  1: '#34E5E5', //Solo entrenamiento
+  2: '#A1FF08', // Solo nutricion
+  3: '#6608ff', // Ambos
+};
 
 type CustomCalendarProps = {
   selectedDate: string;
@@ -32,13 +39,40 @@ export default function CustomCalendar({
     };
 
     const entrenamientos = getEntrenamientoDatesByUser('victorino_3c');
+    const nutriciones = getNutricionDatesByUser('victorino_3c');
 
-    entrenamientos.forEach((date) => {
+    const entrenamientosNutricion = entrenamientos.filter((date) => nutriciones.includes(date));
+    const entrenamientosSolo = entrenamientos.filter((date) => !nutriciones.includes(date));
+    const nutricionesSolo = nutriciones.filter((date) => !entrenamientos.includes(date));
+
+    entrenamientosNutricion.forEach((date) => {
       newMarkedDates = {
         ...newMarkedDates,
         [date]: {
           selected: true,
-          selectedColor: '#6608ff',
+          selectedColor: Colores[3],
+          text: { color: 'white' },
+        },
+      };
+    });
+
+    entrenamientosSolo.forEach((date) => {
+      newMarkedDates = {
+        ...newMarkedDates,
+        [date]: {
+          selected: true,
+          selectedColor: Colores[1],
+          text: { color: 'white' },
+        },
+      };
+    });
+
+    nutricionesSolo.forEach((date) => {
+      newMarkedDates = {
+        ...newMarkedDates,
+        [date]: {
+          selected: true,
+          selectedColor: Colores[2],
           text: { color: 'white' },
         },
       };

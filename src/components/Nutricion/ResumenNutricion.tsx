@@ -1,10 +1,13 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import React from 'react';
 
+import { Link } from 'expo-router';
+
 //TEMP
 import { AlimentoType, PeriodoType, Medida } from '~/assets/nutricion/nutricion';
 
-import { Feather, FontAwesome6, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome6, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import PlantillaModal from './PlantillaModal';
 
 type ResumenNutricionProps = {
   periodo: PeriodoType;
@@ -13,15 +16,24 @@ type ResumenNutricionProps = {
 };
 
 const ResumenNutricion = ({ periodo, alimentos, editar }: ResumenNutricionProps) => {
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalData, setModalData] = React.useState<any>(null);
+
+  const showModal = () => {
+    setModalData({ periodo, alimentos });
+    setModalVisible(!modalVisible);
+  };
+
   return (
     <View style={styles.container}>
+      <PlantillaModal visible={modalVisible} data={modalData} setModalVisible={setModalVisible} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row', marginBottom: 5 }}>
           <Text style={styles.tittle}>{periodo.periodo.toString()}</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 15 }}>
           <Feather name="image" size={24} color="#777777" />
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => showModal()}>
             <FontAwesome6 name="bolt" size={24} color="#6608ff" />
           </TouchableOpacity>
         </View>
@@ -42,9 +54,16 @@ const ResumenNutricion = ({ periodo, alimentos, editar }: ResumenNutricionProps)
               <Text style={[styles.datos, { fontWeight: 'bold' }]}>{index + 1}</Text>
               <Text style={styles.datos}>{item.nombre}</Text>
             </View>
-            <View style={[styles.titulos, { gap: 5 }]}>
-              <Text style={styles.cantidad}>{item.cantidad}</Text>
-              {item.medida !== Medida.tamaño && <Text style={styles.cantidad}>{item.medida}</Text>}
+            <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
+              <View style={[styles.titulos, { gap: 5 }]}>
+                <Text style={styles.cantidad}>{item.cantidad}</Text>
+                {item.medida !== Medida.tamaño && (
+                  <Text style={styles.cantidad}>{item.medida}</Text>
+                )}
+              </View>
+              <View>
+                <FontAwesome5 name="check-circle" size={24} color="black" />
+              </View>
             </View>
           </View>
         )}

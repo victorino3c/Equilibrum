@@ -36,7 +36,7 @@ const TarjetaProteinas = (props: TarjetaDuracionProps) => {
       </View>
       <View style={styles.footer}>
         <View style={styles.footerItem}>
-          <Ionicons name="flame-outline" size={24} color="#6608ff" />
+          <Ionicons name="flame-outline" size={30} color="#6608ff" />
           <Text style={styles.footerText}>{props.calorias} kcal</Text>
         </View>
         <View style={styles.footerItem}>
@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   seriesText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: '400',
     color: '#6608ff',
     marginTop: 0,
   },

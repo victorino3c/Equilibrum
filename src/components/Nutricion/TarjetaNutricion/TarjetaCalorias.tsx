@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   seriesText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: '400',
     color: '#6608ff',
     marginTop: 0,
   },
