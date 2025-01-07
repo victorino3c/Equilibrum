@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 export default function Health() {
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{ backgroundColor: 'transparent' }}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>

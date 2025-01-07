@@ -4,19 +4,21 @@ import React from 'react';
 type IconButtonProps = {
   icon: JSX.Element;
   text: string;
-  onPress: () => void;
+  onPress?: () => void;
   style?: object;
   textStyle?: object;
 };
 
-const IconButton = ({ icon, text, style, textStyle }: IconButtonProps) => {
-  return (
-    <TouchableOpacity style={[styles.empezarEntrenamiento, { ...style }]}>
-      {icon}
-      <Text style={[styles.buttonText, { ...textStyle }]}>{text}</Text>
-    </TouchableOpacity>
-  );
-};
+const IconButton = React.forwardRef<React.ElementRef<typeof TouchableOpacity>, IconButtonProps>(
+  ({ icon, text, onPress, style, textStyle }, ref) => {
+    return (
+      <TouchableOpacity ref={ref} style={[styles.empezarEntrenamiento, style]} onPress={onPress}>
+        {icon}
+        <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+      </TouchableOpacity>
+    );
+  }
+);
 
 export default IconButton;
 
@@ -42,8 +44,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 20,
+    fontWeight: '700',
     color: '#6608ff',
-    fontWeight: 'bold',
-    marginLeft: 10,
   },
 });

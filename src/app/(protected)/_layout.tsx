@@ -12,7 +12,7 @@ export default function ProtectedLayout() {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>

@@ -51,7 +51,7 @@ export type AlimentoType = {
 
 export const Nutriciones: Record<number, NutricionType> = {
   1: {
-    fecha: '2024-12-26',
+    fecha: '2025-01-06',
     idUsuario: 'victorino_3c',
     ObjetivoCalorias: 2200,
     Calorias: 1802,
@@ -64,7 +64,7 @@ export const Nutriciones: Record<number, NutricionType> = {
     Imagen: 'https://via.placeholder.com/150',
   },
   2: {
-    fecha: '2024-12-27',
+    fecha: '2025-01-07',
     idUsuario: 'victorino_3c',
     ObjetivoCalorias: 2200,
     Calorias: 1230,
@@ -78,7 +78,7 @@ export const Nutriciones: Record<number, NutricionType> = {
   },
   // Añadir más ejercicios según sea necesario
   3: {
-    fecha: '2024-12-29',
+    fecha: '2025-01-09',
     idUsuario: 'victorino_3c',
     ObjetivoCalorias: 2200,
     Calorias: 1802,

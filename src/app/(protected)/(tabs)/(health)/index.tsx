@@ -65,7 +65,7 @@ export default function Health() {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 70 }}
         keyboardDismissMode="on-drag"

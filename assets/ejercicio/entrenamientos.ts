@@ -1,5 +1,6 @@
 // ~/assets/ejercicio/ejercicio.ts
 export type EntrenamientosType = {
+  id: number;
   fecha: string;
   idUsuario: string; //Temporal, esto deberia ser una relacion con la tabla de usuarios
   Nombre: string;
@@ -31,6 +32,7 @@ export type EjercicioType = {
 };
 
 export type SerieCardioType = {
+  id: number;
   idEntrenamiento: number;
   idEjercicio: number;
   Distancia: number;
@@ -39,6 +41,7 @@ export type SerieCardioType = {
 };
 
 export type SerieFuerzaType = {
+  id: number;
   idEntrenamiento: number;
   idEjercicio: number;
   Repeticiones: number;
@@ -46,6 +49,7 @@ export type SerieFuerzaType = {
 };
 
 export type SerieCalisteniaType = {
+  id: number;
   idEntrenamiento: number;
   idEjercicio: number;
   Repeticiones: number;
@@ -80,7 +84,8 @@ export enum TipoEjercicio {
 
 export const Entrenamientos: Record<number, EntrenamientosType> = {
   1: {
-    fecha: '2024-12-26',
+    id: 1,
+    fecha: '2025-01-06',
     idUsuario: 'victorino_3c',
     Nombre: 'Pecho/Triceps',
     Descripcion:
@@ -95,7 +100,8 @@ export const Entrenamientos: Record<number, EntrenamientosType> = {
     Volumen: 11560,
   },
   2: {
-    fecha: '2024-12-27',
+    id: 2,
+    fecha: '2025-01-07',
     idUsuario: 'victorino_3c',
     Nombre: 'Pecho/Triceps',
     //Descripcion: 'Duro de pilotes',
@@ -108,7 +114,8 @@ export const Entrenamientos: Record<number, EntrenamientosType> = {
     Volumen: 11560,
   },
   3: {
-    fecha: '2024-12-28',
+    id: 3,
+    fecha: '2025-01-08',
     idUsuario: 'victorino_3c',
     Nombre: 'Pecho/Triceps',
     //Descripcion: 'Duro de pilotes',
@@ -194,6 +201,7 @@ export const Ejercicios: Record<number, EjercicioType> = {
 
 export const SeriesCardio: Record<number, SerieCardioType> = {
   1: {
+    id: 1,
     idEntrenamiento: 1,
     idEjercicio: 1,
     Distancia: 5,
@@ -201,6 +209,7 @@ export const SeriesCardio: Record<number, SerieCardioType> = {
     Calorias: 250,
   },
   2: {
+    id: 2,
     idEntrenamiento: 1,
     idEjercicio: 2,
     Distancia: 5,
@@ -211,18 +220,21 @@ export const SeriesCardio: Record<number, SerieCardioType> = {
 
 export const SeriesFuerza: Record<number, SerieFuerzaType> = {
   1: {
+    id: 1,
     idEntrenamiento: 1,
     idEjercicio: 3,
     Repeticiones: 12,
     Peso: 50,
   },
   2: {
+    id: 2,
     idEntrenamiento: 1,
     idEjercicio: 3,
     Repeticiones: 12,
     Peso: 50,
   },
   3: {
+    id: 3,
     idEntrenamiento: 1,
     idEjercicio: 4,
     Repeticiones: 12,
@@ -232,16 +244,19 @@ export const SeriesFuerza: Record<number, SerieFuerzaType> = {
 
 export const SeriesCalistenia: Record<number, SerieCalisteniaType> = {
   1: {
+    id: 1,
     idEntrenamiento: 1,
     idEjercicio: 5,
     Repeticiones: 12,
   },
   2: {
+    id: 2,
     idEntrenamiento: 1,
     idEjercicio: 6,
     Repeticiones: 12,
   },
   3: {
+    id: 3,
     idEntrenamiento: 1,
     idEjercicio: 5,
     Repeticiones: 12,

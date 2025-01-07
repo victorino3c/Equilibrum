@@ -4,7 +4,7 @@ import React from 'react';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import IconButton from '../../../components/Buttons/IconButton';
 
-import { Stack } from 'expo-router';
+import { Stack, Link } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 
 //TEMP
@@ -66,19 +66,20 @@ const DetallesRutina = () => {
         <IconButton
           icon={icon}
           text="Eliminar rutina"
-          onPress={() => {}}
           textStyle={{ color: '#E34716' }}
           style={{ backgroundColor: '#FFBBB9', shadowColor: '#E34716' }}
         />
       ) : (
-        <IconButton icon={iconSum} text="Empezar entrenamiento" onPress={() => {}} />
+        <Link href="/Ejercicio/Entrenamiento" asChild>
+          <IconButton icon={iconSum} text="Empezar entrenamiento" />
+        </Link>
       )}
 
       <Text style={[styles.fecha, { paddingBottom: 15, flex: 1 }]}>Ejercicios</Text>
       <FlatList
         scrollEnabled={false}
         data={ejercicios}
-        keyExtractor={(item) => item.Nombre}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ResumenEjercicio
             idEjercicio={item.id}

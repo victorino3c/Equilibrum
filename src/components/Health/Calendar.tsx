@@ -52,6 +52,7 @@ export default function CustomCalendar({
           selected: true,
           selectedColor: Colores[3],
           text: { color: 'white' },
+          selectedDayTextColor: 'white',
         },
       };
     });
@@ -62,7 +63,7 @@ export default function CustomCalendar({
         [date]: {
           selected: true,
           selectedColor: Colores[1],
-          text: { color: 'white' },
+          selectedDayTextColor: 'white',
         },
       };
     });
@@ -73,7 +74,7 @@ export default function CustomCalendar({
         [date]: {
           selected: true,
           selectedColor: Colores[2],
-          text: { color: 'white' },
+          selectedDayTextColor: 'white',
         },
       };
     });

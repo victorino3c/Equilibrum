@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 21,
+    paddingTop: 10,
     fontWeight: 'light',
   },
   dateSection: {

@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   plane: {
-    backgroundColor: 'white',
     flexDirection: 'row',
   },
   caloriesView: {

@@ -63,24 +63,24 @@ export const objetivos: Record<number, objetivosType> = {
 export const objetivosDiarios: Record<number, objetivosDiariosType> = {
   1: {
     idUsuario: 'victorino_3c',
-    fecha: '2024-12-26',
+    fecha: '2025-01-06',
     sueño: 8,
     agua: 3.1,
   },
   2: {
     idUsuario: 'victorino_3c',
-    fecha: '2024-12-27',
+    fecha: '2025-01-07',
     sueño: 7,
     agua: 1.9,
   },
   3: {
     idUsuario: 'victorino_3c',
-    fecha: '2024-12-28',
+    fecha: '2025-01-08',
     sueño: 8,
   },
   4: {
     idUsuario: 'victorino_3c',
-    fecha: '2024-12-29',
+    fecha: '2025-01-09',
     agua: 2.5,
   },
   // Agregar más objetivos diarios

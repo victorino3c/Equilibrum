@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import React from 'react';
 
-import { Link } from 'expo-router';
+import { Link, Stack, useNavigation } from 'expo-router';
 
 import { Feather } from '@expo/vector-icons';
 
@@ -10,6 +10,8 @@ import { getRutinasByUser } from '~/assets/ejercicio/entrenamientos';
 import IconButton from '../Buttons/IconButton';
 
 const NuevoView = () => {
+  const navigation = useNavigation();
+
   const rutinas = getRutinasByUser('victorino_3c');
 
   const icon = <Feather name="plus-circle" size={45} color="#6608ff" />;
@@ -17,7 +19,9 @@ const NuevoView = () => {
   return (
     <View>
       <Text style={styles.fecha}>Inicio rápido</Text>
-      <IconButton icon={icon} text="Empezar entrenamiento" onPress={() => {}} />
+      <Link href="/Ejercicio/Entrenamiento" asChild>
+        <IconButton icon={icon} text="Empezar entrenamiento" />
+      </Link>
       <Text style={styles.fecha}>Rutinas</Text>
       <FlatList
         scrollEnabled={false}
@@ -31,9 +35,11 @@ const NuevoView = () => {
               <Text style={styles.rutinaText}>{item.Nombre}</Text>
               <View style={styles.separator} />
               <View style={{ alignItems: 'center' }}>
-                <TouchableOpacity>
-                  <Text style={styles.empezarButton}>Empezar</Text>
-                </TouchableOpacity>
+                <Link href="/Ejercicio/Entrenamiento" asChild>
+                  <TouchableOpacity>
+                    <Text style={styles.empezarButton}>Empezar</Text>
+                  </TouchableOpacity>
+                </Link>
               </View>
             </TouchableOpacity>
           </Link>
