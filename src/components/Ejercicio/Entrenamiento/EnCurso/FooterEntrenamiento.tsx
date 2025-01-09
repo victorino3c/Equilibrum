@@ -17,7 +17,7 @@ const FooterEntrenamiento = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
 
   return (
-    <View>
+    <View style={{ marginTop: 10 }}>
       <EjerciciosModal visible={modalVisible} setModalVisible={setModalVisible} />
       <IconButton
         icon={sumIcon}

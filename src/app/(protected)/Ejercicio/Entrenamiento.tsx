@@ -50,7 +50,6 @@ const Entrenamiento = () => {
 
       {/*ELEMENTOS*/}
       <FlatList
-        style={{ marginTop: 20 }}
         keyboardDismissMode="on-drag"
         data={ejercicios}
         renderItem={({ item }) => <TarjetaEjercicio key={item.id} idEjercicio={item.id} />}

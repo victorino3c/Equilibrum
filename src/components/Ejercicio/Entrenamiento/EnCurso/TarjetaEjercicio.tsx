@@ -123,7 +123,7 @@ export default TarjetaEjercicio;
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
-    marginBottom: 20,
+    marginTop: 20,
     padding: 20,
     backgroundColor: 'white',
     borderRadius: 15,
