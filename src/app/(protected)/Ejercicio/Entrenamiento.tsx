@@ -1,21 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Stack, Link } from 'expo-router';
 import CabeceraEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCurso/CabeceraEntrenamiento';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useStore } from '~/src/store/store';
-import { useEffect, useState } from 'react';
+import { appStore } from '~/src/store/store';
 import FooterEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCurso/FooterEntrenamiento';
+import TarjetaEjercicio from '~/src/components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
+
+import React, { memo } from 'react';
 
 const Entrenamiento = () => {
   const insets = useSafeAreaInsets();
 
-  const { startTimer, stopTimer } = useStore();
-
-  useEffect(() => {
-    startTimer();
-  }, []);
+  const { stopTimer, ejercicios } = appStore();
 
   return (
     <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
@@ -26,17 +24,23 @@ const Entrenamiento = () => {
           header: () => (
             <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
               <View style={styles.headerTop}>
-                <Link href="/(protected)/(tabs)/(exercise)" asChild>
-                  <TouchableOpacity>
-                    <Feather name="chevron-down" size={24} color="black" />
-                  </TouchableOpacity>
-                </Link>
-                <Text style={styles.headerTitle}>Entrenamiento</Text>
-                <Link href="/(protected)/(tabs)/(exercise)" asChild>
-                  <TouchableOpacity onPress={() => stopTimer()}>
-                    <Text style={styles.botonGuardar}>Terminar</Text>
-                  </TouchableOpacity>
-                </Link>
+                <View style={styles.headerItems}>
+                  <Link href="/(protected)/(tabs)/(exercise)" asChild>
+                    <TouchableOpacity>
+                      <Feather name="chevron-down" size={24} color="black" />
+                    </TouchableOpacity>
+                  </Link>
+                </View>
+                <View style={styles.headerItems}>
+                  <Text style={styles.headerTitle}>Entrenamiento</Text>
+                </View>
+                <View style={styles.headerItems}>
+                  <Link href="/(protected)/(tabs)/(exercise)" asChild>
+                    <TouchableOpacity onPress={() => stopTimer()}>
+                      <Text style={styles.botonGuardar}>Terminar</Text>
+                    </TouchableOpacity>
+                  </Link>
+                </View>
               </View>
               <CabeceraEntrenamiento />
             </View>
@@ -45,8 +49,14 @@ const Entrenamiento = () => {
       />
 
       {/*ELEMENTOS*/}
-
-      <FooterEntrenamiento />
+      <FlatList
+        style={{ marginTop: 20 }}
+        keyboardDismissMode="on-drag"
+        data={ejercicios}
+        renderItem={({ item }) => <TarjetaEjercicio key={item.id} idEjercicio={item.id} />}
+        keyExtractor={(item) => item.id.toString()}
+        ListFooterComponent={<FooterEntrenamiento />}
+      />
     </View>
   );
 };
@@ -60,6 +70,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  headerItems: {
+    flex: 1,
   },
   headerTop: {
     flexDirection: 'row',
@@ -79,5 +92,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 10,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    width: 90,
+    //textAlign: 'right',
   },
 });

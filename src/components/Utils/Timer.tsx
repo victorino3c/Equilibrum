@@ -1,6 +1,6 @@
 import { View, Text, ViewStyle, TextStyle } from 'react-native';
 import React, { useCallback, useEffect } from 'react';
-import { useStore } from '~/src/store/store';
+import { appStore } from '~/src/store/store';
 import { useFocusEffect } from 'expo-router';
 
 interface TimerProps {
@@ -9,7 +9,7 @@ interface TimerProps {
 }
 
 const Timer = ({ style, textStyle }: TimerProps) => {
-  const { seconds, isRunning, setIsRunning, setSeconds, formatTime } = useStore((state) => ({
+  const { seconds, isRunning, setIsRunning, setSeconds, formatTime } = appStore((state) => ({
     seconds: state.seconds,
     isRunning: state.isRunning,
     setIsRunning: state.setIsRunning,
@@ -38,7 +38,7 @@ const Timer = ({ style, textStyle }: TimerProps) => {
   useFocusEffect(
     useCallback(() => {
       startTimer();
-      return () => setIsRunning(false);
+      //return () => setIsRunning(false);
     }, [startTimer])
   );
 

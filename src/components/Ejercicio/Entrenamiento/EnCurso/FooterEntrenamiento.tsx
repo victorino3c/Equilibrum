@@ -3,8 +3,7 @@ import React from 'react';
 import IconButton from '~/src/components/Buttons/IconButton';
 
 import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
-
-import { Link } from 'expo-router';
+import { appStore } from '~/src/store/store';
 
 import { Feather, Ionicons } from '@expo/vector-icons';
 
@@ -12,6 +11,8 @@ const FooterEntrenamiento = () => {
   const sumIcon = <Feather name="plus-circle" size={45} color="#6608ff" />;
   const optionsIcon = <Ionicons name="options-outline" size={30} color="#6608ff" />;
   const descartarIcon = <Feather name="delete" size={30} color="#E34716" />;
+
+  const { resetEntrenamiento } = appStore();
 
   const [modalVisible, setModalVisible] = React.useState(false);
 
@@ -35,6 +36,7 @@ const FooterEntrenamiento = () => {
           style={[styles.botonesPequeños, { backgroundColor: '#FFBBB9' }]}
           textStyle={styles.botonBorrarText}
           icon={descartarIcon}
+          onPress={() => resetEntrenamiento()} // TEMP
           text="Descartar entreno"
         />
       </View>

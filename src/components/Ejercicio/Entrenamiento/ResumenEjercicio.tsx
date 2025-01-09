@@ -10,6 +10,7 @@ import CuerpoResumenEjercicioCalistenia from './CuerpoResumenEjercicioCalistenia
 type ResumenEjercicioProps = {
   idEjercicio: number;
   idEntrenamiento?: number;
+  actual?: boolean;
   idRutina?: number;
   editar?: boolean;
 };
@@ -17,10 +18,13 @@ type ResumenEjercicioProps = {
 const ResumenEjercicio = ({
   idEjercicio,
   idEntrenamiento,
+  actual,
   idRutina,
   editar,
 }: ResumenEjercicioProps) => {
   const Ejercicio = findEjercicioById(idEjercicio);
+
+  if (!Ejercicio) return null;
 
   return (
     <View style={styles.container}>
@@ -34,30 +38,36 @@ const ResumenEjercicio = ({
         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
           <MaterialIcons name="access-alarm" size={30} color="#6608ff" />
           <Text style={styles.nombre} numberOfLines={1}>
-            {Ejercicio?.Descanso}''
+            {Ejercicio.Descanso}''
           </Text>
         </View>
       </View>
       <View>
-        {Ejercicio?.tipo === 'Cardio' ? (
+        {Ejercicio.tipo === 'Cardio' ? (
           <CuerpoResumenEjercicioCardio
+            actual={actual}
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
             idRutina={idRutina}
+            editar={editar}
           />
         ) : null}
         {Ejercicio?.tipo === 'Fuerza' ? (
           <CuerpoResumenEjercicioFuerza
+            actual={actual}
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
             idRutina={idRutina}
+            editar={editar}
           />
         ) : null}
         {Ejercicio?.tipo === 'Calistenia' ? (
           <CuerpoResumenEjercicioCalistenia
+            actual={actual}
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
             idRutina={idRutina}
+            editar={editar}
           />
         ) : null}
       </View>
@@ -72,7 +82,7 @@ const ResumenEjercicio = ({
           }}>
           <Feather name="plus-circle" size={45} color="#6608ff" />
           <Text style={{ fontSize: 20, color: '#6608ff', textAlign: 'center', fontWeight: 'bold' }}>
-            Añadir Alimento
+            Añadir Serie
           </Text>
         </View>
       )}

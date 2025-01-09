@@ -29,30 +29,34 @@ export type EjercicioType = {
   Descripcion?: string;
   Descanso: string;
   CaloriasxRepeticion?: number;
+  Musculos?: string[];
 };
 
 export type SerieCardioType = {
   id: number;
   idEntrenamiento: number;
   idEjercicio: number;
-  Distancia: number;
-  Tiempo: string;
-  Calorias: number;
+  check: boolean;
+  Distancia?: number;
+  Tiempo?: string;
+  Calorias?: number;
 };
 
 export type SerieFuerzaType = {
   id: number;
   idEntrenamiento: number;
   idEjercicio: number;
-  Repeticiones: number;
-  Peso: number;
+  check: boolean;
+  Repeticiones?: number;
+  Peso?: number;
 };
 
 export type SerieCalisteniaType = {
   id: number;
   idEntrenamiento: number;
   idEjercicio: number;
-  Repeticiones: number;
+  check: boolean;
+  Repeticiones?: number;
 };
 
 export type SerieRutinaCardioType = {
@@ -156,6 +160,7 @@ export const Ejercicios: Record<number, EjercicioType> = {
     Descripcion: 'Correr',
     Descanso: '1:30',
     CaloriasxRepeticion: 4,
+    Musculos: ['Piernas', 'Gluteos'],
   },
   2: {
     id: 2,
@@ -164,6 +169,7 @@ export const Ejercicios: Record<number, EjercicioType> = {
     Descripcion: 'Pedaleo',
     Descanso: '1:30',
     CaloriasxRepeticion: 3,
+    Musculos: ['Piernas', 'Gluteos'],
   },
   3: {
     id: 3,
@@ -172,6 +178,7 @@ export const Ejercicios: Record<number, EjercicioType> = {
     Descripcion: 'Empujar',
     Descanso: '1:30',
     CaloriasxRepeticion: 2,
+    Musculos: ['Pecho', 'Triceps'],
   },
   4: {
     id: 4,
@@ -180,6 +187,7 @@ export const Ejercicios: Record<number, EjercicioType> = {
     Descripcion: 'Empujar',
     Descanso: '1:30',
     CaloriasxRepeticion: 2,
+    Musculos: ['Hombros', 'Triceps'],
   },
   5: {
     id: 5,
@@ -188,6 +196,7 @@ export const Ejercicios: Record<number, EjercicioType> = {
     Descripcion: 'Empujar',
     Descanso: '1:30',
     CaloriasxRepeticion: 1.5,
+    Musculos: ['Pecho', 'Triceps'],
   },
   6: {
     id: 6,
@@ -196,7 +205,63 @@ export const Ejercicios: Record<number, EjercicioType> = {
     Descripcion: 'Tirar',
     Descanso: '1:30',
     CaloriasxRepeticion: 1.5,
+    Musculos: ['Espalda', 'Biceps'],
   },
+  7: {
+    id: 7,
+    tipo: TipoEjercicio.Cardio,
+    Nombre: 'Cinta',
+    Descripcion: 'Correr',
+    Descanso: '1:30',
+    CaloriasxRepeticion: 4,
+    Musculos: ['Piernas', 'Gluteos'],
+  },
+  8: {
+    id: 8,
+    tipo: TipoEjercicio.Cardio,
+    Nombre: 'Bicicleta',
+    Descripcion: 'Pedaleo',
+    Descanso: '1:30',
+    CaloriasxRepeticion: 3,
+    Musculos: ['Piernas', 'Gluteos'],
+  },
+  9: {
+    id: 9,
+    tipo: TipoEjercicio.Fuerza,
+    Nombre: 'Press Banca',
+    Descripcion: 'Empujar',
+    Descanso: '1:30',
+    CaloriasxRepeticion: 2,
+    Musculos: ['Pecho', 'Triceps'],
+  },
+  10: {
+    id: 10,
+    tipo: TipoEjercicio.Fuerza,
+    Nombre: 'Press Militar',
+    Descripcion: 'Empujar',
+    Descanso: '1:30',
+    CaloriasxRepeticion: 2,
+    Musculos: ['Hombros', 'Triceps'],
+  },
+  11: {
+    id: 11,
+    tipo: TipoEjercicio.Calistenia,
+    Nombre: 'Flexiones',
+    Descripcion: 'Empujar',
+    Descanso: '1:30',
+    CaloriasxRepeticion: 1.5,
+    Musculos: ['Pecho', 'Triceps'],
+  },
+  12: {
+    id: 12,
+    tipo: TipoEjercicio.Calistenia,
+    Nombre: 'Dominadas',
+    Descripcion: 'Tirar',
+    Descanso: '1:30',
+    CaloriasxRepeticion: 1.5,
+    Musculos: ['Espalda', 'Biceps'],
+  },
+  // Añadir más ejercicios según sea necesario
 };
 
 export const SeriesCardio: Record<number, SerieCardioType> = {
@@ -204,6 +269,7 @@ export const SeriesCardio: Record<number, SerieCardioType> = {
     id: 1,
     idEntrenamiento: 1,
     idEjercicio: 1,
+    check: true,
     Distancia: 5,
     Tiempo: '30:00',
     Calorias: 250,
@@ -212,6 +278,7 @@ export const SeriesCardio: Record<number, SerieCardioType> = {
     id: 2,
     idEntrenamiento: 1,
     idEjercicio: 2,
+    check: true,
     Distancia: 5,
     Tiempo: '30:00',
     Calorias: 250,
@@ -223,6 +290,7 @@ export const SeriesFuerza: Record<number, SerieFuerzaType> = {
     id: 1,
     idEntrenamiento: 1,
     idEjercicio: 3,
+    check: true,
     Repeticiones: 12,
     Peso: 50,
   },
@@ -230,6 +298,7 @@ export const SeriesFuerza: Record<number, SerieFuerzaType> = {
     id: 2,
     idEntrenamiento: 1,
     idEjercicio: 3,
+    check: true,
     Repeticiones: 12,
     Peso: 50,
   },
@@ -237,6 +306,7 @@ export const SeriesFuerza: Record<number, SerieFuerzaType> = {
     id: 3,
     idEntrenamiento: 1,
     idEjercicio: 4,
+    check: true,
     Repeticiones: 12,
     Peso: 50,
   },
@@ -247,18 +317,21 @@ export const SeriesCalistenia: Record<number, SerieCalisteniaType> = {
     id: 1,
     idEntrenamiento: 1,
     idEjercicio: 5,
+    check: true,
     Repeticiones: 12,
   },
   2: {
     id: 2,
     idEntrenamiento: 1,
     idEjercicio: 6,
+    check: true,
     Repeticiones: 12,
   },
   3: {
     id: 3,
     idEntrenamiento: 1,
     idEjercicio: 5,
+    check: true,
     Repeticiones: 12,
   },
 };
@@ -479,7 +552,11 @@ export const getCaloriasByEjercicioAndEntrenamiento = (
     const series = findSeriesCardioByEntrenamientoAndEjercicio(idEntrenamiento, idEjercicio);
     const caloriasPorKm = findEjercicioById(idEjercicio)?.CaloriasxRepeticion;
 
-    return series.reduce((calorias, serie) => calorias + serie.Distancia * (caloriasPorKm || 0), 0);
+    return series.reduce(
+      (calorias, serie) =>
+        calorias + (serie.Distancia ? serie.Distancia * (caloriasPorKm || 0) : 0),
+      0
+    );
   }
 
   // Get the number of reps for the exercise in the training and multiply by the calories per rep
@@ -595,3 +672,6 @@ export const getSeriesRutinaCalisteniaByRutinaAndEjercicio = (
   }
   return series;
 };
+
+// Export the ejericios object as an array
+export const ejerciciosArray = Object.values(Ejercicios);
