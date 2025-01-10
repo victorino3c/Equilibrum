@@ -17,6 +17,7 @@ export default function Exercise() {
         <TwoOptionsButton
           option1="Nuevo"
           option2="Historial"
+          style={{ marginTop: 20 }}
           method={setSelectedView}
           selected={selectedView}
         />

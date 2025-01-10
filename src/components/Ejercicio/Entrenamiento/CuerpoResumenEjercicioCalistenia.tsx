@@ -1,6 +1,6 @@
 import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 
-import { appStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/store';
 
 //TEMP
 import {
@@ -26,7 +26,7 @@ const CuerpoResumenEjercicioCalistenia = ({
   editar = false,
 }: CuerpoResumenEjercicioCalisteniaProps) => {
   const { getSeriesCalisteniaByEjericio, updateSerieCalisteniaRepeticiones, updateCheckSerie } =
-    appStore();
+    entrenamientoStore();
 
   if (!idRutina && !idEntrenamiento && !actual) {
     return <Text>No hay datos</Text>;

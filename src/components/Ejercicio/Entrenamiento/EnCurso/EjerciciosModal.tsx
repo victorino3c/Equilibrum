@@ -4,7 +4,7 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'rea
 import { Entypo, Feather } from '@expo/vector-icons/';
 import CustomInput from '~/src/components/Utils/CustomInput';
 
-import { appStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/store';
 
 //TEMP
 import { ejerciciosArray, findEjercicioById } from '~/assets/ejercicio/entrenamientos';
@@ -15,7 +15,7 @@ type EjerciciosModalProps = {
 };
 
 const EjerciciosModal = ({ visible, setModalVisible }: EjerciciosModalProps) => {
-  const { addEjercicio } = appStore();
+  const { addEjercicio } = entrenamientoStore();
 
   const handlePress = (id: number) => {
     const ejercicio = findEjercicioById(id);
@@ -52,7 +52,7 @@ const EjerciciosModal = ({ visible, setModalVisible }: EjerciciosModalProps) => 
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', marginHorizontal: 10, gap: 10, marginBottom: 20 }}>
-              <CustomInput />
+              <CustomInput placeholder="Buscar ejercicio" style={{ flex: 1 }} />
               <View
                 style={{
                   backgroundColor: '#6608ff',

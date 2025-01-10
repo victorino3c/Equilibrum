@@ -5,12 +5,11 @@ import CabeceraEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCu
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { entrenamientoStore } from '~/src/store/store';
-import FooterEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCurso/FooterEntrenamiento';
-import TarjetaEjercicio from '~/src/components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
 
 import React, { memo } from 'react';
+import CustomInput from '~/src/components/Utils/CustomInput';
 
-const Entrenamiento = () => {
+const FinEntrenamiento = () => {
   const insets = useSafeAreaInsets();
 
   const { stopTimer, ejercicios } = entrenamientoStore();
@@ -18,16 +17,16 @@ const Entrenamiento = () => {
   return (
     <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
       <Stack.Screen
-        name="Entrenamiento"
+        name="FinEntrenamiento"
         options={{
           headerShown: true,
           header: () => (
             <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
               <View style={styles.headerTop}>
                 <View style={styles.headerItems}>
-                  <Link href="/(protected)/(tabs)/(exercise)" asChild>
+                  <Link href="./Entrenamiento" asChild>
                     <TouchableOpacity>
-                      <Feather name="chevron-down" size={24} color="black" />
+                      <Feather name="arrow-left" size={24} color="black" />
                     </TouchableOpacity>
                   </Link>
                 </View>
@@ -35,10 +34,8 @@ const Entrenamiento = () => {
                   <Text style={styles.headerTitle}>Entrenamiento</Text>
                 </View>
                 <View style={styles.headerItems}>
-                  <Link href="./FinEntrenamiento" asChild>
-                    <TouchableOpacity>
-                      <Text style={styles.botonGuardar}>Terminar</Text>
-                    </TouchableOpacity>
+                  <Link href="/(protected)/(tabs)/(exercise)" asChild>
+                    <Text style={styles.botonGuardar}>Terminar</Text>
                   </Link>
                 </View>
               </View>
@@ -49,18 +46,23 @@ const Entrenamiento = () => {
       />
 
       {/*ELEMENTOS*/}
-      <FlatList
-        keyboardDismissMode="on-drag"
-        data={ejercicios}
-        renderItem={({ item }) => <TarjetaEjercicio key={item.id} idEjercicio={item.id} />}
-        keyExtractor={(item) => item.id.toString()}
-        ListFooterComponent={<FooterEntrenamiento />}
+      <CustomInput
+        placeholder="Titulo del entrenamiento"
+        style={{ marginTop: 20, marginHorizontal: 10 }}
+        textStyle={{ fontSize: 20, fontWeight: 'bold' }}
+      />
+      <CustomInput
+        placeholder="Notas del entrenamiento"
+        style={{ marginTop: 20, marginHorizontal: 10, height: 120 }}
+        //textStyle={{ flex: 1 }}
+        multiline={true}
+        nol={4}
       />
     </View>
   );
 };
 
-export default Entrenamiento;
+export default FinEntrenamiento;
 
 const styles = StyleSheet.create({
   headerContainer: {

@@ -4,13 +4,14 @@ import React from 'react';
 type TwoOptionsProps = {
   option1: string;
   option2: string;
+  style?: object;
   method: (value: string) => void;
   selected: string;
 };
 
-const TwoOptionsButton = ({ option1, option2, method, selected }: TwoOptionsProps) => {
+const TwoOptionsButton = ({ option1, option2, method, selected, style }: TwoOptionsProps) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <TouchableOpacity
         style={[styles.button, selected === option1 && { backgroundColor: '#6608ff' }]}
         onPress={() => method(option1)}>

@@ -12,6 +12,12 @@ import moment from 'moment';
 
 export interface EntrenamientoState {
   isRunning: boolean; // El cronómetro está en marcha
+  entrenamientoTerminado: boolean; // El entrenamiento ha terminado
+  nombre: string;
+  notas: string;
+  sensacion: number;
+  imagen: string[];
+  numero: number;
   seconds: number;
   volumen: number;
   calorias: number;
@@ -23,6 +29,7 @@ export interface EntrenamientoState {
   seriesCalistenia: SerieCalisteniaType[];
   setSeconds: (seconds: number) => void;
   setIsRunning: (isRunning: boolean) => void;
+  setEntrenamientoTerminado: (entrenamientoTerminado: boolean) => void;
   stopTimer: () => void;
   startTimer: () => void;
   formatTime: (seconds: number) => string;
@@ -52,10 +59,16 @@ export interface EntrenamientoState {
   updateCheckSerie: (idSerie: number, isCheck: boolean) => void;
 }
 
-export const appStore = create<EntrenamientoState>()(
+export const entrenamientoStore = create<EntrenamientoState>()(
   persist(
     (set) => ({
       isRunning: false,
+      entrenamientoTerminado: false,
+      nombre: '',
+      notas: '',
+      sensacion: 0,
+      imagen: [],
+      numero: 0,
       seconds: 0,
       volumen: 0,
       calorias: 0,
@@ -66,9 +79,16 @@ export const appStore = create<EntrenamientoState>()(
       seriesFuerza: [],
       seriesCalistenia: [],
       setSeconds: (seconds: number) => set({ seconds }),
+      setEntrenamientoTerminado: (entrenamientoTerminado: boolean) =>
+        set({ entrenamientoTerminado }),
       setIsRunning: (isRunning: boolean) => set({ isRunning }),
       stopTimer: () => set({ isRunning: false }),
-      startTimer: () => set(() => ({ isRunning: true })),
+      startTimer: () => {
+        set((state) => {
+          if (!state.entrenamientoTerminado) return state;
+          return { isRunning: true };
+        });
+      },
       formatTime: (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
         const mins = Math.floor(seconds / 60) % 60;
@@ -79,13 +99,15 @@ export const appStore = create<EntrenamientoState>()(
       },
       addEjercicio: (ejercicio: EjercicioType) => {
         //Si el ejercicio ya está en la lista, no lo añado
-        if (appStore.getState().ejercicios.find((e) => e.id === ejercicio.id)) return;
+        if (entrenamientoStore.getState().ejercicios.find((e) => e.id === ejercicio.id)) return;
 
         set((state) => ({ ejercicios: [...state.ejercicios, ejercicio] }));
       },
       removeEjercicio: (idEjercicio: number) => {
         // If the exercise is a strength exercise, update the total weight lifted
-        const ejercicio = appStore.getState().ejercicios.find((e) => e.id === idEjercicio);
+        const ejercicio = entrenamientoStore
+          .getState()
+          .ejercicios.find((e) => e.id === idEjercicio);
 
         if (ejercicio?.tipo === 'Fuerza') {
           set((state) => {
@@ -161,7 +183,9 @@ export const appStore = create<EntrenamientoState>()(
         }),
       removeSerieEjercicio: (idSerie: number) => {
         // Check if the serie is a strength serie
-        const serieFuerza = appStore.getState().seriesFuerza.find((serie) => serie.id === idSerie);
+        const serieFuerza = entrenamientoStore
+          .getState()
+          .seriesFuerza.find((serie) => serie.id === idSerie);
 
         // If it is, update the total weight lifted
         if (serieFuerza && serieFuerza.check) {
@@ -176,7 +200,9 @@ export const appStore = create<EntrenamientoState>()(
         }
 
         //Check if the serie is a cardio serie
-        const serieCardio = appStore.getState().seriesCardio.find((serie) => serie.id === idSerie);
+        const serieCardio = entrenamientoStore
+          .getState()
+          .seriesCardio.find((serie) => serie.id === idSerie);
 
         // If it is, update the total calories burned
         if (serieCardio && serieCardio.check) {
@@ -220,15 +246,15 @@ export const appStore = create<EntrenamientoState>()(
         })),
       setFecha: (fecha: string) => set({ fecha }),
       getSeriesCardioByEjericio: (idEjercicio: number): SerieCardioType[] =>
-        appStore
+        entrenamientoStore
           .getState()
           .seriesCardio.filter((serie: SerieCardioType) => serie.idEjercicio === idEjercicio),
       getSeriesFuerzaByEjericio: (idEjercicio: number): SerieFuerzaType[] =>
-        appStore
+        entrenamientoStore
           .getState()
           .seriesFuerza.filter((serie: SerieFuerzaType) => serie.idEjercicio === idEjercicio),
       getSeriesCalisteniaByEjericio: (idEjercicio: number): SerieCalisteniaType[] =>
-        appStore
+        entrenamientoStore
           .getState()
           .seriesCalistenia.filter(
             (serie: SerieCalisteniaType) => serie.idEjercicio === idEjercicio
@@ -237,20 +263,20 @@ export const appStore = create<EntrenamientoState>()(
         idEjercicio: number
       ): SerieCalisteniaType[] | SerieCardioType[] | SerieFuerzaType[] | null => {
         //Consigo el ejercicio con la id
-        const ejercicio = appStore.getState().ejercicios.find((e) => e.id == idEjercicio);
+        const ejercicio = entrenamientoStore.getState().ejercicios.find((e) => e.id == idEjercicio);
 
         if (!ejercicio) return null;
 
         if (ejercicio.tipo === 'Cardio') {
-          return appStore
+          return entrenamientoStore
             .getState()
             .seriesCardio.filter((serie) => serie.idEjercicio === idEjercicio);
         } else if (ejercicio.tipo === 'Fuerza') {
-          return appStore
+          return entrenamientoStore
             .getState()
             .seriesFuerza.filter((serie) => serie.idEjercicio === idEjercicio);
         } else if (ejercicio.tipo === 'Calistenia') {
-          return appStore
+          return entrenamientoStore
             .getState()
             .seriesCalistenia.filter((serie) => serie.idEjercicio === idEjercicio);
         }
@@ -265,12 +291,14 @@ export const appStore = create<EntrenamientoState>()(
         }));
 
         // Get series and see if it is checked
-        const serie = appStore.getState().seriesFuerza.find((serie) => serie.id === idSerie);
+        const serie = entrenamientoStore
+          .getState()
+          .seriesFuerza.find((serie) => serie.id === idSerie);
 
         if (serie?.check == false) return;
 
         // Get previous weight lifted in the series
-        const totalWeight = appStore
+        const totalWeight = entrenamientoStore
           .getState()
           .seriesFuerza.reduce(
             (acc, serie) => acc + (serie.Peso ?? 0) * (serie.Repeticiones ?? 0),
@@ -294,11 +322,13 @@ export const appStore = create<EntrenamientoState>()(
           ),
         }));
         // Get series and see if it is checked
-        const serie = appStore.getState().seriesFuerza.find((serie) => serie.id === idSerie);
+        const serie = entrenamientoStore
+          .getState()
+          .seriesFuerza.find((serie) => serie.id === idSerie);
 
         if (serie?.check == false) return;
         // Get previous weight lifted in the series
-        const totalWeight = appStore
+        const totalWeight = entrenamientoStore
           .getState()
           .seriesFuerza.reduce(
             (acc, serie) => acc + (serie.Peso ?? 0) * (serie.Repeticiones ?? 0),
@@ -335,12 +365,14 @@ export const appStore = create<EntrenamientoState>()(
         }));
 
         // Get series and see if it is checked
-        const serie = appStore.getState().seriesCardio.find((serie) => serie.id === idSerie);
+        const serie = entrenamientoStore
+          .getState()
+          .seriesCardio.find((serie) => serie.id === idSerie);
 
         if (serie?.check == false) return;
 
         // Get previous calories burned in the series
-        const totalCalories = appStore
+        const totalCalories = entrenamientoStore
           .getState()
           .seriesCardio.reduce((acc, serie) => acc + (serie.Calorias ?? 0), 0);
 
@@ -362,12 +394,14 @@ export const appStore = create<EntrenamientoState>()(
       updateCheckSerie: (idSerie: number, isCheck: boolean) => {
         //Get serie and check type
         const serie =
-          appStore.getState().seriesFuerza.find((serie) => serie.id === idSerie) ||
-          appStore.getState().seriesCardio.find((serie) => serie.id === idSerie) ||
-          appStore.getState().seriesCalistenia.find((serie) => serie.id === idSerie);
+          entrenamientoStore.getState().seriesFuerza.find((serie) => serie.id === idSerie) ||
+          entrenamientoStore.getState().seriesCardio.find((serie) => serie.id === idSerie) ||
+          entrenamientoStore.getState().seriesCalistenia.find((serie) => serie.id === idSerie);
 
         //Get ejercicio
-        const ejercicio = appStore.getState().ejercicios.find((e) => e.id === serie?.idEjercicio);
+        const ejercicio = entrenamientoStore
+          .getState()
+          .ejercicios.find((e) => e.id === serie?.idEjercicio);
 
         //If the serie is not strength, return
         if (!serie || !ejercicio) return;
@@ -439,4 +473,4 @@ export const appStore = create<EntrenamientoState>()(
   )
 );
 
-export default appStore;
+export default entrenamientoStore;

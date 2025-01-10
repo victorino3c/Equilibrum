@@ -22,7 +22,9 @@ import TwoOptionsButton from '~/src/components/Buttons/TwoOptions';
 import Ejercicio from '~/src/components/Health/Ejercicio/Ejercicio';
 import Nutricion from '~/src/components/Health/Nutricion/Nutricion';
 
-export default function Health() {
+import { entrenamientoStore } from '~/src/store/store';
+
+export default function HealthLayout() {
   const [calendar, setCalendar] = useState<string>('R');
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
   const [mode, setMode] = useState<string>('Ejercicio');
@@ -48,6 +50,7 @@ export default function Health() {
 
   useEffect(() => {
     setLoading(true);
+
     setEjercicio(getEjercicio(selectedDate.format('YYYY-MM-DD')));
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
     setObjetivosDiarios(
@@ -58,7 +61,7 @@ export default function Health() {
 
   if (loading) {
     return (
-      <View>
+      <View style={{ justifyContent: 'center', alignContent: 'center' }}>
         <Text>Loading...</Text>
       </View>
     );

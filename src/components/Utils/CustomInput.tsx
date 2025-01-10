@@ -1,10 +1,26 @@
 import { View, TextInput, StyleSheet } from 'react-native';
 import React from 'react';
 
-const CustomInput = () => {
+interface CustomInputProps {
+  style?: any;
+  textStyle?: any;
+  placeholder: string;
+  multiline?: boolean;
+  nol?: number;
+}
+
+const CustomInput = ({
+  style,
+  textStyle,
+  placeholder,
+  multiline = false,
+  nol = 1,
+}: CustomInputProps) => {
   return (
-    <View style={styles.inputView}>
-      <TextInput style={styles.text}>Buscar ejercicio</TextInput>
+    <View style={[styles.inputView, { ...style }]}>
+      <TextInput style={[styles.text, { ...textStyle }]} multiline={multiline} numberOfLines={nol}>
+        {placeholder}
+      </TextInput>
     </View>
   );
 };
@@ -13,7 +29,6 @@ export default CustomInput;
 
 const styles = StyleSheet.create({
   inputView: {
-    flex: 1,
     padding: 5,
     backgroundColor: 'white',
     elevation: 5,

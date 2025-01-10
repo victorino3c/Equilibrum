@@ -1,10 +1,9 @@
 import { Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { View } from 'react-native';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../../providers/AuthProvider';
 import { Redirect } from 'expo-router';
 
-export default function ProtectedLayout() {
+export default function EjercicioLayout() {
   const { session } = useAuth();
 
   if (!session) {
@@ -13,9 +12,9 @@ export default function ProtectedLayout() {
 
   return (
     <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="Ejercicio" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Entrenamiento" />
+        <Stack.Screen name="FinEntrenamiento" />
       </Stack>
     </View>
   );

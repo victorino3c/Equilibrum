@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 
-import { appStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/store';
 
 import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Timer from '~/src/components/Utils/Timer';
 
 const CabeceraEntrenamiento = () => {
-  const { volumen, calorias } = appStore();
+  const { volumen, calorias } = entrenamientoStore();
 
   return (
     <View style={styles.container}>

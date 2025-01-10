@@ -3,7 +3,7 @@ import React from 'react';
 import IconButton from '~/src/components/Buttons/IconButton';
 
 import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
-import { appStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/store';
 
 import { Feather, Ionicons } from '@expo/vector-icons';
 
@@ -12,7 +12,7 @@ const FooterEntrenamiento = () => {
   const optionsIcon = <Ionicons name="options-outline" size={30} color="#6608ff" />;
   const descartarIcon = <Feather name="delete" size={30} color="#E34716" />;
 
-  const { resetEntrenamiento } = appStore();
+  const { resetEntrenamiento } = entrenamientoStore();
 
   const [modalVisible, setModalVisible] = React.useState(false);
 

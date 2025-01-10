@@ -9,14 +9,14 @@ import CuerpoResumenEjercicioCardio from '../CuerpoResumenEjercicioCardio';
 import CuerpoResumenEjercicioFuerza from '../CuerpoResumenEjercicioFuerza';
 import CuerpoResumenEjercicioCalistenia from '../CuerpoResumenEjercicioCalistenia';
 
-import { appStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/store';
 
 type TarjetaEjercicioProps = {
   idEjercicio: number;
 };
 
 const TarjetaEjercicio = ({ idEjercicio }: TarjetaEjercicioProps) => {
-  const { addSerieEjercicio, getSeriesByEjericio, removeEjercicio } = appStore(); // Suponiendo que tienes una función eliminarEjercicio
+  const { addSerieEjercicio, getSeriesByEjericio, removeEjercicio } = entrenamientoStore(); // Suponiendo que tienes una función eliminarEjercicio
   const [showDeleteOption, setShowDeleteOption] = useState(false); // Estado para mostrar la opción de eliminar
 
   const Ejercicio = findEjercicioById(idEjercicio);
