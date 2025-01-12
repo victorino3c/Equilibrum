@@ -4,7 +4,8 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'rea
 import { Entypo, Feather } from '@expo/vector-icons/';
 import CustomInput from '~/src/components/Utils/CustomInput';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+import { rutinaStore } from '~/src/store/RutinaStore';
 
 //TEMP
 import { ejerciciosArray, findEjercicioById } from '~/assets/ejercicio/entrenamientos';
@@ -12,17 +13,23 @@ import { ejerciciosArray, findEjercicioById } from '~/assets/ejercicio/entrenami
 type EjerciciosModalProps = {
   visible: boolean;
   setModalVisible: (visible: boolean) => void;
+  rutina?: string;
 };
 
-const EjerciciosModal = ({ visible, setModalVisible }: EjerciciosModalProps) => {
+const EjerciciosModal = ({ visible, setModalVisible, rutina }: EjerciciosModalProps) => {
   const { addEjercicio } = entrenamientoStore();
+  const { addEjercicioToRutina } = rutinaStore();
 
   const handlePress = (id: number) => {
     const ejercicio = findEjercicioById(id);
 
     if (!ejercicio) return;
 
-    addEjercicio(ejercicio);
+    if (rutina) {
+      addEjercicioToRutina(rutina, ejercicio);
+    } else {
+      addEjercicio(ejercicio);
+    }
 
     setModalVisible(!visible);
   };

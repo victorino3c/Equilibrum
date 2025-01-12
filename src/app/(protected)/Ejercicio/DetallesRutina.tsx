@@ -1,35 +1,106 @@
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React from 'react';
 
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import IconButton from '../../../components/Buttons/IconButton';
 
-import { Stack, Link } from 'expo-router';
+import { Stack, Link, router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 
-//TEMP
-import {
-  getEjerciciosByRutinaAndUser,
-  getRutinaIdByNombre,
-} from '~/assets/ejercicio/entrenamientos';
-import ResumenEjercicio from '~/src/components/Ejercicio/Entrenamiento/ResumenEjercicio';
+import { useAuth } from '~/src/providers/AuthProvider';
+
+import { rutinaStore } from '~/src/store/RutinaStore';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+
+import TarjetaEjercicio from '~/src/components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
+import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
 
 const DetallesRutina = () => {
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  const { getRutina, rutinas, getSeriesByEjercicioAndRutina, removeRutina } = rutinaStore();
+  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setNombre, resetEntrenamiento } =
+    entrenamientoStore();
+  const { session } = useAuth();
+
   const [editar, setEditar] = React.useState(false);
 
   //Get arguments from URL
-  const { rutina, usuario } = useLocalSearchParams();
+  const { rutina } = useLocalSearchParams();
 
   const rutinaStr = Array.isArray(rutina) ? rutina[0] : rutina;
-  const usuarioStr = Array.isArray(usuario) ? usuario[0] : usuario;
 
-  const ejercicios = getEjerciciosByRutinaAndUser(rutinaStr, usuarioStr);
+  const ejercicios = getRutina(rutinaStr)?.Ejercicios || [];
 
   const icon = <Feather name="delete" size={45} color="#E34716" />;
   const iconSum = <Feather name="plus-circle" size={45} color="#6608ff" />;
 
+  //const rutinas = getRutinasByUser('victorino_3c');
+  const handleEmpezarEntreno = (idRutina: string) => {
+    // Check if there is a Entrenamiento in progress
+    if (isRunning) {
+      Alert.alert(
+        'Entrenamiento en progreso',
+        '¿Deseas continuar con el entrenamiento en progreso o reiniciarlo con la rutina?',
+        [
+          {
+            text: 'Continuar entrenamiento',
+            onPress: () => {
+              router.push('/Ejercicio/Entrenamiento');
+            },
+          },
+          {
+            text: 'Reiniciar con rutina',
+            onPress: () => {
+              resetEntrenamiento();
+              prefillEntrenamiento(idRutina);
+            },
+          },
+        ]
+      );
+    } else {
+      prefillEntrenamiento(idRutina);
+    }
+  };
+
+  const prefillEntrenamiento = (idRutina: string) => {
+    const rutina = getRutina(idRutina);
+
+    if (!rutina) {
+      console.error('Rutina not found');
+      return;
+    }
+
+    setNombre(rutina.Nombre);
+    setFecha(new Date().toISOString());
+
+    rutina.Ejercicios.forEach((element) => {
+      addEjercicio(element);
+      const series = getSeriesByEjercicioAndRutina(idRutina, element.id);
+      series.forEach((serie) => {
+        addSerieEjercicio(serie, element.id);
+      });
+    });
+
+    router.push('/Ejercicio/Entrenamiento');
+  };
+
   return (
     <ScrollView>
+      <EjerciciosModal
+        visible={modalVisible}
+        setModalVisible={setModalVisible}
+        rutina={rutinaStr}
+      />
+
       <Stack.Screen
         name="Ejercicio/DetallesRutina"
         options={{
@@ -52,7 +123,7 @@ const DetallesRutina = () => {
         }}>
         <View>
           <Text style={styles.fecha}>{rutina}</Text>
-          <Text style={{ paddingLeft: 10 }}>Creado por {usuario}</Text>
+          <Text style={{ paddingLeft: 10 }}>Creado por {session?.user.email}</Text>
         </View>
         <TouchableOpacity onPress={() => setEditar(!editar)}>
           {editar ? (
@@ -63,31 +134,48 @@ const DetallesRutina = () => {
         </TouchableOpacity>
       </View>
       {editar ? (
-        <IconButton
-          icon={icon}
-          text="Eliminar rutina"
-          textStyle={{ color: '#E34716' }}
-          style={{ backgroundColor: '#FFBBB9', shadowColor: '#E34716' }}
-        />
-      ) : (
-        <Link href="/Ejercicio/Entrenamiento" asChild>
-          <IconButton icon={iconSum} text="Empezar entrenamiento" />
+        <Link href="/(protected)/(tabs)/(exercise)" asChild>
+          <IconButton
+            icon={icon}
+            text="Eliminar rutina"
+            textStyle={{ color: '#E34716' }}
+            style={{ backgroundColor: '#FFBBB9', shadowColor: '#E34716' }}
+            onPress={() => {
+              removeRutina(rutinaStr);
+            }}
+          />
         </Link>
+      ) : (
+        <IconButton
+          icon={iconSum}
+          text="Empezar entrenamiento"
+          onPress={() => handleEmpezarEntreno(rutinaStr)}
+        />
       )}
 
       <Text style={[styles.fecha, { paddingBottom: 15, flex: 1 }]}>Ejercicios</Text>
       <FlatList
         scrollEnabled={false}
+        style={{ paddingBottom: 20 }}
         data={ejercicios}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <ResumenEjercicio
+          <TarjetaEjercicio
             idEjercicio={item.id}
-            idRutina={getRutinaIdByNombre(rutinaStr) || undefined}
-            editar={editar}
+            rutina={rutinaStr}
+            editable={editar}
+            showCheck={false}
           />
         )}
       />
+
+      {editar && (
+        <IconButton
+          icon={iconSum}
+          text="Añadir Ejercicio"
+          onPress={() => setModalVisible(!modalVisible)}
+        />
+      )}
     </ScrollView>
   );
 };

@@ -1,6 +1,6 @@
 import { View, Text, ViewStyle, TextStyle } from 'react-native';
 import React, { useCallback, useEffect } from 'react';
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { useFocusEffect } from 'expo-router';
 
 interface TimerProps {

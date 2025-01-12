@@ -1,18 +1,73 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
-import { Link, Stack, useNavigation } from 'expo-router';
+import { Link } from 'expo-router';
 
-import { Feather } from '@expo/vector-icons';
+import { Feather, AntDesign } from '@expo/vector-icons';
 
-//TEMP
-import { getRutinasByUser } from '~/assets/ejercicio/entrenamientos';
+import { router } from 'expo-router';
+
+import { RutinaType } from '~/src/types/types';
+
+import { rutinaStore } from '~/src/store/RutinaStore';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+
 import IconButton from '../Buttons/IconButton';
 
 const NuevoView = () => {
-  const navigation = useNavigation();
+  const { rutinas, getRutina, getSeriesByEjercicioAndRutina } = rutinaStore();
+  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setNombre, resetEntrenamiento } =
+    entrenamientoStore();
 
-  const rutinas = getRutinasByUser('victorino_3c');
+  //const rutinas = getRutinasByUser('victorino_3c');
+  const handleEmpezarEntreno = (idRutina: string) => {
+    // Check if there is a Entrenamiento in progress
+    if (isRunning) {
+      Alert.alert(
+        'Entrenamiento en progreso',
+        '¿Deseas continuar con el entrenamiento en progreso o reiniciarlo con la rutina?',
+        [
+          {
+            text: 'Continuar entrenamiento',
+            onPress: () => {
+              router.push('/Ejercicio/Entrenamiento');
+            },
+          },
+          {
+            text: 'Reiniciar con rutina',
+            onPress: () => {
+              resetEntrenamiento();
+              prefillEntrenamiento(idRutina);
+            },
+          },
+        ]
+      );
+    } else {
+      prefillEntrenamiento(idRutina);
+    }
+  };
+
+  const prefillEntrenamiento = (idRutina: string) => {
+    const rutina = getRutina(idRutina);
+
+    if (!rutina) {
+      console.error('Rutina not found');
+      return;
+    }
+
+    setNombre(rutina.Nombre);
+    setFecha(new Date().toISOString());
+
+    rutina.Ejercicios.forEach((element) => {
+      addEjercicio(element);
+      const series = getSeriesByEjercicioAndRutina(idRutina, element.id);
+      series.forEach((serie) => {
+        addSerieEjercicio(serie, element.id);
+      });
+    });
+
+    router.push('/Ejercicio/Entrenamiento');
+  };
 
   const icon = <Feather name="plus-circle" size={45} color="#6608ff" />;
 
@@ -22,29 +77,36 @@ const NuevoView = () => {
       <Link href="/Ejercicio/Entrenamiento" asChild>
         <IconButton icon={icon} text="Empezar entrenamiento" />
       </Link>
-      <Text style={styles.fecha}>Rutinas</Text>
-      <FlatList
-        scrollEnabled={false}
-        data={rutinas}
-        keyExtractor={(item) => item.Nombre}
-        renderItem={({ item }) => (
-          <Link
-            href={`/Ejercicio/DetallesRutina?rutina=${item.Nombre}&usuario=${item.idUsuario}`}
-            asChild>
-            <TouchableOpacity style={styles.container}>
-              <Text style={styles.rutinaText}>{item.Nombre}</Text>
-              <View style={styles.separator} />
-              <View style={{ alignItems: 'center' }}>
-                <Link href="/Ejercicio/Entrenamiento" asChild>
-                  <TouchableOpacity>
+      <View style={styles.rutinasView}>
+        <Text style={styles.fecha}>Rutinas</Text>
+        <Link href="/(protected)/Ejercicio/CrearRutina" asChild>
+          <AntDesign name="addfolder" size={24} color="#6608ff" />
+        </Link>
+      </View>
+      {rutinas.length > 0 ? (
+        <FlatList
+          scrollEnabled={false}
+          data={rutinas}
+          keyExtractor={(item) => item.Nombre}
+          renderItem={({ item }) => (
+            <Link href={`/Ejercicio/DetallesRutina?rutina=${item.Nombre}`} asChild>
+              <TouchableOpacity style={styles.container}>
+                <Text style={styles.rutinaText}>{item.Nombre}</Text>
+                <View style={styles.separator} />
+                <View style={{ alignItems: 'center' }}>
+                  <TouchableOpacity onPress={() => handleEmpezarEntreno(item.Nombre)}>
                     <Text style={styles.empezarButton}>Empezar</Text>
                   </TouchableOpacity>
-                </Link>
-              </View>
-            </TouchableOpacity>
-          </Link>
-        )}
-      />
+                </View>
+              </TouchableOpacity>
+            </Link>
+          )}
+        />
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.textoRutinaEmpty}>No hay rutinas</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -90,5 +152,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
+  },
+  rutinasView: {
+    flexDirection: 'row',
+    //justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 10,
+    paddingRight: 10,
+  },
+  textoRutinaEmpty: {
+    fontSize: 20,
+    paddingVertical: 30,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });

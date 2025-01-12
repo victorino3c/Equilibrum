@@ -22,7 +22,7 @@ import TwoOptionsButton from '~/src/components/Buttons/TwoOptions';
 import Ejercicio from '~/src/components/Health/Ejercicio/Ejercicio';
 import Nutricion from '~/src/components/Health/Nutricion/Nutricion';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
 export default function HealthLayout() {
   const [calendar, setCalendar] = useState<string>('R');

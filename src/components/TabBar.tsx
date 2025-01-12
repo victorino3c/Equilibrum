@@ -6,10 +6,10 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons/'
 
 import { Link } from 'expo-router';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
-  const { isRunning } = entrenamientoStore();
+  const { isRunning, resetEntrenamiento } = entrenamientoStore();
 
   const icons: { [key: string]: (props: any) => JSX.Element } = {
     '(exercise)': (props) => (
@@ -36,15 +36,17 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           <>
             <Text style={styles.enCursoText}>Entrenamiento en curso</Text>
             <View style={styles.enCursoView}>
-              <TouchableOpacity style={styles.continuarButton}>
-                <Link href="/(protected)/Ejercicio/Entrenamiento">
+              <Link href="/(protected)/Ejercicio/Entrenamiento" asChild>
+                <TouchableOpacity style={styles.continuarButton}>
                   <Feather name="play-circle" size={24} color="#6608ff" />
                   <Text style={{ color: '#6608ff', fontSize: 18 }}>Continuar</Text>
-                </Link>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.descartarButton}>
+                </TouchableOpacity>
+              </Link>
+              <TouchableOpacity style={styles.descartarButton} onPress={resetEntrenamiento}>
                 <MaterialCommunityIcons name="cancel" size={24} color="#E34716" />
-                <Text style={{ color: '#E34716', fontSize: 18 }}>Descartar</Text>
+                <Text style={{ color: '#E34716', fontSize: 18, fontWeight: 'bold' }}>
+                  Descartar
+                </Text>
               </TouchableOpacity>
             </View>
           </>
@@ -70,6 +72,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
             });
 
             if (!isFocused && !event.defaultPrevented) {
+              //console.log('route.name:', route.name); // Add this line for debugging
               navigation.navigate(route.name, route.params);
             }
           };

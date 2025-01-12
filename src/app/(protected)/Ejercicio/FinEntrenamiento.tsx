@@ -4,7 +4,7 @@ import { Stack, Link } from 'expo-router';
 import CabeceraEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCurso/CabeceraEntrenamiento';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
 import React, { memo } from 'react';
 import CustomInput from '~/src/components/Utils/CustomInput';
@@ -16,35 +16,6 @@ const FinEntrenamiento = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
-      <Stack.Screen
-        name="FinEntrenamiento"
-        options={{
-          headerShown: true,
-          header: () => (
-            <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
-              <View style={styles.headerTop}>
-                <View style={styles.headerItems}>
-                  <Link href="./Entrenamiento" asChild>
-                    <TouchableOpacity>
-                      <Feather name="arrow-left" size={24} color="black" />
-                    </TouchableOpacity>
-                  </Link>
-                </View>
-                <View style={styles.headerItems}>
-                  <Text style={styles.headerTitle}>Entrenamiento</Text>
-                </View>
-                <View style={styles.headerItems}>
-                  <Link href="/(protected)/(tabs)/(exercise)" asChild>
-                    <Text style={styles.botonGuardar}>Terminar</Text>
-                  </Link>
-                </View>
-              </View>
-              <CabeceraEntrenamiento />
-            </View>
-          ),
-        }}
-      />
-
       {/*ELEMENTOS*/}
       <CustomInput
         placeholder="Titulo del entrenamiento"

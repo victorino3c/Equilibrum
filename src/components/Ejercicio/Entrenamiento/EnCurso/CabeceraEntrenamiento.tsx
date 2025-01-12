@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
 import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 

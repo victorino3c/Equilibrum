@@ -1,6 +1,7 @@
 import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+import rutinaStore from '~/src/store/RutinaStore';
 
 //TEMP
 import {
@@ -14,8 +15,9 @@ type CuerpoResumenEjercicioCalisteniaProps = {
   actual?: boolean;
   idEjercicio: number;
   idEntrenamiento?: number;
-  idRutina?: number;
+  idRutina?: string;
   editar?: boolean;
+  showCheck?: boolean;
 };
 
 const CuerpoResumenEjercicioCalistenia = ({
@@ -24,22 +26,26 @@ const CuerpoResumenEjercicioCalistenia = ({
   idEntrenamiento,
   idRutina,
   editar = false,
+  showCheck = true,
 }: CuerpoResumenEjercicioCalisteniaProps) => {
   const { getSeriesCalisteniaByEjericio, updateSerieCalisteniaRepeticiones, updateCheckSerie } =
     entrenamientoStore();
+
+  const { getSeriesByEjercicioAndRutina, updateSerieCalisteniaRutinaRepeticiones } = rutinaStore();
 
   if (!idRutina && !idEntrenamiento && !actual) {
     return <Text>No hay datos</Text>;
   }
 
   let series;
-  if (!actual) {
-    series = idEntrenamiento
-      ? findSeriesCalisteniaByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio)
-      : getSeriesRutinaCalisteniaByRutinaAndEjercicio(idRutina || -1, idEjercicio);
+  if (!actual && !idRutina && idEntrenamiento) {
+    series = findSeriesCalisteniaByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio);
+  } else if (typeof idRutina != 'undefined') {
+    series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
     series = getSeriesCalisteniaByEjericio(idEjercicio);
   }
+
   return (
     <View>
       <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -47,7 +53,7 @@ const CuerpoResumenEjercicioCalistenia = ({
           <Text style={styles.cabecera}>SERIE</Text>
           <Text style={styles.cabecera}>REPS </Text>
         </View>
-        <View style={{ width: 25 }} />
+        {showCheck && <View style={{ width: 25 }} />}
       </View>
       <View style={styles.titulos}></View>
       <FlatList
@@ -61,17 +67,21 @@ const CuerpoResumenEjercicioCalistenia = ({
                 style={styles.datos}
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
-                  updateSerieCalisteniaRepeticiones(item.id, parseInt(value))
+                  typeof idRutina === 'undefined'
+                    ? updateSerieCalisteniaRepeticiones(item.id, parseInt(value))
+                    : updateSerieCalisteniaRutinaRepeticiones(idRutina, item.id, parseInt(value))
                 }>
                 {item.Repeticiones}
               </TextInput>
-              <View style={{ alignItems: 'flex-end' }}>
-                <CustomCheckbox
-                  idSerie={item.id}
-                  isChecked={item.check}
-                  onToggle={updateCheckSerie}
-                />
-              </View>
+              {showCheck && (
+                <View style={{ alignItems: 'flex-end' }}>
+                  <CustomCheckbox
+                    idSerie={item.id}
+                    isChecked={item.check}
+                    onToggle={updateCheckSerie}
+                  />
+                </View>
+              )}
             </View>
           );
         }}

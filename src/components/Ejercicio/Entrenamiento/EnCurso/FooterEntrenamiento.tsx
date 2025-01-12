@@ -3,7 +3,7 @@ import React from 'react';
 import IconButton from '~/src/components/Buttons/IconButton';
 
 import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
 import { Feather, Ionicons } from '@expo/vector-icons';
 

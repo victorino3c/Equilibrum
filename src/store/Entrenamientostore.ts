@@ -7,7 +7,7 @@ import {
   SerieCalisteniaType,
   SerieCardioType,
   SerieFuerzaType,
-} from '~/assets/ejercicio/entrenamientos';
+} from '~/src/types/types';
 import moment from 'moment';
 
 export interface EntrenamientoState {
@@ -30,6 +30,10 @@ export interface EntrenamientoState {
   setSeconds: (seconds: number) => void;
   setIsRunning: (isRunning: boolean) => void;
   setEntrenamientoTerminado: (entrenamientoTerminado: boolean) => void;
+  setNombre: (nombre: string) => void;
+  setNotas: (notas: string) => void;
+  setSensacion: (sensacion: number) => void;
+  setImagen: (imagen: string) => void;
   stopTimer: () => void;
   startTimer: () => void;
   formatTime: (seconds: number) => string;
@@ -82,6 +86,10 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       setEntrenamientoTerminado: (entrenamientoTerminado: boolean) =>
         set({ entrenamientoTerminado }),
       setIsRunning: (isRunning: boolean) => set({ isRunning }),
+      setNombre: (nombre: string) => set({ nombre }),
+      setNotas: (notas: string) => set({ notas }),
+      setSensacion: (sensacion: number) => set({ sensacion }),
+      setImagen: (imagen: string) => set((state) => ({ imagen: [...state.imagen, imagen] })),
       stopTimer: () => set({ isRunning: false }),
       startTimer: () => {
         set((state) => {
@@ -149,7 +157,9 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           //Consigo el ejercicio con la id
           const ejercicio = state.ejercicios.find((e) => e.id == idEjercicio);
 
-          if (!ejercicio) return state;
+          if (!ejercicio) {
+            return state;
+          }
 
           if (ejercicio.tipo === 'Cardio') {
             if ((serie as SerieCardioType).check) {
@@ -234,7 +244,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
         }),
       resetEntrenamiento: () =>
         set(() => ({
-          //isRunning: false,
+          isRunning: false,
           seconds: 0,
           volumen: 0,
           calorias: 0,
@@ -466,7 +476,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       },
       onRehydrateStorage: (state: EntrenamientoState) => {
         if (state) {
-          state.seconds = state.seconds || 0;
+          //state.seconds = state.seconds || 0; // Ensure that the timer keeps running
         }
       },
     }

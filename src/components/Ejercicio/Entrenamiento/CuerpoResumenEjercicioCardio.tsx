@@ -1,11 +1,11 @@
 import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+import { rutinaStore } from '~/src/store/RutinaStore';
 
 //TEMP
 import {
   findSeriesCardioByEntrenamientoAndEjercicio,
-  getSeriesRutinaCardioByRutinaAndEjercicio,
   SerieCardioType,
 } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
@@ -14,8 +14,9 @@ type CuerpoResumenEjercicioCardioProps = {
   actual?: boolean;
   idEjercicio: number;
   idEntrenamiento?: number;
-  idRutina?: number;
+  idRutina?: string;
   editar?: boolean;
+  showCheck?: boolean;
 };
 
 const CuerpoResumenEjercicioCardio = ({
@@ -24,6 +25,7 @@ const CuerpoResumenEjercicioCardio = ({
   idEntrenamiento,
   idRutina,
   editar = false,
+  showCheck = true,
 }: CuerpoResumenEjercicioCardioProps) => {
   const {
     getSeriesCardioByEjericio,
@@ -33,15 +35,22 @@ const CuerpoResumenEjercicioCardio = ({
     updateCheckSerie,
   } = entrenamientoStore();
 
+  const {
+    getSeriesByEjercicioAndRutina,
+    updateSerieCardioRutinaCalorias,
+    updateSerieCardioRutinaTiempo,
+    updateSerieCardioRutinaDistancia,
+  } = rutinaStore();
+
   if (!idRutina && !idEntrenamiento && !actual) {
     return <Text>No hay datos</Text>;
   }
 
   let series;
-  if (!actual) {
-    series = idEntrenamiento
-      ? findSeriesCardioByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio)
-      : getSeriesRutinaCardioByRutinaAndEjercicio(idRutina || -1, idEjercicio);
+  if (!actual && !idRutina && idEntrenamiento) {
+    series = findSeriesCardioByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio);
+  } else if (typeof idRutina != 'undefined') {
+    series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
     series = getSeriesCardioByEjericio(idEjercicio);
   }
@@ -55,7 +64,7 @@ const CuerpoResumenEjercicioCardio = ({
           <Text style={styles.cabecera}>TIEMPO</Text>
           <Text style={styles.cabecera}> KCAL </Text>
         </View>
-        <View style={{ width: 25 }} />
+        {showCheck && <View style={{ width: 25 }} />}
       </View>
       <FlatList
         data={series as SerieCardioType[]}
@@ -67,30 +76,44 @@ const CuerpoResumenEjercicioCardio = ({
                 editable={editar}
                 style={styles.datos}
                 keyboardType="decimal-pad"
-                onChangeText={(value) => updateSerieCardioDistancia(item.id, parseInt(value))}>
+                onChangeText={(value) =>
+                  typeof idRutina === 'undefined'
+                    ? updateSerieCardioDistancia(item.id, parseInt(value))
+                    : updateSerieCardioRutinaDistancia(idRutina, item.id, parseInt(value))
+                }>
                 {item.Distancia}
               </TextInput>
               <TextInput
                 editable={editar}
                 style={styles.datos}
                 keyboardType="decimal-pad"
-                onChangeText={(value) => updateSerieCardioTiempo(item.id, value)}>
+                onChangeText={(value) =>
+                  typeof idRutina === 'undefined'
+                    ? updateSerieCardioTiempo(item.id, value)
+                    : updateSerieCardioRutinaTiempo(idRutina, item.id, value)
+                }>
                 {item.Tiempo}
               </TextInput>
               <TextInput
                 editable={editar}
                 style={styles.datos}
                 keyboardType="numeric"
-                onChangeText={(value) => updateSerieCardioCalorias(item.id, parseInt(value))}>
+                onChangeText={(value) =>
+                  typeof idRutina === 'undefined'
+                    ? updateSerieCardioCalorias(item.id, parseInt(value))
+                    : updateSerieCardioRutinaCalorias(idRutina, item.id, parseInt(value))
+                }>
                 {item.Calorias}
               </TextInput>
-              <View style={{ alignItems: 'flex-end' }}>
-                <CustomCheckbox
-                  idSerie={item.id}
-                  isChecked={item.check}
-                  onToggle={updateCheckSerie}
-                />
-              </View>
+              {showCheck && (
+                <View style={{ alignItems: 'flex-end' }}>
+                  <CustomCheckbox
+                    idSerie={item.id}
+                    isChecked={item.check}
+                    onToggle={updateCheckSerie}
+                  />
+                </View>
+              )}
             </View>
           );
         }}

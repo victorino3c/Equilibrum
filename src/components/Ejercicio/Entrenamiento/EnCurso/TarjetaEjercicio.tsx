@@ -9,14 +9,25 @@ import CuerpoResumenEjercicioCardio from '../CuerpoResumenEjercicioCardio';
 import CuerpoResumenEjercicioFuerza from '../CuerpoResumenEjercicioFuerza';
 import CuerpoResumenEjercicioCalistenia from '../CuerpoResumenEjercicioCalistenia';
 
-import { entrenamientoStore } from '~/src/store/store';
+import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+import { rutinaStore } from '~/src/store/RutinaStore';
 
 type TarjetaEjercicioProps = {
   idEjercicio: number;
+  rutina?: string;
+  editable?: boolean;
+  showCheck?: boolean;
 };
 
-const TarjetaEjercicio = ({ idEjercicio }: TarjetaEjercicioProps) => {
+const TarjetaEjercicio = ({
+  idEjercicio,
+  rutina,
+  editable = true,
+  showCheck = true,
+}: TarjetaEjercicioProps) => {
   const { addSerieEjercicio, getSeriesByEjericio, removeEjercicio } = entrenamientoStore(); // Suponiendo que tienes una función eliminarEjercicio
+  const { addSerieEjercicioRutina, removeEjercicioFromRutina } = rutinaStore();
+
   const [showDeleteOption, setShowDeleteOption] = useState(false); // Estado para mostrar la opción de eliminar
 
   const Ejercicio = findEjercicioById(idEjercicio);
@@ -49,14 +60,39 @@ const TarjetaEjercicio = ({ idEjercicio }: TarjetaEjercicioProps) => {
     addSerieEjercicio(newSerie, Ejercicio.id);
   };
 
+  const handleAddRutinaSerie = () => {
+    if (typeof rutina === 'undefined') {
+      console.error('Rutina not found');
+      return;
+    }
+
+    let newSerie = {
+      id: Math.round(Math.random() * 10000),
+      idEjercicio: Ejercicio.id,
+      check: false,
+    };
+
+    addSerieEjercicioRutina(rutina, Ejercicio.id, newSerie);
+  };
+
   const handleDelete = () => {
     removeEjercicio(idEjercicio); // Llama a la función de eliminación
     setShowDeleteOption(false); // Oculta la opción de eliminar después de hacer click
   };
 
+  const handleDeleteRutina = () => {
+    if (typeof rutina === 'undefined') {
+      console.error('Rutina not found');
+      return;
+    }
+
+    removeEjercicioFromRutina(rutina, idEjercicio); // Llama a la función de eliminación
+    setShowDeleteOption(false); // Oculta la opción de eliminar después de hacer click
+  };
+
   return (
     <View style={styles.container}>
-      {showDeleteOption && (
+      {showDeleteOption && editable && (
         <TouchableOpacity
           style={{
             zIndex: 1,
@@ -67,7 +103,9 @@ const TarjetaEjercicio = ({ idEjercicio }: TarjetaEjercicioProps) => {
             bottom: 0,
           }}
           onPress={() => setShowDeleteOption(false)}>
-          <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={typeof rutina !== 'undefined' ? handleDeleteRutina : handleDelete}>
             <Text style={styles.deleteButtonText}>Eliminar</Text>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -75,7 +113,11 @@ const TarjetaEjercicio = ({ idEjercicio }: TarjetaEjercicioProps) => {
 
       <Pressable
         style={[styles.cardContent, showDeleteOption && { opacity: 0.1 }]}
-        onLongPress={() => setShowDeleteOption(!showDeleteOption)} // Muestra la opción de eliminar al mantener presionado
+        onLongPress={() => {
+          if (editable) {
+            setShowDeleteOption(!showDeleteOption);
+          }
+        }} // Muestra la opción de eliminar al mantener presionado
         delayLongPress={500} // Espera 0,5 segundo
       >
         <View style={styles.cabecera}>
@@ -95,24 +137,42 @@ const TarjetaEjercicio = ({ idEjercicio }: TarjetaEjercicioProps) => {
 
         <View>
           {Ejercicio.tipo === 'Cardio' ? (
-            <CuerpoResumenEjercicioCardio actual={true} editar={true} idEjercicio={idEjercicio} />
+            <CuerpoResumenEjercicioCardio
+              actual={true}
+              editar={editable}
+              idEjercicio={idEjercicio}
+              idRutina={typeof rutina === 'undefined' ? undefined : rutina}
+              showCheck={showCheck}
+            />
           ) : null}
           {Ejercicio?.tipo === 'Fuerza' ? (
-            <CuerpoResumenEjercicioFuerza actual={true} editar={true} idEjercicio={idEjercicio} />
+            <CuerpoResumenEjercicioFuerza
+              actual={true}
+              editar={editable}
+              idEjercicio={idEjercicio}
+              idRutina={typeof rutina === 'undefined' ? undefined : rutina}
+              showCheck={showCheck}
+            />
           ) : null}
           {Ejercicio?.tipo === 'Calistenia' ? (
             <CuerpoResumenEjercicioCalistenia
               actual={true}
-              editar={true}
+              editar={editable}
               idEjercicio={idEjercicio}
+              idRutina={typeof rutina === 'undefined' ? undefined : rutina}
+              showCheck={showCheck}
             />
           ) : null}
         </View>
 
-        <TouchableOpacity style={styles.footer} onPress={handleAddSerie}>
-          <Feather name="plus-circle" size={45} color="#6608ff" />
-          <Text style={styles.footerText}>Añadir Serie</Text>
-        </TouchableOpacity>
+        {editable && (
+          <TouchableOpacity
+            style={styles.footer}
+            onPress={typeof rutina === 'undefined' ? handleAddSerie : handleAddRutinaSerie}>
+            <Feather name="plus-circle" size={45} color="#6608ff" />
+            <Text style={styles.footerText}>Añadir Serie</Text>
+          </TouchableOpacity>
+        )}
       </Pressable>
     </View>
   );
