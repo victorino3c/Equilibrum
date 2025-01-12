@@ -48,8 +48,8 @@ const ResumenEjercicio = ({
             actual={actual}
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
-            idRutina={idRutina}
             editar={editar}
+            showCheck={editar}
           />
         ) : null}
         {Ejercicio?.tipo === 'Fuerza' ? (
@@ -57,8 +57,8 @@ const ResumenEjercicio = ({
             actual={actual}
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
-            idRutina={idRutina}
             editar={editar}
+            showCheck={editar}
           />
         ) : null}
         {Ejercicio?.tipo === 'Calistenia' ? (
@@ -66,8 +66,8 @@ const ResumenEjercicio = ({
             actual={actual}
             idEjercicio={idEjercicio}
             idEntrenamiento={idEntrenamiento}
-            idRutina={idRutina}
             editar={editar}
+            showCheck={editar}
           />
         ) : null}
       </View>

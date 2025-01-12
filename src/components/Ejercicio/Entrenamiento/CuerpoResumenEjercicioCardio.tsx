@@ -3,10 +3,11 @@ import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { rutinaStore } from '~/src/store/RutinaStore';
 
+import { SerieCardioType } from '~/src/types/types';
+
 //TEMP
 import {
   findSeriesCardioByEntrenamientoAndEjercicio,
-  SerieCardioType,
 } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 

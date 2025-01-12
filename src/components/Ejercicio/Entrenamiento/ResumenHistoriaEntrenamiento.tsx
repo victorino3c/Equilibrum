@@ -9,8 +9,9 @@ import {
   getNumeroSeriesByEjercicioAndEntrenamiento,
   getVolumenByEjercicioAndEntrenamiento,
   getCaloriasByEjercicioAndEntrenamiento,
-  TipoEjercicio,
 } from '~/assets/ejercicio/entrenamientos';
+
+import { TipoEjercicio } from 'src/types/types';
 
 type ResumenHistoriaEntrenamientoProps = {
   idEntrenamiento: number;

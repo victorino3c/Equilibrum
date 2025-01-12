@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Pressable } from 'react-native';
 import React, { useState } from 'react';
+
+//TEMP
 import { findEjercicioById } from '~/assets/ejercicio/entrenamientos';
 
 import { MaterialIcons, Feather } from '@expo/vector-icons';

@@ -1,6 +1,6 @@
 import { Text, TextInput, View, StyleSheet, Alert, Button } from 'react-native';
 import { useState } from 'react';
-import { useAuth } from '~/src/providers/AuthProvider';
+import { useAuth } from '@providers/AuthProvider';
 import { Link } from 'expo-router';
 
 export default function SignUp() {

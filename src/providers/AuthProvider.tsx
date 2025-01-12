@@ -3,6 +3,8 @@ import { useRouter } from 'expo-router';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../libs/supabase';
 
+import { appStore } from 'src/store/AppStore';
+
 type AuthData = {
   session: Session | null;
   profile: any;
@@ -24,6 +26,8 @@ const AuthContext = createContext<AuthData>({
 });
 
 export default function AuthProvider({ children }: PropsWithChildren) {
+  const { hasEnteredUserInfo } = appStore();
+
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -71,7 +75,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     if (error) {
       alert(error.message);
     } else {
-      router.push('/(protected)/(tabs)/(health)');
+      router.push('/(userInfo)');
     }
     setLoading(false);
   };
@@ -83,7 +87,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     if (error) {
       alert(error.message);
     } else {
-      router.push('/(protected)/(tabs)/(health)');
+      if (!hasEnteredUserInfo) {
+        router.push('/(userInfo)');
+      } else {
+        router.push('/(protected)/(tabs)/(health)');
+      }
     }
     setLoading(false);
   };

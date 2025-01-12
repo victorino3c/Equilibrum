@@ -3,12 +3,10 @@ import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import rutinaStore from '~/src/store/RutinaStore';
 
+import { SerieCalisteniaType } from '~/src/types/types';
+
 //TEMP
-import {
-  findSeriesCalisteniaByEntrenamientoAndEjercicio,
-  getSeriesRutinaCalisteniaByRutinaAndEjercicio,
-  SerieCalisteniaType,
-} from '~/assets/ejercicio/entrenamientos';
+import { findSeriesCalisteniaByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCalisteniaProps = {

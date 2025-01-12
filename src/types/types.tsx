@@ -4,6 +4,11 @@ export enum TipoEjercicio {
   Calistenia = 'Calistenia',
 }
 
+export enum Generos {
+  Masculino = 'Masculino',
+  Femenino = 'Femenino',
+}
+
 export type RutinaType = {
   Nombre: string;
   Ejercicios: EjercicioType[];

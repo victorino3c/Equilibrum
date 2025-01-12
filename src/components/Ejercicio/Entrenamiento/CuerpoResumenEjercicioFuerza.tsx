@@ -3,12 +3,10 @@ import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import rutinaStore from '~/src/store/RutinaStore';
 
+import { SerieFuerzaType } from '~/src/types/types';
+
 //TEMP
-import {
-  findSeriesFuerzaByEntrenamientoAndEjercicio,
-  getSeriesRutinaFuerzaByRutinaAndEjercicio,
-  SerieFuerzaType,
-} from '~/assets/ejercicio/entrenamientos';
+import { findSeriesFuerzaByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioFuerzaProps = {
