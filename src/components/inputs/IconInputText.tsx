@@ -1,47 +1,42 @@
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, TextStyle, TextInput } from 'react-native';
 import React, { useState } from 'react';
 
 import { Picker } from '@react-native-picker/picker';
 
-interface IconInputProps {
+interface IconInputTextProps {
   icon: JSX.Element;
   text: string;
-  options: string[];
+  inputText: string;
   selected: string | undefined;
   setSelected: (value: any) => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
 
-const IconInputSelector = ({
+const IconInputText = ({
   icon,
   text,
+  inputText,
   style,
   selected,
   setSelected,
-  options,
   textStyle,
-}: IconInputProps) => {
+}: IconInputTextProps) => {
   return (
     <View style={[styles.container, style]}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
         {icon}
         <Text style={[styles.text, textStyle]}>{text}</Text>
       </View>
-      <Picker
-        selectedValue={selected}
-        onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
-        style={styles.pickerStyle}
-        mode="dropdown">
-        {options.map((option) => (
-          <Picker.Item key={option} label={option} value={option} style={{ fontSize: 18 }} />
-        ))}
-      </Picker>
+      <TextInput style={styles.textInput} onChangeText={setSelected}>
+        {selected}
+      </TextInput>
+      <Text style={styles.textInput}>{inputText}</Text>
     </View>
   );
 };
 
-export default IconInputSelector;
+export default IconInputText;
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +45,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingLeft: 20,
+    paddingHorizontal: 20,
     paddingVertical: 0,
     borderRadius: 100,
     elevation: 5,
@@ -67,8 +62,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: 'black',
   },
-  pickerStyle: {
-    flex: 4 / 5,
+  textInput: {
+    fontSize: 20,
+    fontWeight: '400',
     color: '#6608ff',
   },
 });

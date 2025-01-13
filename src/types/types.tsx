@@ -9,6 +9,16 @@ export enum Generos {
   Femenino = 'Femenino',
 }
 
+export enum Peso {
+  Kilgramos = 'Kg',
+  Libras = 'Lb',
+}
+
+export enum Distancia {
+  Kilometros = 'Km',
+  Millas = 'Mi',
+}
+
 export type RutinaType = {
   Nombre: string;
   Ejercicios: EjercicioType[];

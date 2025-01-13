@@ -1,25 +1,26 @@
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, TextStyle, Button } from 'react-native';
 import React, { useState } from 'react';
-
-import { Picker } from '@react-native-picker/picker';
+import DatePicker from 'react-native-date-picker';
 
 interface IconInputProps {
   icon: JSX.Element;
   text: string;
-  options: string[];
-  selected: string | undefined;
+  selected: Date;
+  open: boolean;
   setSelected: (value: any) => void;
+  setOpen: (value: boolean) => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
 
-const IconInputSelector = ({
+const IconInputDateSelector = ({
   icon,
   text,
   style,
   selected,
+  open,
   setSelected,
-  options,
+  setOpen,
   textStyle,
 }: IconInputProps) => {
   return (
@@ -28,20 +29,12 @@ const IconInputSelector = ({
         {icon}
         <Text style={[styles.text, textStyle]}>{text}</Text>
       </View>
-      <Picker
-        selectedValue={selected}
-        onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
-        style={styles.pickerStyle}
-        mode="dropdown">
-        {options.map((option) => (
-          <Picker.Item key={option} label={option} value={option} style={{ fontSize: 18 }} />
-        ))}
-      </Picker>
+      <DatePicker date={selected} onDateChange={setSelected} />
     </View>
   );
 };
 
-export default IconInputSelector;
+export default IconInputDateSelector;
 
 const styles = StyleSheet.create({
   container: {
@@ -66,9 +59,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     color: 'black',
-  },
-  pickerStyle: {
-    flex: 4 / 5,
-    color: '#6608ff',
   },
 });
