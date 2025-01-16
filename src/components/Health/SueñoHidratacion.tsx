@@ -8,31 +8,33 @@ import Feather from '@expo/vector-icons/Feather';
 import Slider from '@react-native-community/slider';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-//TEMP
-import { objetivos, objetivosDiariosType } from '~/assets/health/health';
+import {
+  useUpdateObjetivosDiariosSueñoByFecha,
+  useUpdateObjetivosDiariosAguaByFecha,
+  getObjetivosdiariosByFecha,
+} from '@api/objetivos';
 
 type SueñoHidratacionProps = {
   fecha: string;
   objetivoHidratacion: number;
   objetivoSueño: number;
-  objetivosDiarios: objetivosDiariosType | null;
 };
 
-const SueñoHidratacion = ({
-  fecha,
-  objetivoHidratacion,
-  objetivoSueño,
-  objetivosDiarios,
-}: SueñoHidratacionProps) => {
-  const [sueño, setsueño] = useState('-');
-  const [value, setValue] = useState(0);
-
+const SueñoHidratacion = ({ fecha, objetivoHidratacion, objetivoSueño }: SueñoHidratacionProps) => {
   // Define the color of the slider based on the value
   const getSliderColor = (value: number) => {
     if (value === 0) return '#d3d3d3'; // Grey color for 0 value
     if (value < objetivoHidratacion) return '#00c6fb'; // Light blue for intermediate values
     return '#00c6fb'; // Full blue for maximum value
   };
+
+  const { mutate: updateObjetivosDiariosSueñoByFecha } = useUpdateObjetivosDiariosSueñoByFecha();
+  const { mutate: updateObjetivosDiariosAguaByFecha } = useUpdateObjetivosDiariosAguaByFecha();
+  const { data: objetivosDiarios, isLoading } = getObjetivosdiariosByFecha(fecha);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   // Define the emoji based on the value
   const getEmoji = (value: number) => {
@@ -42,6 +44,21 @@ const SueñoHidratacion = ({
     if (value <= 0.8 * objetivoHidratacion) return '😄';
     if (value <= objetivoHidratacion) return '😁';
     return null;
+  };
+
+  const handleSueñoChange = (text: string) => {
+    if (text === '') {
+      updateObjetivosDiariosSueñoByFecha({ fecha, sueño: null });
+    }
+    try {
+      updateObjetivosDiariosSueñoByFecha({ fecha, sueño: parseInt(text) });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAguaChange = (value: number) => {
+    updateObjetivosDiariosAguaByFecha({ fecha, agua: value });
   };
 
   if (moment().format('YYYY-MM-DD') !== fecha) {
@@ -56,7 +73,7 @@ const SueñoHidratacion = ({
           <View style={styles.inner}>
             <View>
               <Text className="font-regular text-center text-xl">
-                {objetivosDiarios?.sueño || '-'}{' '}
+                {objetivosDiarios?.sueño || '-'}
               </Text>
             </View>
             <Text className="text-lg">/ {objetivoSueño} horas</Text>
@@ -90,9 +107,8 @@ const SueñoHidratacion = ({
         <View style={styles.inner}>
           <View style={styles.input}>
             <TextInput
-              onPress={() => (sueño === '-' ? setsueño('') : null)}
-              onChangeText={(text) => setsueño(text)}
-              value={sueño}
+              onChangeText={(text) => handleSueñoChange(text)}
+              value={objetivosDiarios?.sueño?.toString() || ''}
               className="font-regular text-center text-xl"
             />
           </View>
@@ -104,18 +120,21 @@ const SueñoHidratacion = ({
         <Text className="px-2 text-xl font-bold">Hidratación</Text>
         <Feather name="info" size={16} color="grey" />
       </View>
-      <Text style={styles.amountText}>{`${value.toFixed(1)} / ${objetivoHidratacion} Litros`}</Text>
+      <Text
+        style={
+          styles.amountText
+        }>{`${objetivosDiarios?.agua?.toFixed(1) || '0.0'} / ${objetivoHidratacion} Litros`}</Text>
       <View style={styles.row}>
-        <Text style={styles.emoji}>{getEmoji(value)}</Text>
+        <Text style={styles.emoji}>{getEmoji(objetivosDiarios?.agua || 0)}</Text>
         <Slider
           style={styles.slider}
           minimumValue={0}
           maximumValue={objetivoHidratacion}
-          minimumTrackTintColor={getSliderColor(value)}
+          minimumTrackTintColor={getSliderColor(objetivosDiarios?.agua || 0)}
           maximumTrackTintColor="#d3d3d3"
-          thumbTintColor={getSliderColor(value)}
-          value={value}
-          onValueChange={setValue}
+          thumbTintColor={getSliderColor(objetivosDiarios?.agua || 0)}
+          value={objetivosDiarios?.agua || 0}
+          onValueChange={(value) => handleAguaChange(value)}
         />
       </View>
     </View>

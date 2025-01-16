@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Session } from '@supabase/supabase-js';
-import { supabase } from '../libs/supabase';
+import { supabase } from '@libs/supabase';
 
 import { appStore } from 'src/store/AppStore';
 
@@ -10,7 +10,8 @@ type AuthData = {
   profile: any;
   loading: boolean;
   isAdmin: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<any>;
+  setProfileUsername: (id: string, username: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthData>({
   profile: null,
   isAdmin: false,
   signUp: async () => {},
+  setProfileUsername: async () => {},
   signIn: async () => {},
   signOut: async () => {},
 });
@@ -68,16 +70,41 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string): Promise<any> => {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    try {
+      const { error, data } = await supabase.auth.signUp({ email, password });
 
-    if (error) {
+      if (error) throw error;
+
+      if (!hasEnteredUserInfo) {
+        router.push('/(userInfo)');
+      } else {
+        router.push('/(protected)/(tabs)/(health)');
+      }
+
+      return data;
+    } catch (error: any) {
       alert(error.message);
-    } else {
-      router.push('/(userInfo)');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const setProfileUsername = async (id: string, username: string) => {
+    setLoading(true);
+    try {
+      const { error: profError } = await supabase
+        .from('profiles')
+        .update({ username: username })
+        .eq('id', id);
+
+      if (profError) throw profError;
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signIn = async (email: string, password: string) => {
@@ -109,6 +136,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         profile,
         isAdmin: profile?.group === 'ADMIN',
         signUp,
+        setProfileUsername,
         signIn,
         signOut,
       }}>

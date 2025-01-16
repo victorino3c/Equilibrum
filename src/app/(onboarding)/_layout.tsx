@@ -19,7 +19,7 @@ export default function SignIn() {
   }
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" options={{ title: 'Sign Up' }} />
       <Stack.Screen name="signIn" options={{ title: 'Sign In' }} />
     </Stack>

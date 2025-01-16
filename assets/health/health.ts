@@ -32,6 +32,7 @@ export type objetivosType = {
 
 export type objetivosDiariosType = {
   idUsuario: string;
+  objetivo: objetivosType;
   fecha: string;
   sueño?: number;
   agua?: number;
@@ -64,22 +65,26 @@ export const objetivosDiarios: Record<number, objetivosDiariosType> = {
   1: {
     idUsuario: 'victorino_3c',
     fecha: '2025-01-06',
+    objetivo: objetivos[1],
     sueño: 8,
     agua: 3.1,
   },
   2: {
     idUsuario: 'victorino_3c',
+    objetivo: objetivos[1],
     fecha: '2025-01-07',
     sueño: 7,
     agua: 1.9,
   },
   3: {
     idUsuario: 'victorino_3c',
+    objetivo: objetivos[1],
     fecha: '2025-01-08',
     sueño: 8,
   },
   4: {
     idUsuario: 'victorino_3c',
+    objetivo: objetivos[1],
     fecha: '2025-01-09',
     agua: 2.5,
   },

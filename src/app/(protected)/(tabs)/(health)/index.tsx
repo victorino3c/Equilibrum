@@ -4,25 +4,20 @@ import { useEffect, useState } from 'react';
 //TEMP
 import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { NutricionType, findNutricionByDate } from '~/assets/nutricion/nutricion';
-import {
-  getObjetivosByUsername,
-  getObjetivosDiariosByUsername,
-  objetivosDiariosType,
-  objetivosType,
-} from '~/assets/health/health';
 
-import Formula from '~/src/components/Health/Formula';
-import SueñoHidratacion from '~/src/components/Health/SueñoHidratacion';
+//import { useObjetivos } from '@providers/ObjetivosProvider';
+import { getObjetivos } from '@api/objetivos';
+
+import Formula from '@components/Health/Formula';
+import SueñoHidratacion from '@components/Health/SueñoHidratacion';
 import Sueño from '~/src/components/Health/Sueño';
 import Agua from '~/src/components/Health/Agua';
-import CustomCalendar from 'src/components/Health/Calendar';
-import CalendarioReplegado from '~/src/components/Utils/CalendarioReplegado';
+import CustomCalendar from '@components/Health/Calendar';
+import CalendarioReplegado from '@components/Utils/CalendarioReplegado';
 import moment from 'moment';
-import TwoOptionsButton from '~/src/components/Buttons/TwoOptions';
-import Ejercicio from '~/src/components/Health/Ejercicio/Ejercicio';
-import Nutricion from '~/src/components/Health/Nutricion/Nutricion';
-
-import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+import TwoOptionsButton from '@components/Buttons/TwoOptions';
+import Ejercicio from '@components/Health/Ejercicio/Ejercicio';
+import Nutricion from '@components/Health/Nutricion/Nutricion';
 
 export default function HealthLayout() {
   const [calendar, setCalendar] = useState<string>('R');
@@ -30,9 +25,11 @@ export default function HealthLayout() {
   const [mode, setMode] = useState<string>('Ejercicio');
   const [ejercicio, setEjercicio] = useState<any>(null);
   const [nutricion, setNutricion] = useState<any>(null);
-  const [objetivos, setObjetivos] = useState<objetivosType | null>(null);
-  const [objetivosDiarios, setObjetivosDiarios] = useState<objetivosDiariosType | null>(null);
+  //const [objetivos, setObjetivos] = useState<objetivosType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  //const { objetivos } = useObjetivos();
+  const { data: objetivos } = getObjetivos();
 
   const getEjercicio = (date: string): EntrenamientosType | null => {
     return findEntrenamientoByDate(date);
@@ -44,18 +41,8 @@ export default function HealthLayout() {
   };
 
   useEffect(() => {
-    setObjetivos(getObjetivosByUsername('victorino_3c'));
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-
     setEjercicio(getEjercicio(selectedDate.format('YYYY-MM-DD')));
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
-    setObjetivosDiarios(
-      getObjetivosDiariosByUsername('victorino_3c', selectedDate.format('YYYY-MM-DD'))
-    );
     setLoading(false);
   }, [selectedDate, calendar]);
 
@@ -87,7 +74,7 @@ export default function HealthLayout() {
           />
         )}
         <Formula
-          objective={objetivos?.calorias.toString() || '0'}
+          objective={objetivos?.calorias?.toString() || '0'}
           nutricion={nutricion?.Calorias || 0}
           exercise={ejercicio?.Calorias || 0}
         />
@@ -95,7 +82,6 @@ export default function HealthLayout() {
           fecha={selectedDate.format('YYYY-MM-DD')}
           objetivoHidratacion={objetivos?.agua || 3.3}
           objetivoSueño={objetivos?.sueño || 0}
-          objetivosDiarios={objetivosDiarios}
         />
         <TwoOptionsButton
           option1="Ejercicio"

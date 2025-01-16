@@ -44,41 +44,6 @@ export type Database = {
           },
         ]
       }
-      objetivos_diarios: {
-        Row: {
-          agua: number | null
-          calorias: number | null
-          created_at: string
-          fecha: string
-          sueño: number | null
-          user_id: string
-        }
-        Insert: {
-          agua?: number | null
-          calorias?: number | null
-          created_at?: string
-          fecha: string
-          sueño?: number | null
-          user_id?: string
-        }
-        Update: {
-          agua?: number | null
-          calorias?: number | null
-          created_at?: string
-          fecha?: string
-          sueño?: number | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "objetivos_diarios_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           avatar_url: string | null

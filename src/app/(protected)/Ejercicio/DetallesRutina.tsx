@@ -15,7 +15,8 @@ import IconButton from '../../../components/Buttons/IconButton';
 import { Stack, Link, router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 
-import { useAuth } from '~/src/providers/AuthProvider';
+//import { getProfile } from '@api/profile';
+import { useAuth } from '@providers/AuthProvider';
 
 import { rutinaStore } from '~/src/store/RutinaStore';
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
@@ -26,10 +27,9 @@ import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/Ej
 const DetallesRutina = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const { getRutina, rutinas, getSeriesByEjercicioAndRutina, removeRutina } = rutinaStore();
+  const { getRutina, getSeriesByEjercicioAndRutina, removeRutina } = rutinaStore();
   const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setNombre, resetEntrenamiento } =
     entrenamientoStore();
-  const { session } = useAuth();
 
   const [editar, setEditar] = React.useState(false);
 
@@ -43,7 +43,12 @@ const DetallesRutina = () => {
   const icon = <Feather name="delete" size={45} color="#E34716" />;
   const iconSum = <Feather name="plus-circle" size={45} color="#6608ff" />;
 
-  //const rutinas = getRutinasByUser('victorino_3c');
+  //const { data: profile, error, isLoading } = getProfile();
+  const { profile, loading } = useAuth();
+
+  if (loading) return <Text>Loading...</Text>;
+  //if (error) return <Text>Error: {error.message}</Text>;
+
   const handleEmpezarEntreno = (idRutina: string) => {
     // Check if there is a Entrenamiento in progress
     if (isRunning) {
@@ -123,7 +128,7 @@ const DetallesRutina = () => {
         }}>
         <View>
           <Text style={styles.fecha}>{rutina}</Text>
-          <Text style={{ paddingLeft: 10 }}>Creado por {session?.user.email}</Text>
+          <Text style={{ paddingLeft: 10 }}>Creado por {profile?.username}</Text>
         </View>
         <TouchableOpacity onPress={() => setEditar(!editar)}>
           {editar ? (
