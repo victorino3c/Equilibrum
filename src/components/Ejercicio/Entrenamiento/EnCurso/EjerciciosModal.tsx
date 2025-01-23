@@ -67,9 +67,9 @@ const EjerciciosModal = ({ visible, setModalVisible, rutina }: EjerciciosModalPr
         onRequestClose={() => setModalVisible(!visible)}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View style={{ margin: 10 }}>
+            <View style={styles.closeButton}>
               <TouchableOpacity onPress={() => setModalVisible(!visible)}>
-                <Entypo name="circle-with-cross" size={24} color="black" />
+                <Entypo name="circle-with-cross" size={24} color="#555" />
               </TouchableOpacity>
             </View>
             <View style={styles.headerButtons}>
@@ -179,6 +179,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     color: '#6608ff',
+  },
+  closeButton: {
+    marginVertical: 15,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    marginRight: 20,
   },
 });
 

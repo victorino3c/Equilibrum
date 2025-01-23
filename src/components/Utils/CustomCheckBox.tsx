@@ -14,8 +14,6 @@ const CustomCheckbox = ({ isChecked, idSerie, onToggle }: CustomCheckboxProps) =
   const toggleCheckbox = () => {
     const newChecked = typeof isChecked !== 'undefined' ? !isChecked : !checked;
 
-    console.log('toggleCheckbox', idSerie, newChecked);
-
     setChecked(newChecked);
     onToggle?.(idSerie || '-1', newChecked);
   };

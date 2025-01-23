@@ -88,7 +88,7 @@ const CuerpoResumenEjercicioCardio = ({
               <TextInput
                 editable={editar}
                 style={styles.datos}
-                keyboardType="decimal-pad"
+                //keyboardType="default"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
                     ? updateSerieCardioTiempo(item.id!, value)
