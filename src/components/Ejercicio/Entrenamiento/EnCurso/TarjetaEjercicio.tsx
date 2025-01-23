@@ -42,7 +42,7 @@ const TarjetaEjercicio = ({
   }
 
   if (isLoading || !Ejercicio) {
-    return <Skeleton height={90} />;
+    return <Skeleton style={{ marginTop: 15 }} height={90} />;
   }
 
   const handleAddSerie = () => {

@@ -174,7 +174,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
               });
             }
 
-            return { seriesCardio: [...state.seriesCardio, serie as SerieCardioType] };
+            return { seriesCardio: [...state.seriesCardio, nuevaSerie as SerieCardioType] };
           } else if (ejercicio.tipo_ejercicio === 'fuerza') {
             // If the serie is checked, update the total weight lifted
             if ((serie as SerieFuerzaType).check) {
