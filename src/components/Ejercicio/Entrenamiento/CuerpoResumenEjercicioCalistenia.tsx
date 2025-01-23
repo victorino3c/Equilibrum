@@ -11,7 +11,7 @@ import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCalisteniaProps = {
   actual?: boolean;
-  idEjercicio: number;
+  idEjercicio: string;
   idEntrenamiento?: number;
   idRutina?: string;
   editar?: boolean;
@@ -37,7 +37,10 @@ const CuerpoResumenEjercicioCalistenia = ({
 
   let series;
   if (!actual && !idRutina && idEntrenamiento) {
-    series = findSeriesCalisteniaByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio);
+    series = findSeriesCalisteniaByEntrenamientoAndEjercicio(
+      idEntrenamiento || -1,
+      parseInt(idEjercicio)
+    );
   } else if (typeof idRutina != 'undefined') {
     series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
@@ -66,8 +69,8 @@ const CuerpoResumenEjercicioCalistenia = ({
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieCalisteniaRepeticiones(item.id, parseInt(value))
-                    : updateSerieCalisteniaRutinaRepeticiones(idRutina, item.id, parseInt(value))
+                    ? updateSerieCalisteniaRepeticiones(item.id!, parseInt(value))
+                    : updateSerieCalisteniaRutinaRepeticiones(idRutina, item.id!, parseInt(value))
                 }>
                 {item.Repeticiones}
               </TextInput>

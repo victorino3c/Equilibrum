@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons'; // For the check icon
 
 interface CustomCheckboxProps {
   isChecked?: boolean;
-  idSerie?: number;
-  onToggle?: (idSerie: number, checked: boolean) => void;
+  idSerie?: string;
+  onToggle?: (idSerie: string, checked: boolean) => void;
 }
 
 const CustomCheckbox = ({ isChecked, idSerie, onToggle }: CustomCheckboxProps) => {
@@ -13,8 +13,11 @@ const CustomCheckbox = ({ isChecked, idSerie, onToggle }: CustomCheckboxProps) =
 
   const toggleCheckbox = () => {
     const newChecked = typeof isChecked !== 'undefined' ? !isChecked : !checked;
+
+    console.log('toggleCheckbox', idSerie, newChecked);
+
     setChecked(newChecked);
-    onToggle?.(idSerie || -1, newChecked);
+    onToggle?.(idSerie || '-1', newChecked);
   };
 
   return (

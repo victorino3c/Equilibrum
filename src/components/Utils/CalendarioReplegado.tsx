@@ -10,12 +10,14 @@ import { findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { findNutricionByDate } from '~/assets/nutricion/nutricion';
 
 import Feather from '@expo/vector-icons/Feather';
+import Skeleton from './SkeletonView';
 
 interface CalendarioReplegadoProps {
   onSelectDate: (date: moment.Moment) => void;
   onCalendarChange: (tipo: string) => void;
   selected: moment.Moment;
   tipo?: string;
+  loading?: boolean;
 }
 
 const CalendarioReplegado = ({
@@ -23,6 +25,7 @@ const CalendarioReplegado = ({
   onCalendarChange,
   selected,
   tipo,
+  loading = true,
 }: CalendarioReplegadoProps) => {
   const [dates, setDates] = useState<{ date: moment.Moment; visualization: number }[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>('');
@@ -31,7 +34,7 @@ const CalendarioReplegado = ({
   // Get the dates from today to 10 days from now, format them as strings, and store them in state
   const getDates = () => {
     const _dates = [];
-    for (let i = 10; i >= 0; i--) {
+    for (let i = 14; i >= 0; i--) {
       const date = moment().subtract(i, 'days');
       let visualization = 0;
 
@@ -68,6 +71,10 @@ const CalendarioReplegado = ({
       return () => clearTimeout(timer);
     }, [])
   );
+
+  if (loading) {
+    return <Skeleton height={145} />;
+  }
 
   return (
     <View style={styles.container}>

@@ -11,7 +11,7 @@ import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioFuerzaProps = {
   actual?: boolean;
-  idEjercicio: number;
+  idEjercicio: string;
   idEntrenamiento?: number;
   idRutina?: string;
   editar?: boolean;
@@ -45,7 +45,10 @@ const CuerpoResumenEjercicioFuerza = ({
 
   let series;
   if (!actual && typeof idRutina === 'undefined' && idEntrenamiento) {
-    series = findSeriesFuerzaByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio);
+    series = findSeriesFuerzaByEntrenamientoAndEjercicio(
+      idEntrenamiento || -1,
+      parseInt(idEjercicio)
+    );
   } else if (typeof idRutina !== 'undefined') {
     series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
@@ -74,8 +77,8 @@ const CuerpoResumenEjercicioFuerza = ({
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieFuerzaRepeticiones(item.id, parseInt(value))
-                    : updateSerieFuerzaRutinaRepeticiones(idRutina, item.id, parseInt(value))
+                    ? updateSerieFuerzaRepeticiones(item.id!, parseInt(value))
+                    : updateSerieFuerzaRutinaRepeticiones(idRutina, item.id!, parseInt(value))
                 }>
                 {item.Repeticiones}
               </TextInput>
@@ -85,8 +88,8 @@ const CuerpoResumenEjercicioFuerza = ({
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieFuerzaPeso(item.id, parseInt(value))
-                    : updateSerieFuerzaRutinaPeso(idRutina, item.id, parseInt(value))
+                    ? updateSerieFuerzaPeso(item.id!, parseInt(value))
+                    : updateSerieFuerzaRutinaPeso(idRutina, item.id!, parseInt(value))
                 }>
                 {item.Peso}
               </TextInput>

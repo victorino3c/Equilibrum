@@ -13,14 +13,21 @@ import {
   useUpdateObjetivosDiariosAguaByFecha,
   getObjetivosdiariosByFecha,
 } from '@api/objetivos';
+import Skeleton from '../Utils/SkeletonView';
 
 type SueñoHidratacionProps = {
   fecha: string;
   objetivoHidratacion: number;
   objetivoSueño: number;
+  loading?: boolean;
 };
 
-const SueñoHidratacion = ({ fecha, objetivoHidratacion, objetivoSueño }: SueñoHidratacionProps) => {
+const SueñoHidratacion = ({
+  fecha,
+  objetivoHidratacion,
+  objetivoSueño,
+  loading = false,
+}: SueñoHidratacionProps) => {
   // Define the color of the slider based on the value
   const getSliderColor = (value: number) => {
     if (value === 0) return '#d3d3d3'; // Grey color for 0 value
@@ -30,11 +37,11 @@ const SueñoHidratacion = ({ fecha, objetivoHidratacion, objetivoSueño }: Sueñ
 
   const { mutate: updateObjetivosDiariosSueñoByFecha } = useUpdateObjetivosDiariosSueñoByFecha();
   const { mutate: updateObjetivosDiariosAguaByFecha } = useUpdateObjetivosDiariosAguaByFecha();
-  const { data: objetivosDiarios, isLoading } = getObjetivosdiariosByFecha(fecha);
-
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
+  const {
+    data: objetivosDiarios,
+    isLoading: isLoadingObjetivosDiarios,
+    error,
+  } = getObjetivosdiariosByFecha(fecha);
 
   // Define the emoji based on the value
   const getEmoji = (value: number) => {
@@ -60,6 +67,10 @@ const SueñoHidratacion = ({ fecha, objetivoHidratacion, objetivoSueño }: Sueñ
   const handleAguaChange = (value: number) => {
     updateObjetivosDiariosAguaByFecha({ fecha, agua: value });
   };
+
+  if ((loading || isLoadingObjetivosDiarios) && moment().format('YYYY-MM-DD') !== fecha) {
+    return <Skeleton height={190} />;
+  }
 
   if (moment().format('YYYY-MM-DD') !== fecha) {
     return (
@@ -89,7 +100,7 @@ const SueñoHidratacion = ({ fecha, objetivoHidratacion, objetivoSueño }: Sueñ
             {getEmoji(objetivosDiarios?.agua || objetivoHidratacion + 1) || ''}
           </Text>
           <Text style={{ fontSize: 24 }}>
-            {objetivosDiarios?.agua || '-'} / {objetivoHidratacion} Litros
+            {objetivosDiarios?.agua?.toFixed(1) || '-'} / {objetivoHidratacion.toFixed(1)} Litros
           </Text>
         </View>
       </View>

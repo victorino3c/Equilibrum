@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
+import Skeleton from '../Utils/SkeletonView';
 
 type TwoOptionsProps = {
   option1: string;
@@ -7,9 +8,21 @@ type TwoOptionsProps = {
   style?: object;
   method: (value: string) => void;
   selected: string;
+  loading?: boolean;
 };
 
-const TwoOptionsButton = ({ option1, option2, method, selected, style }: TwoOptionsProps) => {
+const TwoOptionsButton = ({
+  option1,
+  option2,
+  method,
+  selected,
+  style,
+  loading = false,
+}: TwoOptionsProps) => {
+  if (loading) {
+    return <Skeleton height={45} />;
+  }
+
   return (
     <View style={[styles.container, style]}>
       <TouchableOpacity

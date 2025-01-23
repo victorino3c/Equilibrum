@@ -2,12 +2,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-  EjercicioType,
-  SerieCalisteniaType,
-  SerieCardioType,
-  SerieFuerzaType,
-} from '~/src/types/types';
+import uuid from 'react-native-uuid';
+
+import { SerieCalisteniaType, SerieCardioType, SerieFuerzaType } from '~/src/types/types';
+
+import { Database } from '~/src/database.types';
+
 import moment from 'moment';
 
 export interface EntrenamientoState {
@@ -23,7 +23,7 @@ export interface EntrenamientoState {
   calorias: number;
   fecha: string;
   idUsuario: string;
-  ejercicios: EjercicioType[];
+  ejercicios: Database['public']['Tables']['ejercicios']['Row'][];
   seriesCardio: SerieCardioType[];
   seriesFuerza: SerieFuerzaType[];
   seriesCalistenia: SerieCalisteniaType[];
@@ -37,30 +37,30 @@ export interface EntrenamientoState {
   stopTimer: () => void;
   startTimer: () => void;
   formatTime: (seconds: number) => string;
-  addEjercicio: (ejercicio: EjercicioType) => void;
-  removeEjercicio: (idEjercicio: number) => void;
+  addEjercicio: (ejercicio: Database['public']['Tables']['ejercicios']['Row']) => void;
+  removeEjercicio: (idEjercicio: string) => void;
   addSerieEjercicio: (
     serie: SerieCardioType | SerieFuerzaType | SerieCalisteniaType,
-    idEjercicio: number
+    idEjercicio: string
   ) => void;
-  removeSerieEjercicio: (idSerie: number) => void;
+  removeSerieEjercicio: (idSerie: string) => void;
   calcularVolumen: () => void;
   calcularCalorias: () => void;
   resetEntrenamiento: () => void;
   setFecha: (fecha: string) => void;
-  getSeriesCardioByEjericio: (idEjercicio: number) => SerieCardioType[] | null;
-  getSeriesFuerzaByEjericio: (idEjercicio: number) => SerieFuerzaType[] | null;
-  getSeriesCalisteniaByEjericio: (idEjercicio: number) => SerieCalisteniaType[] | null;
+  getSeriesCardioByEjericio: (idEjercicio: string) => SerieCardioType[] | null;
+  getSeriesFuerzaByEjericio: (idEjercicio: string) => SerieFuerzaType[] | null;
+  getSeriesCalisteniaByEjericio: (idEjercicio: string) => SerieCalisteniaType[] | null;
   getSeriesByEjericio: (
-    idEjercicio: number
+    idEjercicio: string
   ) => SerieCardioType[] | SerieFuerzaType[] | SerieCalisteniaType[] | null;
-  updateSerieFuerzaPeso: (idSerie: number, peso: number) => void;
-  updateSerieFuerzaRepeticiones: (idSerie: number, repeticiones: number) => void;
-  updateSerieCardioDistancia: (idSerie: number, distancia: number) => void;
-  updateSerieCardioTiempo: (idSerie: number, tiempo: string) => void;
-  updateSerieCardioCalorias: (idSerie: number, calorias: number) => void;
-  updateSerieCalisteniaRepeticiones: (idSerie: number, repeticiones: number) => void;
-  updateCheckSerie: (idSerie: number, isCheck: boolean) => void;
+  updateSerieFuerzaPeso: (idSerie: string, peso: number) => void;
+  updateSerieFuerzaRepeticiones: (idSerie: string, repeticiones: number) => void;
+  updateSerieCardioDistancia: (idSerie: string, distancia: number) => void;
+  updateSerieCardioTiempo: (idSerie: string, tiempo: string) => void;
+  updateSerieCardioCalorias: (idSerie: string, calorias: number) => void;
+  updateSerieCalisteniaRepeticiones: (idSerie: string, repeticiones: number) => void;
+  updateCheckSerie: (idSerie: string, isCheck: boolean) => void;
 }
 
 export const entrenamientoStore = create<EntrenamientoState>()(
@@ -105,19 +105,21 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           ? `${hours < 10 ? '0' : ''}${hours}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`
           : `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
       },
-      addEjercicio: (ejercicio: EjercicioType) => {
+      addEjercicio: (ejercicio: Database['public']['Tables']['ejercicios']['Row']) => {
+        if (!ejercicio) return;
+
         //Si el ejercicio ya está en la lista, no lo añado
         if (entrenamientoStore.getState().ejercicios.find((e) => e.id === ejercicio.id)) return;
 
         set((state) => ({ ejercicios: [...state.ejercicios, ejercicio] }));
       },
-      removeEjercicio: (idEjercicio: number) => {
+      removeEjercicio: (idEjercicio: string) => {
         // If the exercise is a strength exercise, update the total weight lifted
         const ejercicio = entrenamientoStore
           .getState()
           .ejercicios.find((e) => e.id === idEjercicio);
 
-        if (ejercicio?.tipo === 'Fuerza') {
+        if (ejercicio?.tipo_ejercicio === 'fuerza') {
           set((state) => {
             const totalWeight = state.seriesFuerza
               .filter((serie) => serie.idEjercicio != idEjercicio)
@@ -151,7 +153,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       },
       addSerieEjercicio: (
         serie: SerieCardioType | SerieFuerzaType | SerieCalisteniaType,
-        idEjercicio: number
+        idEjercicio: string
       ) =>
         set((state) => {
           //Consigo el ejercicio con la id
@@ -161,16 +163,19 @@ export const entrenamientoStore = create<EntrenamientoState>()(
             return state;
           }
 
-          if (ejercicio.tipo === 'Cardio') {
+          // Añado un id a la serie usando uuid
+          const nuevaSerie = { ...serie, id: uuid.v4() };
+
+          if (ejercicio.tipo_ejercicio === 'cardio') {
             if ((serie as SerieCardioType).check) {
               set((state) => {
-                const calorias = state.calorias + ((serie as SerieCardioType).Calorias ?? 0);
+                const calorias = state.calorias + ((nuevaSerie as SerieCardioType).Calorias ?? 0);
                 return { calorias };
               });
             }
 
             return { seriesCardio: [...state.seriesCardio, serie as SerieCardioType] };
-          } else if (ejercicio.tipo === 'Fuerza') {
+          } else if (ejercicio.tipo_ejercicio === 'fuerza') {
             // If the serie is checked, update the total weight lifted
             if ((serie as SerieFuerzaType).check) {
               set((state) => {
@@ -185,13 +190,15 @@ export const entrenamientoStore = create<EntrenamientoState>()(
               });
             }
 
-            return { seriesFuerza: [...state.seriesFuerza, serie as SerieFuerzaType] };
-          } else if (ejercicio.tipo === 'Calistenia') {
-            return { seriesCalistenia: [...state.seriesCalistenia, serie as SerieCalisteniaType] };
+            return { seriesFuerza: [...state.seriesFuerza, nuevaSerie as SerieFuerzaType] };
+          } else if (ejercicio.tipo_ejercicio === 'calistenia') {
+            return {
+              seriesCalistenia: [...state.seriesCalistenia, nuevaSerie as SerieCalisteniaType],
+            };
           }
           return state;
         }),
-      removeSerieEjercicio: (idSerie: number) => {
+      removeSerieEjercicio: (idSerie: string) => {
         // Check if the serie is a strength serie
         const serieFuerza = entrenamientoStore
           .getState()
@@ -255,37 +262,37 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           seriesCalistenia: [],
         })),
       setFecha: (fecha: string) => set({ fecha }),
-      getSeriesCardioByEjericio: (idEjercicio: number): SerieCardioType[] =>
+      getSeriesCardioByEjericio: (idEjercicio: string): SerieCardioType[] =>
         entrenamientoStore
           .getState()
           .seriesCardio.filter((serie: SerieCardioType) => serie.idEjercicio === idEjercicio),
-      getSeriesFuerzaByEjericio: (idEjercicio: number): SerieFuerzaType[] =>
+      getSeriesFuerzaByEjericio: (idEjercicio: string): SerieFuerzaType[] =>
         entrenamientoStore
           .getState()
           .seriesFuerza.filter((serie: SerieFuerzaType) => serie.idEjercicio === idEjercicio),
-      getSeriesCalisteniaByEjericio: (idEjercicio: number): SerieCalisteniaType[] =>
+      getSeriesCalisteniaByEjericio: (idEjercicio: string): SerieCalisteniaType[] =>
         entrenamientoStore
           .getState()
           .seriesCalistenia.filter(
             (serie: SerieCalisteniaType) => serie.idEjercicio === idEjercicio
           ),
       getSeriesByEjericio: (
-        idEjercicio: number
+        idEjercicio: string
       ): SerieCalisteniaType[] | SerieCardioType[] | SerieFuerzaType[] | null => {
         //Consigo el ejercicio con la id
         const ejercicio = entrenamientoStore.getState().ejercicios.find((e) => e.id == idEjercicio);
 
         if (!ejercicio) return null;
 
-        if (ejercicio.tipo === 'Cardio') {
+        if (ejercicio.tipo_ejercicio === 'cardio') {
           return entrenamientoStore
             .getState()
             .seriesCardio.filter((serie) => serie.idEjercicio === idEjercicio);
-        } else if (ejercicio.tipo === 'Fuerza') {
+        } else if (ejercicio.tipo_ejercicio === 'fuerza') {
           return entrenamientoStore
             .getState()
             .seriesFuerza.filter((serie) => serie.idEjercicio === idEjercicio);
-        } else if (ejercicio.tipo === 'Calistenia') {
+        } else if (ejercicio.tipo_ejercicio === 'calistenia') {
           return entrenamientoStore
             .getState()
             .seriesCalistenia.filter((serie) => serie.idEjercicio === idEjercicio);
@@ -293,7 +300,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
 
         return null;
       },
-      updateSerieFuerzaPeso: (idSerie: number, peso: number) => {
+      updateSerieFuerzaPeso: (idSerie: string, peso: number) => {
         set((state) => ({
           seriesFuerza: state.seriesFuerza.map((serie) =>
             serie.id === idSerie ? { ...serie, Peso: peso } : serie
@@ -325,7 +332,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           return { volumen: newTotalWeight };
         });
       },
-      updateSerieFuerzaRepeticiones: (idSerie: number, repeticiones: number) => {
+      updateSerieFuerzaRepeticiones: (idSerie: string, repeticiones: number) => {
         set((state) => ({
           seriesFuerza: state.seriesFuerza.map((serie) =>
             serie.id === idSerie ? { ...serie, Repeticiones: repeticiones } : serie
@@ -355,19 +362,19 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           return { volumen: newTotalWeight };
         });
       },
-      updateSerieCardioDistancia: (idSerie: number, distancia: number) =>
+      updateSerieCardioDistancia: (idSerie: string, distancia: number) =>
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
             serie.id === idSerie ? { ...serie, Distancia: distancia } : serie
           ),
         })),
-      updateSerieCardioTiempo: (idSerie: number, tiempo: string) =>
+      updateSerieCardioTiempo: (idSerie: string, tiempo: string) =>
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
             serie.id === idSerie ? { ...serie, Tiempo: tiempo } : serie
           ),
         })),
-      updateSerieCardioCalorias: (idSerie: number, calorias: number) => {
+      updateSerieCardioCalorias: (idSerie: string, calorias: number) => {
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
             serie.id === idSerie ? { ...serie, Calorias: calorias } : serie
@@ -395,13 +402,13 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           return { calorias: newTotalCalories };
         });
       },
-      updateSerieCalisteniaRepeticiones: (idSerie: number, repeticiones: number) =>
+      updateSerieCalisteniaRepeticiones: (idSerie: string, repeticiones: number) =>
         set((state) => ({
           seriesCalistenia: state.seriesCalistenia.map((serie) =>
             serie.id === idSerie ? { ...serie, Repeticiones: repeticiones } : serie
           ),
         })),
-      updateCheckSerie: (idSerie: number, isCheck: boolean) => {
+      updateCheckSerie: (idSerie: string, isCheck: boolean) => {
         //Get serie and check type
         const serie =
           entrenamientoStore.getState().seriesFuerza.find((serie) => serie.id === idSerie) ||
@@ -416,7 +423,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
         //If the serie is not strength, return
         if (!serie || !ejercicio) return;
 
-        if (ejercicio.tipo === 'Fuerza') {
+        if (ejercicio.tipo_ejercicio === 'fuerza') {
           //Update serie
           set((state) => ({
             seriesFuerza: state.seriesFuerza.map((serie) =>
@@ -425,7 +432,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           }));
           //Get weight lifted in the series
           const totalWeight =
-            ejercicio.tipo === 'Fuerza'
+            ejercicio.tipo_ejercicio === 'fuerza'
               ? ((serie as SerieFuerzaType).Peso ?? 0) *
                 ((serie as SerieFuerzaType).Repeticiones ?? 0)
               : 0;
@@ -435,7 +442,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
             const newTotalWeight = state.volumen + (isCheck ? totalWeight : -totalWeight);
             return { volumen: newTotalWeight };
           });
-        } else if (ejercicio.tipo === 'Cardio') {
+        } else if (ejercicio.tipo_ejercicio === 'cardio') {
           //Update serie
           set((state) => ({
             seriesCardio: state.seriesCardio.map((serie) =>
@@ -450,7 +457,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
             const newTotalCalories = state.calorias + (isCheck ? calories : -calories);
             return { calorias: newTotalCalories };
           });
-        } else if (ejercicio.tipo === 'Calistenia') {
+        } else if (ejercicio.tipo_ejercicio === 'calistenia') {
           //Update serie
           set((state) => ({
             seriesCalistenia: state.seriesCalistenia.map((serie) =>

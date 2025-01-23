@@ -1,36 +1,42 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
+import Skeleton from '../Utils/SkeletonView';
 
 type FormulaProps = {
   objective: string;
   nutricion: string;
   exercise: string;
+  loading?: boolean;
 };
 
-const Formula = (props: FormulaProps) => {
+const Formula = ({ objective, nutricion, exercise, loading = false }: FormulaProps) => {
   const textsize = 'text-3xl';
+
+  if (loading) {
+    return <Skeleton height={90} />;
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.formula}>
         <View style={styles.item}>
-          <Text className={textsize}>{props?.objective}</Text>
+          <Text className={textsize}>{objective}</Text>
           <Text className="text-md">Objetivo</Text>
         </View>
         <Text className={textsize}>-</Text>
         <View style={styles.item}>
-          <Text className={textsize}>{props?.nutricion}</Text>
+          <Text className={textsize}>{nutricion}</Text>
           <Text className="text-md">Nutrición</Text>
         </View>
         <Text className={textsize}>+</Text>
         <View style={styles.item}>
-          <Text className={textsize}>{props?.exercise}</Text>
+          <Text className={textsize}>{exercise}</Text>
           <Text className="text-md">Ejercicio</Text>
         </View>
         <Text className={textsize}>=</Text>
         <View style={styles.item}>
           <Text className={textsize}>
-            {parseInt(props?.objective) - parseInt(props?.nutricion) + parseInt(props?.exercise)}
+            {parseInt(objective) - parseInt(nutricion) + parseInt(exercise)}
           </Text>
           <Text className="text-md">Restante</Text>
         </View>

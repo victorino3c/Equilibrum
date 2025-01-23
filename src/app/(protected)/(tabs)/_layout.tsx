@@ -22,7 +22,9 @@ export default function TabLayout() {
   return (
     <>
       <StatusBar style="light" />
-      <Tabs tabBar={(props) => <TabBar {...props} />}>
+      <Tabs
+        tabBar={(props) => <TabBar {...props} />}
+        screenOptions={{ tabBarHideOnKeyboard: true }}>
         <Tabs.Screen
           name="(exercise)"
           options={{

@@ -6,14 +6,12 @@ import { rutinaStore } from '~/src/store/RutinaStore';
 import { SerieCardioType } from '~/src/types/types';
 
 //TEMP
-import {
-  findSeriesCardioByEntrenamientoAndEjercicio,
-} from '~/assets/ejercicio/entrenamientos';
+import { findSeriesCardioByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCardioProps = {
   actual?: boolean;
-  idEjercicio: number;
+  idEjercicio: string;
   idEntrenamiento?: number;
   idRutina?: string;
   editar?: boolean;
@@ -49,7 +47,10 @@ const CuerpoResumenEjercicioCardio = ({
 
   let series;
   if (!actual && !idRutina && idEntrenamiento) {
-    series = findSeriesCardioByEntrenamientoAndEjercicio(idEntrenamiento || -1, idEjercicio);
+    series = findSeriesCardioByEntrenamientoAndEjercicio(
+      idEntrenamiento || -1,
+      parseInt(idEjercicio)
+    );
   } else if (typeof idRutina != 'undefined') {
     series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
@@ -79,8 +80,8 @@ const CuerpoResumenEjercicioCardio = ({
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieCardioDistancia(item.id, parseInt(value))
-                    : updateSerieCardioRutinaDistancia(idRutina, item.id, parseInt(value))
+                    ? updateSerieCardioDistancia(item.id!, parseInt(value))
+                    : updateSerieCardioRutinaDistancia(idRutina, item.id!, parseInt(value))
                 }>
                 {item.Distancia}
               </TextInput>
@@ -90,8 +91,8 @@ const CuerpoResumenEjercicioCardio = ({
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieCardioTiempo(item.id, value)
-                    : updateSerieCardioRutinaTiempo(idRutina, item.id, value)
+                    ? updateSerieCardioTiempo(item.id!, value)
+                    : updateSerieCardioRutinaTiempo(idRutina, item.id!, value)
                 }>
                 {item.Tiempo}
               </TextInput>
@@ -101,8 +102,8 @@ const CuerpoResumenEjercicioCardio = ({
                 keyboardType="numeric"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieCardioCalorias(item.id, parseInt(value))
-                    : updateSerieCardioRutinaCalorias(idRutina, item.id, parseInt(value))
+                    ? updateSerieCardioCalorias(item.id!, parseInt(value))
+                    : updateSerieCardioRutinaCalorias(idRutina, item.id!, parseInt(value))
                 }>
                 {item.Calorias}
               </TextInput>

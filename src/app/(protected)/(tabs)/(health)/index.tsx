@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 
 //TEMP
@@ -25,11 +25,9 @@ export default function HealthLayout() {
   const [mode, setMode] = useState<string>('Ejercicio');
   const [ejercicio, setEjercicio] = useState<any>(null);
   const [nutricion, setNutricion] = useState<any>(null);
-  //const [objetivos, setObjetivos] = useState<objetivosType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
   //const { objetivos } = useObjetivos();
-  const { data: objetivos } = getObjetivos();
+  const { data: objetivos, isLoading: isLoadingObjetivos } = getObjetivos();
 
   const getEjercicio = (date: string): EntrenamientosType | null => {
     return findEntrenamientoByDate(date);
@@ -43,16 +41,7 @@ export default function HealthLayout() {
   useEffect(() => {
     setEjercicio(getEjercicio(selectedDate.format('YYYY-MM-DD')));
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
-    setLoading(false);
   }, [selectedDate, calendar]);
-
-  if (loading) {
-    return (
-      <View style={{ justifyContent: 'center', alignContent: 'center' }}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
 
   return (
     <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
@@ -65,6 +54,7 @@ export default function HealthLayout() {
             onSelectDate={(date) => setSelectedDate(date)}
             onCalendarChange={setCalendar}
             selected={selectedDate}
+            loading={isLoadingObjetivos}
           />
         ) : (
           <CustomCalendar
@@ -73,21 +63,26 @@ export default function HealthLayout() {
             onCalendarChange={setCalendar}
           />
         )}
+        <Text style={styles.fecha}>{selectedDate.format('DD MMMM, YYYY')}</Text>
+
         <Formula
           objective={objetivos?.calorias?.toString() || '0'}
           nutricion={nutricion?.Calorias || 0}
           exercise={ejercicio?.Calorias || 0}
+          loading={isLoadingObjetivos}
         />
         <SueñoHidratacion
           fecha={selectedDate.format('YYYY-MM-DD')}
           objetivoHidratacion={objetivos?.agua || 3.3}
           objetivoSueño={objetivos?.sueño || 0}
+          loading={isLoadingObjetivos}
         />
         <TwoOptionsButton
           option1="Ejercicio"
           option2="Nutricion"
           method={setMode}
           selected={mode}
+          loading={false}
         />
         {mode === 'Ejercicio' ? (
           <Ejercicio Entrenamiento={ejercicio} Fecha={selectedDate} />
@@ -98,3 +93,12 @@ export default function HealthLayout() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  fecha: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+});

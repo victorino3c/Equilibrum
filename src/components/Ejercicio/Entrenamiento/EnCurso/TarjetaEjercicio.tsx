@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 
 //TEMP
 import { findEjercicioById } from '~/assets/ejercicio/entrenamientos';
+import { useGetEjercicioById } from '@api/ejercicios';
 
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
@@ -13,9 +14,10 @@ import CuerpoResumenEjercicioCalistenia from '../CuerpoResumenEjercicioCalisteni
 
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { rutinaStore } from '~/src/store/RutinaStore';
+import Skeleton from '~/src/components/Utils/SkeletonView';
 
 type TarjetaEjercicioProps = {
-  idEjercicio: number;
+  idEjercicio: string;
   rutina?: string;
   editable?: boolean;
   showCheck?: boolean;
@@ -32,19 +34,21 @@ const TarjetaEjercicio = ({
 
   const [showDeleteOption, setShowDeleteOption] = useState(false); // Estado para mostrar la opción de eliminar
 
-  const Ejercicio = findEjercicioById(idEjercicio);
+  const { data: Ejercicio, error, isLoading } = useGetEjercicioById(idEjercicio);
 
-  if (!Ejercicio) {
-    console.error(`Ejercicio with id ${idEjercicio} not found`);
+  if (error) {
+    console.error('Error fetching ejercicio:', error);
     return null;
+  }
+
+  if (isLoading || !Ejercicio) {
+    return <Skeleton height={90} />;
   }
 
   const handleAddSerie = () => {
     let series = getSeriesByEjericio(Ejercicio.id);
 
     let newSerie = {
-      id: Math.round(Math.random() * 10000),
-      idEntrenamiento: 1,
       idEjercicio: Ejercicio.id,
       check: false,
     };
@@ -52,8 +56,6 @@ const TarjetaEjercicio = ({
     if (series) {
       newSerie = {
         ...series[0],
-        id: Math.round(Math.random() * 10000),
-        idEntrenamiento: 1,
         idEjercicio: Ejercicio.id,
         check: false,
       };
@@ -69,7 +71,6 @@ const TarjetaEjercicio = ({
     }
 
     let newSerie = {
-      id: Math.round(Math.random() * 10000),
       idEjercicio: Ejercicio.id,
       check: false,
     };
@@ -126,19 +127,19 @@ const TarjetaEjercicio = ({
           <View style={styles.row}>
             <View style={styles.foto}></View>
             <Text style={styles.nombre} numberOfLines={2}>
-              {Ejercicio.Nombre}
+              {Ejercicio.nombre}
             </Text>
           </View>
           <View style={styles.row}>
             <MaterialIcons name="access-alarm" size={30} color="#6608ff" />
             <Text style={styles.nombre} numberOfLines={1}>
-              {Ejercicio.Descanso}''
+              2''
             </Text>
           </View>
         </View>
 
         <View>
-          {Ejercicio.tipo === 'Cardio' ? (
+          {Ejercicio.tipo_ejercicio === 'cardio' ? (
             <CuerpoResumenEjercicioCardio
               actual={true}
               editar={editable}
@@ -147,7 +148,7 @@ const TarjetaEjercicio = ({
               showCheck={showCheck}
             />
           ) : null}
-          {Ejercicio?.tipo === 'Fuerza' ? (
+          {Ejercicio?.tipo_ejercicio === 'fuerza' ? (
             <CuerpoResumenEjercicioFuerza
               actual={true}
               editar={editable}
@@ -156,7 +157,7 @@ const TarjetaEjercicio = ({
               showCheck={showCheck}
             />
           ) : null}
-          {Ejercicio?.tipo === 'Calistenia' ? (
+          {Ejercicio?.tipo_ejercicio === 'calistenia' ? (
             <CuerpoResumenEjercicioCalistenia
               actual={true}
               editar={editable}

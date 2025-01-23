@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ejercicios: {
+        Row: {
+          calorias: number | null
+          created_at: string
+          descripcion: string | null
+          id: string
+          imagen: string | null
+          musculos: Database["public"]["Enums"]["musculos_enum"][]
+          nombre: string
+          tipo_ejercicio: Database["public"]["Enums"]["tipo_ejercicio_enum"]
+        }
+        Insert: {
+          calorias?: number | null
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          imagen?: string | null
+          musculos: Database["public"]["Enums"]["musculos_enum"][]
+          nombre: string
+          tipo_ejercicio: Database["public"]["Enums"]["tipo_ejercicio_enum"]
+        }
+        Update: {
+          calorias?: number | null
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          imagen?: string | null
+          musculos?: Database["public"]["Enums"]["musculos_enum"][]
+          nombre?: string
+          tipo_ejercicio?: Database["public"]["Enums"]["tipo_ejercicio_enum"]
+        }
+        Relationships: []
+      }
       objetivos: {
         Row: {
           agua: number | null
@@ -57,7 +90,7 @@ export type Database = {
           agua?: number | null
           calorias?: number | null
           created_at?: string
-          fecha: string
+          fecha?: string
           sueño?: number | null
           user_id?: string
         }
@@ -114,7 +147,31 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      musculos_enum:
+        | "Pectoral mayor"
+        | "Pectoral menor"
+        | "Dorsal ancho"
+        | "Trapecio"
+        | "Romboides"
+        | "Deltoides anterior"
+        | "Deltoides medial"
+        | "Deltoides posterior"
+        | "Biceps braquial"
+        | "Braquiorradial"
+        | "Triceps braquial"
+        | "Antebrazo"
+        | "Cuádriceps"
+        | "Isquiotibial"
+        | "Glúteo mayor"
+        | "Glúteo medio"
+        | "Glúteo menor"
+        | "Abductor"
+        | "Gemelo"
+        | "Recto abdominal"
+        | "Oblicuos externos"
+        | "Oblicuos internos"
+        | "Transverso abdominal"
+      tipo_ejercicio_enum: "cardio" | "calistenia" | "fuerza"
     }
     CompositeTypes: {
       [_ in never]: never

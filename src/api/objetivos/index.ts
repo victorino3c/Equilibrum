@@ -39,9 +39,11 @@ export const getObjetivosdiariosByFecha = (fecha: string) => {
         .select()
         .eq('user_id', id)
         .eq('fecha', fecha)
-        .single();
+        .maybeSingle();
 
       if (error) throw Error(error.message);
+
+      if (!data) return null;
 
       return data;
     },

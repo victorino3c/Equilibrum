@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { Entypo, Feather } from '@expo/vector-icons/';
@@ -7,8 +7,10 @@ import CustomInput from '~/src/components/Utils/CustomInput';
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { rutinaStore } from '~/src/store/RutinaStore';
 
-//TEMP
-import { ejerciciosArray, findEjercicioById } from '~/assets/ejercicio/entrenamientos';
+import { useGetEjercicios } from '@api/ejercicios';
+import { supabase } from '@libs/supabase'; // Para llamadas directas a la API
+
+import Skeleton from '@components/Utils/SkeletonView';
 
 type EjerciciosModalProps = {
   visible: boolean;
@@ -20,19 +22,41 @@ const EjerciciosModal = ({ visible, setModalVisible, rutina }: EjerciciosModalPr
   const { addEjercicio } = entrenamientoStore();
   const { addEjercicioToRutina } = rutinaStore();
 
-  const handlePress = (id: number) => {
-    const ejercicio = findEjercicioById(id);
+  const { data: ejercicios, isLoading } = useGetEjercicios();
 
-    if (!ejercicio) return;
+  const [selectedEjercicio, setSelectedEjercicio] = useState<any | null>(null);
+  const [loadingEjercicio, setLoadingEjercicio] = useState(false);
 
-    if (rutina) {
-      addEjercicioToRutina(rutina, ejercicio);
-    } else {
-      addEjercicio(ejercicio);
+  const fetchEjercicioById = async (id: string) => {
+    setLoadingEjercicio(true);
+    try {
+      const { data, error } = await supabase.from('ejercicios').select().eq('id', id).single();
+      if (error) throw error;
+      setSelectedEjercicio(data);
+    } catch (error) {
+      console.error('Error fetching ejercicio:', error);
+    } finally {
+      setLoadingEjercicio(false);
     }
-
-    setModalVisible(!visible);
   };
+
+  useEffect(() => {
+    if (selectedEjercicio) {
+      if (rutina) {
+        addEjercicioToRutina(rutina, selectedEjercicio);
+      } else {
+        addEjercicio(selectedEjercicio);
+      }
+      setSelectedEjercicio(null);
+      setModalVisible(false);
+    }
+  }, [selectedEjercicio, rutina, addEjercicioToRutina, addEjercicio, setModalVisible]);
+
+  const handlePress = (id: string) => {
+    fetchEjercicioById(id); // Llamada a la API para obtener el ejercicio
+  };
+
+  if (isLoading) return <Skeleton height={90} />;
 
   return (
     <View style={styles.container}>
@@ -40,9 +64,7 @@ const EjerciciosModal = ({ visible, setModalVisible, rutina }: EjerciciosModalPr
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={() => {
-          setModalVisible(!visible);
-        }}>
+        onRequestClose={() => setModalVisible(!visible)}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={{ margin: 10 }}>
@@ -55,7 +77,7 @@ const EjerciciosModal = ({ visible, setModalVisible, rutina }: EjerciciosModalPr
                 <Text style={styles.headerButtonText}>Material</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.headerButton}>
-                <Text style={styles.headerButtonText}>Musculos</Text>
+                <Text style={styles.headerButtonText}>Músculos</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', marginHorizontal: 10, gap: 10, marginBottom: 20 }}>
@@ -78,21 +100,21 @@ const EjerciciosModal = ({ visible, setModalVisible, rutina }: EjerciciosModalPr
                   styles.headerButton,
                   { marginHorizontal: 10, flex: 0, borderRadius: 15, marginBottom: 20 },
                 ]}>
-                {ejerciciosArray.map((ejercicio, index) => {
-                  return (
-                    <View key={index} style={{ margin: 10 }}>
-                      <TouchableOpacity onPress={() => handlePress(ejercicio.id)}>
-                        <View style={{ flexDirection: 'row', gap: 10 }}>
-                          <View style={styles.image} />
-                          <View style={{ justifyContent: 'space-between' }}>
-                            <Text style={styles.tituloEjercicio}>{ejercicio.Nombre}</Text>
-                            <Text>{ejercicio.Musculos?.map((m) => `${m}, `)}</Text>
-                          </View>
+                {ejercicios!.map((ejercicio, index) => (
+                  <View key={index} style={{ margin: 10 }}>
+                    <TouchableOpacity
+                      onPress={() => handlePress(ejercicio.id)}
+                      disabled={loadingEjercicio}>
+                      <View style={{ flexDirection: 'row', gap: 10 }}>
+                        <View style={styles.image} />
+                        <View style={{ justifyContent: 'space-between' }}>
+                          <Text style={styles.tituloEjercicio}>{ejercicio.nombre}</Text>
+                          <Text>{ejercicio.musculos?.map((m) => `${m}, `)}</Text>
                         </View>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                })}
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
               </View>
             </ScrollView>
           </View>
@@ -119,9 +141,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-  modalText: {
-    marginBottom: 15,
-  },
   headerButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -129,6 +148,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginBottom: 15,
   },
+
   headerButton: {
     flex: 1,
     padding: 10,

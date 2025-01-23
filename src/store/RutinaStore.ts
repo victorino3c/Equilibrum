@@ -4,11 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   RutinaType,
-  EjercicioType,
   SerieCalisteniaType,
   SerieCardioType,
   SerieFuerzaType,
 } from '~/src/types/types';
+
+import { Database } from '~/src/database.types';
 
 export interface RutinaState {
   rutinas: RutinaType[];
@@ -20,33 +21,36 @@ export interface RutinaState {
   getRutina: (nombre: string) => RutinaType | undefined;
   removeRutina: (nombre: string) => void;
   updateRutina: (idRutina: string, rutina: RutinaType) => void;
-  addEjercicioToRutina: (rutina: string, ejercicio: EjercicioType) => void;
-  removeEjercicioFromRutina: (rutina: string, ejercicio: number) => void;
-  updateEjercicioFromRutina: (rutina: string, ejercicio: number) => void;
+  addEjercicioToRutina: (
+    rutina: string,
+    ejercicio: Database['public']['Tables']['ejercicios']['Row']
+  ) => void;
+  removeEjercicioFromRutina: (rutina: string, ejercicio: string) => void;
+  updateEjercicioFromRutina: (rutina: string, ejercicio: string) => void;
   addSerieEjercicioRutina: (
     rutina: string,
-    idEjercicio: number,
+    idEjercicio: string,
     serie: SerieCardioType | SerieCalisteniaType | SerieFuerzaType
   ) => void;
   //removeSerieFromRutina: (rutina: string, serie: number) => void;
   getSeriesByEjercicioAndRutina: (
     rutina: string,
-    ejercicio: number
+    ejercicio: string
   ) => SerieCardioType[] | SerieCalisteniaType[] | SerieFuerzaType[];
   updateSerieCalisteniaRutinaRepeticiones: (
     rutina: string,
-    idSerie: number,
+    idSerie: string,
     repeticiones: number
   ) => void;
   updateSerieFuerzaRutinaRepeticiones: (
     rutina: string,
-    idSerie: number,
+    idSerie: string,
     repeticiones: number
   ) => void;
-  updateSerieFuerzaRutinaPeso: (rutina: string, idSerie: number, peso: number) => void;
-  updateSerieCardioRutinaCalorias: (rutina: string, idSerie: number, calorias: number) => void;
-  updateSerieCardioRutinaTiempo: (rutina: string, idSerie: number, tiempo: string) => void;
-  updateSerieCardioRutinaDistancia: (rutina: string, idSerie: number, distancia: number) => void;
+  updateSerieFuerzaRutinaPeso: (rutina: string, idSerie: string, peso: number) => void;
+  updateSerieCardioRutinaCalorias: (rutina: string, idSerie: string, calorias: number) => void;
+  updateSerieCardioRutinaTiempo: (rutina: string, idSerie: string, tiempo: string) => void;
+  updateSerieCardioRutinaDistancia: (rutina: string, idSerie: string, distancia: number) => void;
   //updateCheckSerieRutina: (rutina: string, idEjercicio: number, idSerie: number) => void;
 }
 
@@ -77,7 +81,10 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === idRutina ? rutina : r)),
         }));
       },
-      addEjercicioToRutina: (rutina: string, ejercicio: EjercicioType) => {
+      addEjercicioToRutina: (
+        rutina: string,
+        ejercicio: Database['public']['Tables']['ejercicios']['Row']
+      ) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 
@@ -86,7 +93,7 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
       },
-      removeEjercicioFromRutina: (rutina: string, ejercicio: number) => {
+      removeEjercicioFromRutina: (rutina: string, ejercicio: string) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 
@@ -95,7 +102,7 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
       },
-      updateEjercicioFromRutina: (rutina: string, ejercicio: number) => {
+      updateEjercicioFromRutina: (rutina: string, ejercicio: string) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 
@@ -110,7 +117,7 @@ export const rutinaStore = create<RutinaState>()(
       },
       addSerieEjercicioRutina: (
         rutina: string,
-        idEjercicio: number,
+        idEjercicio: string,
         serie: SerieCardioType | SerieCalisteniaType | SerieFuerzaType
       ) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
@@ -121,12 +128,12 @@ export const rutinaStore = create<RutinaState>()(
 
         if (!ejercicio) return;
 
-        if (ejercicio.tipo === 'Cardio') {
-          rutinaObj.SeriesCardio.push(serie);
-        } else if (ejercicio.tipo === 'Fuerza') {
-          rutinaObj.SeriesFuerza.push(serie);
-        } else if (ejercicio.tipo === 'Calistenia') {
-          rutinaObj.SeriesCalistenia.push(serie);
+        if (ejercicio.tipo_ejercicio === 'cardio') {
+          rutinaObj.SeriesCardio.push(serie as SerieCardioType);
+        } else if (ejercicio.tipo_ejercicio === 'fuerza') {
+          rutinaObj.SeriesFuerza.push(serie as SerieFuerzaType);
+        } else if (ejercicio.tipo_ejercicio === 'calistenia') {
+          rutinaObj.SeriesCalistenia.push(serie as SerieCalisteniaType);
         }
 
         set((state) => ({
@@ -135,7 +142,7 @@ export const rutinaStore = create<RutinaState>()(
       },
       getSeriesByEjercicioAndRutina: (
         rutina: string,
-        ejercicio: number
+        ejercicio: string
       ): SerieCardioType[] | SerieCalisteniaType[] | SerieFuerzaType[] => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return [];
@@ -143,11 +150,11 @@ export const rutinaStore = create<RutinaState>()(
         const ejercicioObj = rutinaObj.Ejercicios.find((e) => e.id === ejercicio);
         if (!ejercicioObj) return [];
 
-        if (ejercicioObj.tipo === 'Cardio') {
+        if (ejercicioObj.tipo_ejercicio === 'cardio') {
           return rutinaObj.SeriesCardio.filter((s) => s.idEjercicio === ejercicio);
-        } else if (ejercicioObj.tipo === 'Fuerza') {
+        } else if (ejercicioObj.tipo_ejercicio === 'fuerza') {
           return rutinaObj.SeriesFuerza.filter((s) => s.idEjercicio === ejercicio);
-        } else if (ejercicioObj.tipo === 'Calistenia') {
+        } else if (ejercicioObj.tipo_ejercicio === 'calistenia') {
           return rutinaObj.SeriesCalistenia.filter((s) => s.idEjercicio === ejercicio);
         }
 
@@ -155,7 +162,7 @@ export const rutinaStore = create<RutinaState>()(
       },
       updateSerieCalisteniaRutinaRepeticiones: (
         rutina: string,
-        idSerie: number,
+        idSerie: string,
         repeticiones: number
       ) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
@@ -172,7 +179,7 @@ export const rutinaStore = create<RutinaState>()(
       },
       updateSerieFuerzaRutinaRepeticiones: (
         rutina: string,
-        idSerie: number,
+        idSerie: string,
         repeticiones: number
       ) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
@@ -187,7 +194,7 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
       },
-      updateSerieFuerzaRutinaPeso: (rutina: string, idSerie: number, peso: number) => {
+      updateSerieFuerzaRutinaPeso: (rutina: string, idSerie: string, peso: number) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 
@@ -200,7 +207,7 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
       },
-      updateSerieCardioRutinaCalorias: (rutina: string, idSerie: number, calorias: number) => {
+      updateSerieCardioRutinaCalorias: (rutina: string, idSerie: string, calorias: number) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 
@@ -213,7 +220,7 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
       },
-      updateSerieCardioRutinaTiempo: (rutina: string, idSerie: number, tiempo: string) => {
+      updateSerieCardioRutinaTiempo: (rutina: string, idSerie: string, tiempo: string) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 
@@ -226,7 +233,7 @@ export const rutinaStore = create<RutinaState>()(
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
       },
-      updateSerieCardioRutinaDistancia: (rutina: string, idSerie: number, distancia: number) => {
+      updateSerieCardioRutinaDistancia: (rutina: string, idSerie: string, distancia: number) => {
         const rutinaObj = rutinaStore.getState().rutinas.find((r) => r.Nombre === rutina);
         if (!rutinaObj) return;
 

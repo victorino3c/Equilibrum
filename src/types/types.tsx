@@ -1,3 +1,5 @@
+import { Database } from '~/src/database.types';
+
 export enum TipoEjercicio {
   Cardio = 'Cardio',
   Fuerza = 'Fuerza',
@@ -21,14 +23,14 @@ export enum Distancia {
 
 export type RutinaType = {
   Nombre: string;
-  Ejercicios: EjercicioType[];
+  Ejercicios: Database['public']['Tables']['ejercicios']['Row'][];
   SeriesCardio: SerieCardioType[];
   SeriesFuerza: SerieFuerzaType[];
   SeriesCalistenia: SerieCalisteniaType[];
 };
 
 export type EjercicioType = {
-  id: number;
+  id: string;
   tipo: TipoEjercicio;
   Nombre: string;
   Descripcion?: string;
@@ -38,9 +40,9 @@ export type EjercicioType = {
 };
 
 export type SerieCardioType = {
-  id: number;
-  idEntrenamiento?: number;
-  idEjercicio: number;
+  id?: string;
+  //idEntrenamiento?: string;
+  idEjercicio: string;
   check: boolean;
   Distancia?: number;
   Tiempo?: string;
@@ -48,18 +50,18 @@ export type SerieCardioType = {
 };
 
 export type SerieFuerzaType = {
-  id: number;
-  idEntrenamiento?: number;
-  idEjercicio: number;
+  id?: string;
+  //idEntrenamiento?: number;
+  idEjercicio: string;
   check: boolean;
   Repeticiones?: number;
   Peso?: number;
 };
 
 export type SerieCalisteniaType = {
-  id: number;
-  idEntrenamiento?: number;
-  idEjercicio: number;
+  id?: string;
+  //idEntrenamiento?: number;
+  idEjercicio: string;
   check: boolean;
   Repeticiones?: number;
 };
