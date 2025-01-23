@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import Date from '../Utils/Date';
@@ -60,17 +60,18 @@ const CalendarioReplegado = ({
     React.useCallback(() => {
       getDates();
       setCurrentMonth(moment().format('MMMM YYYY'));
-
-      // Use a small timeout to ensure the scroll view has rendered its content
-      const timer = setTimeout(() => {
-        if (scrollViewRef.current) {
-          scrollViewRef.current.scrollToEnd({ animated: true });
-        }
-      }, 200); // Adjust the timeout duration as needed
-
-      return () => clearTimeout(timer);
     }, [])
   );
+
+  useEffect(() => {
+    // Use a small timeout to ensure the scroll view has rendered its content
+    const timer = setTimeout(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+      }
+    }, 200); // Adjust the timeout duration as needed
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   if (loading) {
     return <Skeleton height={145} />;
