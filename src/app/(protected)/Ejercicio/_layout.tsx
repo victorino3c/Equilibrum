@@ -10,12 +10,11 @@ import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { rutinaStore } from '~/src/store/RutinaStore';
 
 export default function EjercicioLayout() {
-  const { resetEntrenamiento } = entrenamientoStore();
+  const { resetEntrenamiento, allSeriesChecked } = entrenamientoStore();
   const { updateRutina, removeRutina, tituloNuevaRutina, setTituloNuevaRutina, getRutina } =
     rutinaStore();
 
   const { session } = useAuth();
-
   const insets = useSafeAreaInsets();
 
   if (!session) {
@@ -24,6 +23,12 @@ export default function EjercicioLayout() {
 
   const handleTerminar = () => {
     resetEntrenamiento();
+  };
+
+  const handleTerminarEntrenamiento = () => {
+    if (!allSeriesChecked()) return Alert.alert('Error', 'Debes marcar todas las series.');
+
+    router.navigate('./FinEntrenamiento');
   };
 
   const handleGuardarRutina = () => {
@@ -105,11 +110,9 @@ export default function EjercicioLayout() {
                     <Text style={styles.headerTitle}>Entrenamiento</Text>
                   </View>
                   <View style={styles.headerItems}>
-                    <Link href="./FinEntrenamiento" asChild>
-                      <TouchableOpacity>
-                        <Text style={styles.botonGuardar}>Terminar</Text>
-                      </TouchableOpacity>
-                    </Link>
+                    <TouchableOpacity onPress={handleTerminarEntrenamiento}>
+                      <Text style={styles.botonGuardar}>Terminar</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <CabeceraEntrenamiento />
@@ -147,6 +150,7 @@ export default function EjercicioLayout() {
             ),
           }}
         />
+        <Stack.Screen name="DetallesEjercicio" />
       </Stack>
     </View>
   );

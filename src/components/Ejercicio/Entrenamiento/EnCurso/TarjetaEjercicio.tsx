@@ -15,6 +15,7 @@ import CuerpoResumenEjercicioCalistenia from '../CuerpoResumenEjercicioCalisteni
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { rutinaStore } from '~/src/store/RutinaStore';
 import Skeleton from '~/src/components/Utils/SkeletonView';
+import { Link } from 'expo-router';
 
 type TarjetaEjercicioProps = {
   idEjercicio: string;
@@ -126,9 +127,15 @@ const TarjetaEjercicio = ({
         <View style={styles.cabecera}>
           <View style={styles.row}>
             <View style={styles.foto}></View>
-            <Text style={styles.nombre} numberOfLines={2}>
-              {Ejercicio.nombre}
-            </Text>
+            <Link
+              href={`../../..//app/(protected)/Ejercicio/DetallesEjercicio?id=${Ejercicio.id}`}
+              asChild>
+              <TouchableOpacity>
+                <Text style={styles.nombre} numberOfLines={2}>
+                  {Ejercicio.nombre}
+                </Text>
+              </TouchableOpacity>
+            </Link>
           </View>
           <View style={styles.row}>
             <MaterialIcons name="access-alarm" size={30} color="#6608ff" />
