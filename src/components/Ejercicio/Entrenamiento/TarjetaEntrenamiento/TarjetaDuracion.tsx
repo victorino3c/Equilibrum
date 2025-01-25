@@ -5,11 +5,11 @@ import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 type TarjetaDuracionProps = {
   username: string;
-  entrenamientoNumber: string;
-  kcal: number;
-  duration: string;
-  weight: string;
-  series: number;
+  entrenamientoNumber: number;
+  kcal: number | null;
+  duration: number | null;
+  weight: number | null;
+  series: number | null;
 };
 
 const TarjetaDuracion = (props: TarjetaDuracionProps) => {

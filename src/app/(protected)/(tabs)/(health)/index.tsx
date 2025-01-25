@@ -2,10 +2,10 @@ import { Text, View, ScrollView, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 
 //TEMP
-import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { NutricionType, findNutricionByDate } from '~/assets/nutricion/nutricion';
 
-//import { useObjetivos } from '@providers/ObjetivosProvider';
+import { Database } from '~/src/database.types';
+
 import { getObjetivos } from '@api/objetivos';
 import { getEntrenamientos } from '@api/entrenamientos';
 import { entrenamientoStore } from '@store/Entrenamientostore';
@@ -27,24 +27,41 @@ export default function HealthLayout() {
   const [ejercicio, setEjercicio] = useState<any>(null);
   const [nutricion, setNutricion] = useState<any>(null);
 
-  //const { objetivos } = useObjetivos();
   const { data: objetivos, isLoading: isLoadingObjetivos } = getObjetivos();
   const { data: entrenamientos, isLoading: isLoadingEntrenamientos } = getEntrenamientos(); // Para ajustar bottom padding de scrollview
   const { entrenamientoTerminado } = entrenamientoStore();
 
-  const getEjercicio = (date: string): EntrenamientosType | null => {
-    return findEntrenamientoByDate(date);
+  const getEjercicio = (
+    date: string
+  ): Database['public']['Tables']['entrenamiento']['Row'] | undefined => {
+    const entrenamiento = entrenamientos?.find((entrenamiento) => {
+      return moment(entrenamiento.fecha).format('YYYY-MM-DD') === date;
+    });
+
+    if (entrenamiento) {
+      return entrenamiento;
+    }
+
+    return undefined;
   };
 
   const getNutricion = (date: string): NutricionType | null => {
-    //forma de obtener datos
+    //TODO: Cambiar por llamada a API como en getEjercicio
     return findNutricionByDate(date);
   };
 
   useEffect(() => {
     setEjercicio(getEjercicio(selectedDate.format('YYYY-MM-DD')));
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
-  }, [selectedDate, calendar]);
+  }, [selectedDate, calendar, isLoadingEntrenamientos]);
+
+  if (isLoadingObjetivos || isLoadingEntrenamientos) {
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
@@ -91,7 +108,7 @@ export default function HealthLayout() {
           loading={false}
         />
         {mode === 'Ejercicio' ? (
-          <Ejercicio Entrenamiento={ejercicio} Fecha={selectedDate} />
+          <Ejercicio entrenamiento={ejercicio} />
         ) : (
           <Nutricion Nutricion={nutricion} Fecha={selectedDate} />
         )}

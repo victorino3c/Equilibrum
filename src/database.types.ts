@@ -82,8 +82,11 @@ export type Database = {
           duracion: number | null
           fecha: string
           id: string
+          imagen: string | null
           notas: string | null
+          numero: number
           sensacion: Database["public"]["Enums"]["sensaciones_enum"] | null
+          series: number | null
           titulo: string | null
           user_id: string
           volumen: number | null
@@ -94,8 +97,11 @@ export type Database = {
           duracion?: number | null
           fecha: string
           id?: string
+          imagen?: string | null
           notas?: string | null
+          numero?: number
           sensacion?: Database["public"]["Enums"]["sensaciones_enum"] | null
+          series?: number | null
           titulo?: string | null
           user_id?: string
           volumen?: number | null
@@ -106,8 +112,11 @@ export type Database = {
           duracion?: number | null
           fecha?: string
           id?: string
+          imagen?: string | null
           notas?: string | null
+          numero?: number
           sensacion?: Database["public"]["Enums"]["sensaciones_enum"] | null
+          series?: number | null
           titulo?: string | null
           user_id?: string
           volumen?: number | null

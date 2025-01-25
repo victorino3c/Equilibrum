@@ -5,22 +5,31 @@ import Timeline from 'react-native-timeline-flatlist';
 
 //TEMP
 import {
-  findEjerciciosByEntrenamiento,
   getNumeroSeriesByEjercicio,
   getVolumenByEjercicio,
   getCaloriasByEjercicio,
 } from '~/assets/ejercicio/entrenamientos';
 
-import { TipoEjercicio } from 'src/types/types';
+import { getEjerciciosFromIds } from '@api/ejercicios';
+
+import Skeleton from '../../Utils/SkeletonView';
 
 type ResumenHistoriaEntrenamientoProps = {
-  idEntrenamiento: number;
+  idsEjercicios: string[];
 };
 
 // Define the component for the visual summary
-const ResumenHistoriaEntrenamiento = ({ idEntrenamiento }: ResumenHistoriaEntrenamientoProps) => {
+const ResumenHistoriaEntrenamiento = ({ idsEjercicios }: ResumenHistoriaEntrenamientoProps) => {
   // Get the exercises for the training
-  const ejercicios = findEjerciciosByEntrenamiento(idEntrenamiento) || [];
+  const { data: ejercicios, isLoading, error } = getEjerciciosFromIds(idsEjercicios);
+
+  if (isLoading || !ejercicios) {
+    return <Skeleton height={160} />;
+  }
+
+  if (error) {
+    return <Text>Error al cargar los ejercicios</Text>;
+  }
 
   if (ejercicios.length === 0) {
     return null;
@@ -28,8 +37,8 @@ const ResumenHistoriaEntrenamiento = ({ idEntrenamiento }: ResumenHistoriaEntren
 
   // Create the data for the timeline
   const data = ejercicios.map((ejercicio) => ({
-    title: ejercicio.Nombre,
-    description: `${getCaloriasByEjercicio(ejercicio.id)} kcal • ${getNumeroSeriesByEjercicio(ejercicio.id)} series ${ejercicio.tipo === TipoEjercicio.Fuerza ? '• ' + getVolumenByEjercicio(ejercicio.id) + ' kg' : ''}`,
+    title: ejercicio.nombre,
+    description: `${getCaloriasByEjercicio(ejercicio.id)} kcal • ${getNumeroSeriesByEjercicio(ejercicio.id)} series ${ejercicio.tipo_ejercicio === 'fuerza' ? '• ' + getVolumenByEjercicio(ejercicio.id) + ' kg' : ''}`,
   }));
 
   return (

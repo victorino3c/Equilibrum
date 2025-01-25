@@ -5,46 +5,59 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import CabeceraDetallesEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/CabeceraDetallesEntrenamiento';
-import SensacionesEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/SensacionesEntrenamiento';
-import ResumenHistoriaEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/ResumenHistoriaEntrenamiento';
-import ResumenEjercicio from '~/src/components/Ejercicio/Entrenamiento/ResumenEjercicio';
 
-//TEMP
-import {
-  findEntrenamientoByDate,
-  findEntrenamientoIdByDate,
-} from '~/assets/ejercicio/entrenamientos';
-import TarjetaEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/TarjetaEntrenamiento/TarjetaEntrenamiento';
+import CabeceraDetallesEntrenamiento from '@components/Ejercicio/Entrenamiento/CabeceraDetallesEntrenamiento';
+import SensacionesEntrenamiento from '@components/Ejercicio/Entrenamiento/SensacionesEntrenamiento';
+import ResumenHistoriaEntrenamiento from '@components/Ejercicio/Entrenamiento/ResumenHistoriaEntrenamiento';
+import ResumenEjercicio from '@components/Ejercicio/Entrenamiento/ResumenEjercicio';
+
+import { getEntrenamiento, getEjerciciosEntrenamiento } from '@api/entrenamientos';
+
+import TarjetaEntrenamiento from '@components/Ejercicio/Entrenamiento/TarjetaEntrenamiento/TarjetaEntrenamiento';
 
 type DetallesEntrenamientoProps = {
-  fecha: string;
+  id: string;
 };
 
 const DetallesEntrenamiento = () => {
   const [editar, setEditar] = React.useState(false);
 
-  const { fecha }: DetallesEntrenamientoProps = useLocalSearchParams();
+  const { id }: DetallesEntrenamientoProps = useLocalSearchParams();
 
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
-  const Ejercicios = findEntrenamientoByDate(fecha)?.Ejericios || [];
-  const idEntrenamiento = findEntrenamientoIdByDate(fecha);
+  const { data: entrenamiento, isLoading: isLoadingEntrenamiento } = getEntrenamiento(id);
+  const { data: ejercicios_, isLoading: isLoadingEjercicios } = getEjerciciosEntrenamiento(id);
 
-  if (!idEntrenamiento) {
+  // Creo un array con los ids de los ejercicios
+  const ejercicios = ejercicios_?.flatMap((ejercicio) => ejercicio.id_ejercicio);
+
+  if (!entrenamiento || !ejercicios) {
     return null;
   }
 
+  if (isLoadingEntrenamiento || isLoadingEjercicios) {
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
   const data = [
-    <CabeceraDetallesEntrenamiento fecha={fecha} editar={editar} />,
-    editar ? null : <TarjetaEntrenamiento idEntrenamiento={idEntrenamiento} />,
-    editar ? null : <SensacionesEntrenamiento fecha={fecha} />, // HACER QUE SE VEA EL SLIDER
-    editar ? null : <ResumenHistoriaEntrenamiento idEntrenamiento={idEntrenamiento} />,
-    ...(Ejercicios.length > 0
-      ? Ejercicios.map((Ejercicio) => (
-          <ResumenEjercicio
-            idEjercicio={Ejercicio}
-            idEntrenamiento={idEntrenamiento}
+    <CabeceraDetallesEntrenamiento
+      entrenamiento={entrenamiento}
+      loading={isLoadingEjercicios && isLoadingEntrenamiento}
+      editar={editar}
+    />,
+    editar ? null : <TarjetaEntrenamiento entrenamiento={entrenamiento} />,
+    editar ? null : <SensacionesEntrenamiento entrenamiento={entrenamiento} />, // HACER QUE SE VEA EL SLIDER
+    editar ? null : <ResumenHistoriaEntrenamiento idsEjercicios={ejercicios} />,
+    ...(ejercicios.length > 0
+      ? ejercicios.map((ejercicio) => (
+          <ResumenEjercicio // TODO: CAMBIAR PARA FUNCIONAR CON API
+            idEjercicio={parseInt(ejercicio)}
+            idEntrenamiento={parseInt(entrenamiento.id)}
             editar={editar}
           />
         ))

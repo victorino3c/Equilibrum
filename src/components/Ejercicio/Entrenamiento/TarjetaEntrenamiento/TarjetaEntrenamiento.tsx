@@ -5,31 +5,37 @@ import TarjetaDuracion from './TarjetaDuracion';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-//TEMP
-import { findEntrenamientoById } from '~/assets/ejercicio/entrenamientos';
+import { getProfileById } from '@api/profile';
+
+import { Database } from '~/src/database.types';
+import Skeleton from '~/src/components/Utils/SkeletonView';
 
 type TarjetaEntrenamientoProps = {
-  idEntrenamiento: number;
+  entrenamiento: Database['public']['Tables']['entrenamiento']['Row'];
 };
 
-const TarjetaEntrenamiento = ({ idEntrenamiento }: TarjetaEntrenamientoProps) => {
+const TarjetaEntrenamiento = ({ entrenamiento }: TarjetaEntrenamientoProps) => {
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
+
+  const { data: profile, isLoading: isLoadingProfile } = getProfileById(entrenamiento.user_id);
 
   const [currentPage, setCurrentPage] = React.useState(0);
 
-  const entrenamiento = findEntrenamientoById(idEntrenamiento);
+  if (isLoadingProfile) {
+    return <Skeleton height={400} />;
+  }
 
   if (!entrenamiento) {
     return null;
   }
 
   const EntrenamientoData = {
-    username: entrenamiento.idUsuario,
-    entrenamientoNumber: entrenamiento.Numero,
-    kcal: entrenamiento.Calorias,
-    duration: entrenamiento.Duracion,
-    weight: entrenamiento.Volumen.toString() + ' kg',
-    series: entrenamiento.Series,
+    username: profile?.username || '',
+    entrenamientoNumber: entrenamiento.numero,
+    kcal: entrenamiento.calorias,
+    duration: entrenamiento.duracion,
+    weight: entrenamiento.volumen,
+    series: entrenamiento.series,
   };
 
   const data = [

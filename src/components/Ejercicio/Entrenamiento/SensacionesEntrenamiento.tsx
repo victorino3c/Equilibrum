@@ -2,23 +2,22 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 
 import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
+import { Database } from '~/src/database.types';
 
-const sensaciones: Record<number, [string, string, string]> = {
-  1: ['Muy negativo', '😫', '#ff0000'],
-  2: ['Negativo', '😪', '#990000'],
-  3: ['Neutro', '😐', '#222222'],
-  4: ['Positivo', '😄', '#009900'],
-  5: ['Muy positivo', '😁', '#00ee00'],
+const sensaciones: Record<string, [string, string]> = {
+  'Muy negativo': ['😫', '#ff0000'],
+  Negativo: ['😪', '#990000'],
+  Neutro: ['😐', '#222222'],
+  Positivo: ['😄', '#009900'],
+  'Muy positivo': ['😁', '#00ee00'],
 };
 
 type SensacionesEntrenamientoProps = {
-  fecha: string;
+  entrenamiento: Database['public']['Tables']['entrenamiento']['Row'];
 };
 
-const SensacionesEntrenamiento = ({ fecha }: SensacionesEntrenamientoProps) => {
-  const actual: EntrenamientosType | null = findEntrenamientoByDate(fecha);
-
-  if (!actual || !actual.Sensacion) {
+const SensacionesEntrenamiento = ({ entrenamiento }: SensacionesEntrenamientoProps) => {
+  if (!entrenamiento || !entrenamiento.sensacion) {
     return null;
   }
 
@@ -26,9 +25,9 @@ const SensacionesEntrenamiento = ({ fecha }: SensacionesEntrenamientoProps) => {
     <View style={styles.container}>
       <Text style={styles.tittle}>Sensaciones Entrenamiento</Text>
       <View style={styles.info}>
-        <Text style={styles.infoText}>{sensaciones[actual.Sensacion][1]}</Text>
-        <Text style={[styles.infoText, { color: sensaciones[actual.Sensacion][2] }]}>
-          {sensaciones[actual.Sensacion][0]}
+        <Text style={styles.infoText}>{sensaciones[entrenamiento.sensacion][0]}</Text>
+        <Text style={[styles.infoText, { color: sensaciones[entrenamiento.sensacion][1] }]}>
+          {entrenamiento.sensacion}
         </Text>
       </View>
     </View>

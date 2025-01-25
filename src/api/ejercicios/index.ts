@@ -38,3 +38,21 @@ export const useGetEjercicioById = (id: string) => {
     enabled: !!id, // Solo se ejecuta si hay un ID
   });
 };
+
+// Hook personalizado para obtener los ejercicios de un entrenamiento
+export const getEjerciciosFromIds = (ids: string[]) => {
+  if (!ids) {
+    throw new Error('No ids');
+  }
+
+  return useQuery({
+    queryKey: ['ejercicios', ids],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('ejercicios').select().in('id', ids);
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+  });
+};

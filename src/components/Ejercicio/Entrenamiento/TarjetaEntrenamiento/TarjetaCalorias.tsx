@@ -5,11 +5,11 @@ import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 type TarjetaCaloriasProps = {
   username: string;
-  entrenamientoNumber: string;
-  kcal: number;
-  duration: string;
-  weight: string;
-  series: number;
+  entrenamientoNumber: number;
+  kcal: number | null;
+  duration: number | null;
+  weight: number | null;
+  series: number | null;
 };
 
 const TarjetaCalorias = (props: TarjetaCaloriasProps) => {
@@ -38,7 +38,7 @@ const TarjetaCalorias = (props: TarjetaCaloriasProps) => {
         </View>
         <View style={styles.footerItem}>
           <MaterialIcons name="fitness-center" size={30} color="#6608ff" />
-          <Text style={styles.footerText}>{props.weight}</Text>
+          <Text style={styles.footerText}>{props.weight} kg</Text>
         </View>
         <View style={styles.footerItem}>
           <Text style={[styles.footerText, styles.seriesText]}>S</Text>

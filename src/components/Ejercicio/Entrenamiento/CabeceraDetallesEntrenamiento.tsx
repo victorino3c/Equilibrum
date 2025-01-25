@@ -14,23 +14,23 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-//TEMP
-import { EntrenamientosType, findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
+import { Database } from '~/src/database.types';
+import Skeleton from '../../Utils/SkeletonView';
 
 type CabeceraDetallesEntrenamientoProps = {
-  fecha: string;
+  entrenamiento: Database['public']['Tables']['entrenamiento']['Row'];
+  loading?: boolean;
   editar?: boolean;
 };
 
-const CabeceraDetallesEntrenamiento = ({ fecha, editar }: CabeceraDetallesEntrenamientoProps) => {
-  const actual: EntrenamientosType | null = findEntrenamientoByDate(fecha);
-  const [date, setDate] = useState(new Date(fecha));
+const CabeceraDetallesEntrenamiento = ({
+  entrenamiento,
+  loading = false,
+  editar,
+}: CabeceraDetallesEntrenamientoProps) => {
+  const [date, setDate] = useState(moment(entrenamiento.fecha).toDate());
   const [show, setShow] = useState(false);
-  const [duracion, setDuracion] = useState(actual?.Duracion || '');
-
-  if (!actual) {
-    return null;
-  }
+  const [duracion, setDuracion] = useState<string>(entrenamiento?.duracion?.toString() || '');
 
   const onChange = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || date;
@@ -42,14 +42,18 @@ const CabeceraDetallesEntrenamiento = ({ fecha, editar }: CabeceraDetallesEntren
     setShow(true);
   };
 
+  if (loading) {
+    return <Skeleton height={160} />;
+  }
+
   return (
     <View style={styles.container}>
       <TextInput style={styles.tittle} editable={editar}>
-        {actual.Nombre}
+        {entrenamiento.titulo}
       </TextInput>
-      {actual.Descripcion && (
+      {entrenamiento.notas && (
         <TextInput style={styles.descripcion} editable={editar} multiline={true} numberOfLines={4}>
-          {actual.Descripcion}
+          {entrenamiento.notas}
         </TextInput>
       )}
       <View style={styles.info}>
@@ -63,7 +67,7 @@ const CabeceraDetallesEntrenamiento = ({ fecha, editar }: CabeceraDetallesEntren
             </TouchableOpacity>
           ) : (
             <Text style={[styles.text, editar && { color: '#6608ff' }]}>
-              {moment(fecha).format('DD MMM, YYYY')}
+              {moment(entrenamiento.fecha).format('DD MMM, YYYY')}
             </Text>
           )}
         </View>

@@ -16,7 +16,8 @@ export const getEntrenamientos = () => {
 
       const { data, error } = await supabase
         .from('entrenamiento')
-        .select('id, fecha')
+        //.select('id, fecha')
+        .select()
         .eq('user_id', userId);
 
       if (error) throw new Error(error.message);
@@ -29,10 +30,35 @@ export const getEntrenamientos = () => {
 
 // Hook personalizado para obtener un entrenamiento
 export const getEntrenamiento = (id: string) => {
+  if (!id) {
+    throw new Error('No id');
+  }
+
   return useQuery({
     queryKey: ['entrenamiento', id],
     queryFn: async () => {
-      const { data, error } = await supabase.from('entrenamiento').select().eq('id', id);
+      const { data, error } = await supabase.from('entrenamiento').select().eq('id', id).single();
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+  });
+};
+
+// Hook personalizado para obtener los ejercicios de un entrenamiento
+export const getEjerciciosEntrenamiento = (idEntrenamiento: string) => {
+  if (!idEntrenamiento) {
+    throw new Error('No id');
+  }
+
+  return useQuery({
+    queryKey: ['ejerciciosEntrenamiento', idEntrenamiento],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ejercicios_entrenamiento')
+        .select('id_ejercicio')
+        .eq('id_entrenamiento', idEntrenamiento);
 
       if (error) throw new Error(error.message);
 

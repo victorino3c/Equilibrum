@@ -22,3 +22,16 @@ export const getProfile = () => {
     },
   });
 };
+
+export const getProfileById = (id: string) => {
+  return useQuery({
+    queryKey: ['profile', id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('profiles').select().eq('id', id).single();
+
+      if (error) throw Error(error.message);
+
+      return data;
+    },
+  });
+};

@@ -2,17 +2,25 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import React from 'react';
 
+import moment from 'moment';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Database } from '~/src/database.types';
+import Skeleton from '../../Utils/SkeletonView';
 
 type EjercicioProps = {
-  Entrenamiento: any;
-  Fecha: moment.Moment;
+  entrenamiento: Database['public']['Tables']['entrenamiento']['Row'] | null;
+  loading?: boolean;
 };
 
-const Ejercicio = ({ Entrenamiento, Fecha }: EjercicioProps) => {
-  if (Entrenamiento === null) {
+const Ejercicio = ({ entrenamiento, loading }: EjercicioProps) => {
+  if (loading) {
+    return <Skeleton height={160} />;
+  }
+
+  if (entrenamiento === undefined || entrenamiento === null) {
     return (
       <View style={styles.container}>
         <Text style={[styles.titulo, { textAlign: 'center', paddingVertical: 30 }]}>
@@ -23,34 +31,35 @@ const Ejercicio = ({ Entrenamiento, Fecha }: EjercicioProps) => {
   }
 
   return (
-    <Link href={`/Ejercicio/DetallesEntrenamiento?fecha=${Fecha.format('YYYY-MM-DD')}`} asChild>
+    <Link href={`/Ejercicio/DetallesEntrenamiento?id=${entrenamiento.id}`} asChild>
       <TouchableOpacity style={styles.container}>
         <View style={styles.tituloView}>
-          <View style={[styles.izq, Entrenamiento.Imagen && { flex: 1 }]}>
-            <Text style={styles.titulo}>{Entrenamiento.Nombre} </Text>
-            <Text style={styles.titulo}>• {Entrenamiento.Calorias} kcal</Text>
+          <View style={[styles.izq, entrenamiento.imagen && { flex: 1 }]}>
+            <Text style={styles.titulo}>{entrenamiento.titulo} </Text>
+            <Text style={styles.titulo}>• {entrenamiento.calorias} kcal</Text>
             <Ionicons name="flame-outline" size={24} color="#FF6F15" />
           </View>
-          {Entrenamiento.Imagen && <Feather name="image" size={24} color="#777777" />}
+          {entrenamiento.imagen && <Feather name="image" size={24} color="#777777" />}
         </View>
         <View style={styles.tituloView}>
           <Text style={styles.text}>
-            #{Entrenamiento.Numero} • {Fecha.format('dddd D, MMMM, YYYY').toLowerCase()}
+            #{entrenamiento.numero} •{' '}
+            {moment(entrenamiento.fecha).format('dddd D, MMMM, YYYY').toLowerCase()}
           </Text>
         </View>
         <View style={styles.separator} />
         <View style={[styles.tituloView, { justifyContent: 'space-between' }]}>
           <View style={styles.info}>
             <AntDesign name="clockcircleo" size={24} color="#6608ff" />
-            <Text style={styles.textInfo}>{Entrenamiento.Duracion} h</Text>
+            <Text style={styles.textInfo}>{entrenamiento.duracion} h</Text>
           </View>
           <View style={styles.info}>
             <Text style={{ fontFamily: 'IcoMoon', fontSize: 24, color: '#6608ff' }}>&#xe901;</Text>
-            <Text style={styles.textInfo}>{Entrenamiento.Volumen} kg</Text>
+            <Text style={styles.textInfo}>{entrenamiento.volumen} kg</Text>
           </View>
           <View style={styles.info}>
             <Text style={{ fontSize: 24, color: '#6608ff' }}>S</Text>
-            <Text style={styles.textInfo}>{Entrenamiento.Series} series</Text>
+            <Text style={styles.textInfo}>{entrenamiento.series} series</Text>
           </View>
         </View>
       </TouchableOpacity>
