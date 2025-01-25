@@ -3,23 +3,21 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
 
-//TEMP
-import {
-  getNumeroSeriesByEjercicio,
-  getVolumenByEjercicio,
-  getCaloriasByEjercicio,
-} from '~/assets/ejercicio/entrenamientos';
-
 import { getEjerciciosFromIds } from '@api/ejercicios';
+import { getVolumenByEjercicio, getSeriesByEjercicioAndEntrenamiento } from '@api/series';
 
-import Skeleton from '../../Utils/SkeletonView';
+import Skeleton from '@components/Utils/SkeletonView';
 
 type ResumenHistoriaEntrenamientoProps = {
   idsEjercicios: string[];
+  idEntrenamiento?: string;
 };
 
 // Define the component for the visual summary
-const ResumenHistoriaEntrenamiento = ({ idsEjercicios }: ResumenHistoriaEntrenamientoProps) => {
+const ResumenHistoriaEntrenamiento = ({
+  idsEjercicios,
+  idEntrenamiento,
+}: ResumenHistoriaEntrenamientoProps) => {
   // Get the exercises for the training
   const { data: ejercicios, isLoading, error } = getEjerciciosFromIds(idsEjercicios);
 
@@ -35,11 +33,21 @@ const ResumenHistoriaEntrenamiento = ({ idsEjercicios }: ResumenHistoriaEntrenam
     return null;
   }
 
+  // TODO: De momento, solo mira datos de supabase. Quiero añadir datos del entrenamiento actual o directo desde API siempre?
+
   // Create the data for the timeline
-  const data = ejercicios.map((ejercicio) => ({
-    title: ejercicio.nombre,
-    description: `${getCaloriasByEjercicio(ejercicio.id)} kcal • ${getNumeroSeriesByEjercicio(ejercicio.id)} series ${ejercicio.tipo_ejercicio === 'fuerza' ? '• ' + getVolumenByEjercicio(ejercicio.id) + ' kg' : ''}`,
-  }));
+  const data = ejercicios.map((ejercicio) => {
+    const series = getSeriesByEjercicioAndEntrenamiento(
+      ejercicio.id,
+      idEntrenamiento ?? '',
+      ejercicio.tipo_ejercicio
+    ).data;
+
+    return {
+      title: ejercicio.nombre,
+      description: `${series?.reduce((acc, serie) => acc + (serie.calorias ?? 0), 0)} kcal • ${series?.length} series ${ejercicio.tipo_ejercicio === 'fuerza' ? '• ' + series?.reduce((acc, serie) => acc + (serie.calorias ?? 0), 0) + ' kg' : ''}`,
+    };
+  });
 
   return (
     <View style={styles.container}>

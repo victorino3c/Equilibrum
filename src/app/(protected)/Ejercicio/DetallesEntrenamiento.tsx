@@ -51,8 +51,10 @@ const DetallesEntrenamiento = () => {
       editar={editar}
     />,
     editar ? null : <TarjetaEntrenamiento entrenamiento={entrenamiento} />,
-    editar ? null : <SensacionesEntrenamiento entrenamiento={entrenamiento} />, // HACER QUE SE VEA EL SLIDER
-    editar ? null : <ResumenHistoriaEntrenamiento idsEjercicios={ejercicios} />,
+    editar ? null : <SensacionesEntrenamiento entrenamiento={entrenamiento} />, // TODO: HACER QUE SE VEA EL SLIDER
+    editar ? null : (
+      <ResumenHistoriaEntrenamiento idsEjercicios={ejercicios} idEntrenamiento={entrenamiento.id} />
+    ),
     ...(ejercicios.length > 0
       ? ejercicios.map((ejercicio) => (
           <ResumenEjercicio // TODO: CAMBIAR PARA FUNCIONAR CON API
