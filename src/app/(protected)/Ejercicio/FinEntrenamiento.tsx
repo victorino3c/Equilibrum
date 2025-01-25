@@ -1,18 +1,49 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { Stack, Link } from 'expo-router';
-import CabeceraEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCurso/CabeceraEntrenamiento';
-
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { memo, useState, useEffect } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
-import React, { memo } from 'react';
-import CustomInput from '~/src/components/Utils/CustomInput';
+import { entrenamientoStore } from '@store/Entrenamientostore';
+
+import CustomInput from '@components/Utils/CustomInput';
+import SensacionesFinEntrenamiento from '@components/Ejercicio/Entrenamiento/EnCurso/SensacionesFinEntrenamiento';
+
+import { Entypo } from '@expo/vector-icons';
 
 const FinEntrenamiento = () => {
-  const insets = useSafeAreaInsets();
+  const [titulo, setTitulo] = useState('');
+  const [notas, setNotas] = useState('');
+  const [sensaciones, setSensaciones] = useState<number>(0);
 
-  const { stopTimer, ejercicios } = entrenamientoStore();
+  const {
+    ejercicios,
+    resetEntrenamiento,
+    setTitulo: setTituloStore,
+    setNotas: setNotasStore,
+  } = entrenamientoStore();
+
+  useEffect(() => {
+    setTituloStore(titulo);
+    setNotasStore(notas);
+  }, [titulo, notas]);
+
+  const handleDescartar = () => {
+    Alert.alert(
+      'Descartar entrenamiento',
+      '¿Estás seguro de que quieres descartar el entrenamiento?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Descartar',
+          onPress: () => {
+            resetEntrenamiento();
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
@@ -21,6 +52,8 @@ const FinEntrenamiento = () => {
         placeholder="Titulo del entrenamiento"
         style={{ marginTop: 20, marginHorizontal: 10 }}
         textStyle={{ fontSize: 20, fontWeight: 'bold' }}
+        texto={titulo}
+        setTexto={setTitulo}
       />
       <CustomInput
         placeholder="Notas del entrenamiento"
@@ -28,7 +61,14 @@ const FinEntrenamiento = () => {
         //textStyle={{ flex: 1 }}
         multiline={true}
         nol={4}
+        texto={notas}
+        setTexto={setNotas}
       />
+      <SensacionesFinEntrenamiento value={sensaciones} setValue={setSensaciones} />
+      <TouchableOpacity style={styles.buttonDescartar} onPress={handleDescartar}>
+        <Entypo name="circle-with-cross" size={26} color="#E34716" />
+        <Text style={styles.descartarTexto}>Descartar entrenamiento</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -68,5 +108,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 90,
     //textAlign: 'right',
+  },
+  buttonDescartar: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 40,
+    gap: 10,
+  },
+  descartarTexto: {
+    color: '#E34716',
+    fontWeight: '700',
+    fontSize: 18,
   },
 });

@@ -16,7 +16,7 @@ export type Database = {
           descripcion: string | null
           id: string
           imagen: string | null
-          musculos: Database["public"]["Enums"]["musculos_enum"][]
+          musculos: Database["public"]["Enums"]["musculos_enum"][] | null
           nombre: string
           tipo_ejercicio: Database["public"]["Enums"]["tipo_ejercicio_enum"]
         }
@@ -26,7 +26,7 @@ export type Database = {
           descripcion?: string | null
           id?: string
           imagen?: string | null
-          musculos: Database["public"]["Enums"]["musculos_enum"][]
+          musculos?: Database["public"]["Enums"]["musculos_enum"][] | null
           nombre: string
           tipo_ejercicio: Database["public"]["Enums"]["tipo_ejercicio_enum"]
         }
@@ -36,11 +36,91 @@ export type Database = {
           descripcion?: string | null
           id?: string
           imagen?: string | null
-          musculos?: Database["public"]["Enums"]["musculos_enum"][]
+          musculos?: Database["public"]["Enums"]["musculos_enum"][] | null
           nombre?: string
           tipo_ejercicio?: Database["public"]["Enums"]["tipo_ejercicio_enum"]
         }
         Relationships: []
+      }
+      ejercicios_entrenamiento: {
+        Row: {
+          created_at: string
+          id_ejercicio: string
+          id_entrenamiento: string
+        }
+        Insert: {
+          created_at?: string
+          id_ejercicio?: string
+          id_entrenamiento?: string
+        }
+        Update: {
+          created_at?: string
+          id_ejercicio?: string
+          id_entrenamiento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ejercicios_entrenamiento_id_ejercicio_fkey"
+            columns: ["id_ejercicio"]
+            isOneToOne: false
+            referencedRelation: "ejercicios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ejercicios_entrenamiento_id_entrenamiento_fkey"
+            columns: ["id_entrenamiento"]
+            isOneToOne: false
+            referencedRelation: "entrenamiento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entrenamiento: {
+        Row: {
+          calorias: number | null
+          created_at: string
+          duracion: number | null
+          fecha: string
+          id: string
+          notas: string | null
+          sensacion: Database["public"]["Enums"]["sensaciones_enum"] | null
+          titulo: string | null
+          user_id: string
+          volumen: number | null
+        }
+        Insert: {
+          calorias?: number | null
+          created_at?: string
+          duracion?: number | null
+          fecha: string
+          id?: string
+          notas?: string | null
+          sensacion?: Database["public"]["Enums"]["sensaciones_enum"] | null
+          titulo?: string | null
+          user_id?: string
+          volumen?: number | null
+        }
+        Update: {
+          calorias?: number | null
+          created_at?: string
+          duracion?: number | null
+          fecha?: string
+          id?: string
+          notas?: string | null
+          sensacion?: Database["public"]["Enums"]["sensaciones_enum"] | null
+          titulo?: string | null
+          user_id?: string
+          volumen?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entrenamiento_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       objetivos: {
         Row: {
@@ -139,6 +219,138 @@ export type Database = {
         }
         Relationships: []
       }
+      series_calistenia: {
+        Row: {
+          calorias: number | null
+          created_at: string
+          id: string
+          id_ejercicio: string | null
+          id_entrenamiento: string | null
+          repeticiones: number | null
+        }
+        Insert: {
+          calorias?: number | null
+          created_at?: string
+          id?: string
+          id_ejercicio?: string | null
+          id_entrenamiento?: string | null
+          repeticiones?: number | null
+        }
+        Update: {
+          calorias?: number | null
+          created_at?: string
+          id?: string
+          id_ejercicio?: string | null
+          id_entrenamiento?: string | null
+          repeticiones?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_calistenia_id_ejercicio_fkey"
+            columns: ["id_ejercicio"]
+            isOneToOne: false
+            referencedRelation: "ejercicios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "series_calistenia_id_entrenamiento_fkey"
+            columns: ["id_entrenamiento"]
+            isOneToOne: false
+            referencedRelation: "entrenamiento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      series_cardio: {
+        Row: {
+          calorias: number | null
+          created_at: string
+          distancia: number | null
+          duracion: number | null
+          id: string
+          id_ejercicio: string | null
+          id_entrenamiento: string | null
+        }
+        Insert: {
+          calorias?: number | null
+          created_at?: string
+          distancia?: number | null
+          duracion?: number | null
+          id?: string
+          id_ejercicio?: string | null
+          id_entrenamiento?: string | null
+        }
+        Update: {
+          calorias?: number | null
+          created_at?: string
+          distancia?: number | null
+          duracion?: number | null
+          id?: string
+          id_ejercicio?: string | null
+          id_entrenamiento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_cardio_id_ejercicio_fkey"
+            columns: ["id_ejercicio"]
+            isOneToOne: false
+            referencedRelation: "ejercicios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "series_cardio_id_entrenamiento_fkey"
+            columns: ["id_entrenamiento"]
+            isOneToOne: false
+            referencedRelation: "entrenamiento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      series_fuerza: {
+        Row: {
+          calorias: number | null
+          created_at: string
+          id: string
+          id_ejercicio: string | null
+          id_entrenamiento: string | null
+          peso: number | null
+          repeticiones: number | null
+        }
+        Insert: {
+          calorias?: number | null
+          created_at?: string
+          id?: string
+          id_ejercicio?: string | null
+          id_entrenamiento?: string | null
+          peso?: number | null
+          repeticiones?: number | null
+        }
+        Update: {
+          calorias?: number | null
+          created_at?: string
+          id?: string
+          id_ejercicio?: string | null
+          id_entrenamiento?: string | null
+          peso?: number | null
+          repeticiones?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_fuerza_id_ejercicio_fkey"
+            columns: ["id_ejercicio"]
+            isOneToOne: false
+            referencedRelation: "ejercicios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "series_fuerza_id_entrenamiento_fkey"
+            columns: ["id_entrenamiento"]
+            isOneToOne: false
+            referencedRelation: "entrenamiento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -171,6 +383,12 @@ export type Database = {
         | "Oblicuos externos"
         | "Oblicuos internos"
         | "Transverso abdominal"
+      sensaciones_enum:
+        | "Muy negativo"
+        | "Negativo"
+        | "Neutro"
+        | "Positivo"
+        | "Muy positivo"
       tipo_ejercicio_enum: "cardio" | "calistenia" | "fuerza"
     }
     CompositeTypes: {

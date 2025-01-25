@@ -61,6 +61,7 @@ const SueñoHidratacion = ({
       updateObjetivosDiariosSueñoByFecha({ fecha, sueño: parseInt(text) });
     } catch (error) {
       console.error(error);
+      objetivoHidratacion;
     }
   };
 

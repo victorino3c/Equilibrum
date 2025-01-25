@@ -6,7 +6,7 @@ import { rutinaStore } from '~/src/store/RutinaStore';
 import { SerieCardioType } from '~/src/types/types';
 
 //TEMP
-import { findSeriesCardioByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
+import { findSeriesCardioByEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCardioProps = {
@@ -47,7 +47,8 @@ const CuerpoResumenEjercicioCardio = ({
 
   let series;
   if (!actual && !idRutina && idEntrenamiento) {
-    series = findSeriesCardioByEntrenamientoAndEjercicio(
+    series = findSeriesCardioByEjercicio(
+      //TODO: Cambiar a api de supabase (busca por ej y ent)
       idEntrenamiento || -1,
       parseInt(idEjercicio)
     );

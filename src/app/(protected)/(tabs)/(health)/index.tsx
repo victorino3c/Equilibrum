@@ -7,17 +7,18 @@ import { NutricionType, findNutricionByDate } from '~/assets/nutricion/nutricion
 
 //import { useObjetivos } from '@providers/ObjetivosProvider';
 import { getObjetivos } from '@api/objetivos';
+import { getEntrenamientos } from '@api/entrenamientos';
+import { entrenamientoStore } from '@store/Entrenamientostore';
 
 import Formula from '@components/Health/Formula';
 import SueñoHidratacion from '@components/Health/SueñoHidratacion';
-import Sueño from '~/src/components/Health/Sueño';
-import Agua from '~/src/components/Health/Agua';
 import CustomCalendar from '@components/Health/Calendar';
 import CalendarioReplegado from '@components/Utils/CalendarioReplegado';
-import moment from 'moment';
 import TwoOptionsButton from '@components/Buttons/TwoOptions';
 import Ejercicio from '@components/Health/Ejercicio/Ejercicio';
 import Nutricion from '@components/Health/Nutricion/Nutricion';
+
+import moment from 'moment';
 
 export default function HealthLayout() {
   const [calendar, setCalendar] = useState<string>('R');
@@ -28,6 +29,8 @@ export default function HealthLayout() {
 
   //const { objetivos } = useObjetivos();
   const { data: objetivos, isLoading: isLoadingObjetivos } = getObjetivos();
+  const { data: entrenamientos, isLoading: isLoadingEntrenamientos } = getEntrenamientos(); // Para ajustar bottom padding de scrollview
+  const { entrenamientoTerminado } = entrenamientoStore();
 
   const getEjercicio = (date: string): EntrenamientosType | null => {
     return findEntrenamientoByDate(date);
@@ -46,15 +49,18 @@ export default function HealthLayout() {
   return (
     <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 70 }}
+        contentContainerStyle={
+          entrenamientoTerminado ? { paddingBottom: 70 } : { paddingBottom: 170 }
+        }
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}>
         {calendar === 'R' ? (
           <CalendarioReplegado
             onSelectDate={(date) => setSelectedDate(date)}
             onCalendarChange={setCalendar}
+            entrenamientos={entrenamientos}
             selected={selectedDate}
-            loading={isLoadingObjetivos}
+            loading={isLoadingObjetivos && isLoadingEntrenamientos}
           />
         ) : (
           <CustomCalendar

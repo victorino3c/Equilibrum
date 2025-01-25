@@ -6,7 +6,7 @@ import rutinaStore from '~/src/store/RutinaStore';
 import { SerieCalisteniaType } from '~/src/types/types';
 
 //TEMP
-import { findSeriesCalisteniaByEntrenamientoAndEjercicio } from '~/assets/ejercicio/entrenamientos';
+import { findSeriesCalisteniaByEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCalisteniaProps = {
@@ -37,7 +37,8 @@ const CuerpoResumenEjercicioCalistenia = ({
 
   let series;
   if (!actual && !idRutina && idEntrenamiento) {
-    series = findSeriesCalisteniaByEntrenamientoAndEjercicio(
+    series = findSeriesCalisteniaByEjercicio(
+      //TODO: Cambiar a api de supabase (busca por ej y ent)
       idEntrenamiento || -1,
       parseInt(idEjercicio)
     );

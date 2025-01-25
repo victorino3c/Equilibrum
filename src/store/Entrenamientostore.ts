@@ -13,7 +13,7 @@ import moment from 'moment';
 export interface EntrenamientoState {
   isRunning: boolean; // El cronómetro está en marcha
   entrenamientoTerminado: boolean; // El entrenamiento ha terminado
-  nombre: string;
+  titulo: string;
   notas: string;
   sensacion: number;
   imagen: string[];
@@ -30,7 +30,7 @@ export interface EntrenamientoState {
   setSeconds: (seconds: number) => void;
   setIsRunning: (isRunning: boolean) => void;
   setEntrenamientoTerminado: (entrenamientoTerminado: boolean) => void;
-  setNombre: (nombre: string) => void;
+  setTitulo: (titulo: string) => void;
   setNotas: (notas: string) => void;
   setSensacion: (sensacion: number) => void;
   setImagen: (imagen: string) => void;
@@ -69,7 +69,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
     (set) => ({
       isRunning: false,
       entrenamientoTerminado: false,
-      nombre: '',
+      titulo: '',
       notas: '',
       sensacion: 0,
       imagen: [],
@@ -87,7 +87,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       setEntrenamientoTerminado: (entrenamientoTerminado: boolean) =>
         set({ entrenamientoTerminado }),
       setIsRunning: (isRunning: boolean) => set({ isRunning }),
-      setNombre: (nombre: string) => set({ nombre }),
+      setTitulo: (titulo: string) => set({ titulo }),
       setNotas: (notas: string) => set({ notas }),
       setSensacion: (sensacion: number) => set({ sensacion }),
       setImagen: (imagen: string) => set((state) => ({ imagen: [...state.imagen, imagen] })),
@@ -256,6 +256,9 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           seconds: 0,
           volumen: 0,
           calorias: 0,
+          titulo: '',
+          notas: '',
+          sensacion: 0,
           fecha: moment().format('YYYY-MM-DD'),
           ejercicios: [],
           seriesCardio: [],

@@ -6,9 +6,9 @@ import Timeline from 'react-native-timeline-flatlist';
 //TEMP
 import {
   findEjerciciosByEntrenamiento,
-  getNumeroSeriesByEjercicioAndEntrenamiento,
-  getVolumenByEjercicioAndEntrenamiento,
-  getCaloriasByEjercicioAndEntrenamiento,
+  getNumeroSeriesByEjercicio,
+  getVolumenByEjercicio,
+  getCaloriasByEjercicio,
 } from '~/assets/ejercicio/entrenamientos';
 
 import { TipoEjercicio } from 'src/types/types';
@@ -29,7 +29,7 @@ const ResumenHistoriaEntrenamiento = ({ idEntrenamiento }: ResumenHistoriaEntren
   // Create the data for the timeline
   const data = ejercicios.map((ejercicio) => ({
     title: ejercicio.Nombre,
-    description: `${getCaloriasByEjercicioAndEntrenamiento(ejercicio.id, idEntrenamiento)} kcal • ${getNumeroSeriesByEjercicioAndEntrenamiento(ejercicio.id, idEntrenamiento)} series ${ejercicio.tipo === TipoEjercicio.Fuerza ? '• ' + getVolumenByEjercicioAndEntrenamiento(ejercicio.id, idEntrenamiento) + ' kg' : ''}`,
+    description: `${getCaloriasByEjercicio(ejercicio.id)} kcal • ${getNumeroSeriesByEjercicio(ejercicio.id)} series ${ejercicio.tipo === TipoEjercicio.Fuerza ? '• ' + getVolumenByEjercicio(ejercicio.id) + ' kg' : ''}`,
   }));
 
   return (

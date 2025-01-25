@@ -6,7 +6,6 @@ import Date from '../Utils/Date';
 import { useFocusEffect } from '@react-navigation/native';
 
 // TEMP
-import { findEntrenamientoByDate } from '~/assets/ejercicio/entrenamientos';
 import { findNutricionByDate } from '~/assets/nutricion/nutricion';
 
 import Feather from '@expo/vector-icons/Feather';
@@ -15,6 +14,7 @@ import Skeleton from './SkeletonView';
 interface CalendarioReplegadoProps {
   onSelectDate: (date: moment.Moment) => void;
   onCalendarChange: (tipo: string) => void;
+  entrenamientos: { id: string; fecha: string }[] | undefined;
   selected: moment.Moment;
   tipo?: string;
   loading?: boolean;
@@ -23,6 +23,7 @@ interface CalendarioReplegadoProps {
 const CalendarioReplegado = ({
   onSelectDate,
   onCalendarChange,
+  entrenamientos = [],
   selected,
   tipo,
   loading = true,
@@ -40,12 +41,16 @@ const CalendarioReplegado = ({
 
       // Check if the date has a training
       if (tipo !== 'Nutricion') {
-        const training = findEntrenamientoByDate(date.format('YYYY-MM-DD'));
+        const training = entrenamientos.find(
+          (entrenamiento) =>
+            moment(entrenamiento.fecha).format('YYYY-MM-DD') === date.format('YYYY-MM-DD')
+        );
         visualization = training ? 1 : 0;
       }
 
       // Check if the date has a nutrition
       if (tipo !== 'Ejercicio') {
+        //HACER LO MISMO AQUI QUE CON LOS ENTRENAMIENTOS
         const nutrition = findNutricionByDate(date.format('YYYY-MM-DD'));
         visualization += nutrition ? 2 : 0;
       }

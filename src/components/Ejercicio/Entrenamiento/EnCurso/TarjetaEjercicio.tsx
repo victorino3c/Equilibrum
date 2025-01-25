@@ -1,21 +1,19 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Pressable } from 'react-native';
 import React, { useState } from 'react';
-
-//TEMP
-import { findEjercicioById } from '~/assets/ejercicio/entrenamientos';
-import { useGetEjercicioById } from '@api/ejercicios';
+import { Link } from 'expo-router';
 
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
-import CuerpoResumenEjercicioCardio from '../CuerpoResumenEjercicioCardio';
-import CuerpoResumenEjercicioFuerza from '../CuerpoResumenEjercicioFuerza';
-import CuerpoResumenEjercicioCalistenia from '../CuerpoResumenEjercicioCalistenia';
+import CuerpoResumenEjercicioCardio from '@components/Ejercicio/Entrenamiento/CuerpoResumenEjercicioCardio';
+import CuerpoResumenEjercicioFuerza from '@components/Ejercicio/Entrenamiento/CuerpoResumenEjercicioFuerza';
+import CuerpoResumenEjercicioCalistenia from '@components/Ejercicio/Entrenamiento/CuerpoResumenEjercicioCalistenia';
+import Skeleton from '@components/Utils/SkeletonView';
 
-import { entrenamientoStore } from '~/src/store/Entrenamientostore';
-import { rutinaStore } from '~/src/store/RutinaStore';
-import Skeleton from '~/src/components/Utils/SkeletonView';
-import { Link } from 'expo-router';
+import { useGetEjercicioById } from '@api/ejercicios';
+
+import { entrenamientoStore } from '@store/Entrenamientostore';
+import { rutinaStore } from '@store/RutinaStore';
 
 type TarjetaEjercicioProps = {
   idEjercicio: string;

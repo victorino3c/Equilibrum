@@ -5,6 +5,8 @@ interface CustomInputProps {
   style?: any;
   textStyle?: any;
   placeholder: string;
+  texto?: string;
+  setTexto?: (texto: string) => void;
   multiline?: boolean;
   nol?: number;
 }
@@ -13,14 +15,21 @@ const CustomInput = ({
   style,
   textStyle,
   placeholder,
+  texto = '',
+  setTexto,
   multiline = false,
   nol = 1,
 }: CustomInputProps) => {
   return (
     <View style={[styles.inputView, { ...style }]}>
-      <TextInput style={[styles.text, { ...textStyle }]} multiline={multiline} numberOfLines={nol}>
-        {placeholder}
-      </TextInput>
+      <TextInput
+        style={[styles.text, { ...textStyle }, texto !== '' && { color: 'black' }]}
+        multiline={multiline}
+        numberOfLines={nol}
+        placeholder={placeholder}
+        onChangeText={setTexto}
+        value={texto}
+      />
     </View>
   );
 };

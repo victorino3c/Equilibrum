@@ -16,7 +16,7 @@ import IconButton from '../Buttons/IconButton';
 
 const NuevoView = () => {
   const { rutinas, getRutina, getSeriesByEjercicioAndRutina } = rutinaStore();
-  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setNombre, resetEntrenamiento } =
+  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setTitulo, resetEntrenamiento } =
     entrenamientoStore();
 
   //const rutinas = getRutinasByUser('victorino_3c');
@@ -55,7 +55,7 @@ const NuevoView = () => {
       return;
     }
 
-    setNombre(rutina.Nombre);
+    setTitulo(rutina.Nombre);
     setFecha(new Date().toISOString());
 
     rutina.Ejercicios.forEach((element) => {
