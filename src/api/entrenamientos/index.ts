@@ -94,7 +94,9 @@ export const useInsertEntrenamiento = () => {
         .from('entrenamiento')
         .insert([
           { user_id: userId, calorias, notas, titulo, duracion, sensacion, series, volumen, fecha },
-        ]);
+        ])
+        .select()
+        .single();
 
       if (error) throw new Error(error.message);
 

@@ -1,20 +1,41 @@
 import Slider from '@react-native-community/slider';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
+import { Database } from '~/src/database.types';
+
+type Sensaciones = Database['public']['Enums']['sensaciones_enum'];
+
 interface SensacionesFinEntrenamientoProps {
-  value: number;
-  setValue: (value: number) => void;
+  value: Sensaciones;
+  setValue: (value: Sensaciones) => void;
 }
 
 const SensacionesFinEntrenamiento = ({ value, setValue }: SensacionesFinEntrenamientoProps) => {
-  const getEmoji = (value: number) => {
-    if (value == 0) return '😫';
-    if (value == 1) return '😪';
-    if (value == 2) return '😐';
-    if (value == 3) return '😄';
-    if (value == 4) return '😁';
+  const getEmoji = (value: Sensaciones) => {
+    if (value == 'Muy negativo') return '😫';
+    if (value == 'Negativo') return '😪';
+    if (value == 'Neutro') return '😐';
+    if (value == 'Positivo') return '😄';
+    if (value == 'Muy positivo') return '😁';
     return null;
+  };
+
+  const getValor = (value: Sensaciones): number => {
+    if (value == 'Muy negativo') return 0;
+    if (value == 'Negativo') return 1;
+    if (value == 'Neutro') return 2;
+    if (value == 'Positivo') return 3;
+    if (value == 'Muy positivo') return 4;
+    return 2;
+  };
+
+  const setValor = (value: number) => {
+    if (value == 0) setValue('Muy negativo');
+    if (value == 1) setValue('Negativo');
+    if (value == 2) setValue('Neutro');
+    if (value == 3) setValue('Positivo');
+    if (value == 4) setValue('Muy positivo');
   };
 
   return (
@@ -27,22 +48,28 @@ const SensacionesFinEntrenamiento = ({ value, setValue }: SensacionesFinEntrenam
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.labelsContainer}>
-            <TouchableOpacity onPress={() => setValue(0)}>
-              <Text style={[styles.label, value == 0 && { fontWeight: 'bold' }]}>
+            <TouchableOpacity onPress={() => setValue('Muy negativo')}>
+              <Text style={[styles.label, value == 'Muy negativo' && { fontWeight: 'bold' }]}>
                 Muy{'\n'}negativo
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setValue(1)}>
-              <Text style={[styles.label, value == 1 && { fontWeight: 'bold' }]}>Negativo</Text>
+            <TouchableOpacity onPress={() => setValue('Negativo')}>
+              <Text style={[styles.label, value == 'Negativo' && { fontWeight: 'bold' }]}>
+                Negativo
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setValue(2)}>
-              <Text style={[styles.label, value == 2 && { fontWeight: 'bold' }]}>Neutro</Text>
+            <TouchableOpacity onPress={() => setValue('Neutro')}>
+              <Text style={[styles.label, value == 'Neutro' && { fontWeight: 'bold' }]}>
+                Neutro
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setValue(3)}>
-              <Text style={[styles.label, value == 3 && { fontWeight: 'bold' }]}>Positivo</Text>
+            <TouchableOpacity onPress={() => setValue('Positivo')}>
+              <Text style={[styles.label, value == 'Positivo' && { fontWeight: 'bold' }]}>
+                Positivo
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setValue(4)}>
-              <Text style={[styles.label, value == 4 && { fontWeight: 'bold' }]}>
+            <TouchableOpacity onPress={() => setValue('Muy positivo')}>
+              <Text style={[styles.label, value == 'Muy positivo' && { fontWeight: 'bold' }]}>
                 Muy{'\n'}Positivo
               </Text>
             </TouchableOpacity>
@@ -54,13 +81,13 @@ const SensacionesFinEntrenamiento = ({ value, setValue }: SensacionesFinEntrenam
             minimumTrackTintColor="#6608ff"
             minimumValue={0}
             maximumValue={4}
-            value={value}
-            onValueChange={setValue}
+            value={getValor(value)}
+            onValueChange={setValor}
             step={1}
           />
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBar}>
-              <View style={[styles.progress, { width: `${value * 25}%` }]} />
+              <View style={[styles.progress, { width: `${getValor(value) * 25}%` }]} />
             </View>
           </View>
         </View>

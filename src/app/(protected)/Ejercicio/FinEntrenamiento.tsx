@@ -8,25 +8,29 @@ import CustomInput from '@components/Utils/CustomInput';
 import SensacionesFinEntrenamiento from '@components/Ejercicio/Entrenamiento/EnCurso/SensacionesFinEntrenamiento';
 
 import { Entypo } from '@expo/vector-icons';
+import { Database } from '~/src/database.types';
 
 const FinEntrenamiento = () => {
   const {
-    ejercicios,
     resetEntrenamiento,
     titulo: tituloStore,
     notas: notasStore,
+    sensacion: sensacionStore,
     setTitulo: setTituloStore,
     setNotas: setNotasStore,
+    setSensacion: setSensacionStore,
   } = entrenamientoStore();
 
   const [titulo, setTitulo] = useState(tituloStore);
   const [notas, setNotas] = useState(notasStore);
-  const [sensaciones, setSensaciones] = useState<number>(0);
+  const [sensaciones, setSensaciones] =
+    useState<Database['public']['Enums']['sensaciones_enum']>(sensacionStore);
 
   useEffect(() => {
     setTituloStore(titulo);
     setNotasStore(notas);
-  }, [titulo, notas]);
+    setSensacionStore(sensaciones);
+  }, [titulo, notas, sensaciones]);
 
   const handleDescartar = () => {
     Alert.alert(
