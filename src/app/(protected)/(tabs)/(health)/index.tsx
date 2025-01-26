@@ -24,7 +24,9 @@ export default function HealthLayout() {
   const [calendar, setCalendar] = useState<string>('R');
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
   const [mode, setMode] = useState<string>('Ejercicio');
-  const [ejercicio, setEjercicio] = useState<any>(null);
+  const [ejercicio, setEjercicio] = useState<
+    Database['public']['Tables']['entrenamiento']['Row'][] | undefined
+  >(undefined);
   const [nutricion, setNutricion] = useState<any>(null);
 
   const { data: objetivos, isLoading: isLoadingObjetivos } = getObjetivos();
@@ -33,16 +35,11 @@ export default function HealthLayout() {
 
   const getEjercicio = (
     date: string
-  ): Database['public']['Tables']['entrenamiento']['Row'] | undefined => {
-    const entrenamiento = entrenamientos?.find((entrenamiento) => {
+  ): Database['public']['Tables']['entrenamiento']['Row'][] | undefined => {
+    const entrenamiento = entrenamientos?.filter((entrenamiento) => {
       return moment(entrenamiento.fecha).format('YYYY-MM-DD') === date;
     });
-
-    if (entrenamiento) {
-      return entrenamiento;
-    }
-
-    return undefined;
+    return entrenamiento;
   };
 
   const getNutricion = (date: string): NutricionType | null => {
@@ -91,7 +88,9 @@ export default function HealthLayout() {
         <Formula
           objective={objetivos?.calorias?.toString() || '0'}
           nutricion={nutricion?.Calorias || 0}
-          exercise={ejercicio?.Calorias || 0}
+          exercise={(
+            ejercicio?.reduce((acc, curr) => acc + (curr.calorias ?? 0), 0) || 0
+          ).toString()}
           loading={isLoadingObjetivos}
         />
         <SueñoHidratacion
@@ -108,7 +107,13 @@ export default function HealthLayout() {
           loading={false}
         />
         {mode === 'Ejercicio' ? (
-          <Ejercicio entrenamiento={ejercicio} />
+          ejercicio?.length === 0 ? (
+            <Ejercicio key={0} entrenamiento={null} />
+          ) : (
+            ejercicio?.map((entrenamiento) => (
+              <Ejercicio key={entrenamiento.id} entrenamiento={entrenamiento} />
+            ))
+          )
         ) : (
           <Nutricion Nutricion={nutricion} Fecha={selectedDate} />
         )}
