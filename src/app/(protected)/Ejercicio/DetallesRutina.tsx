@@ -28,7 +28,7 @@ const DetallesRutina = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
 
   const { getRutina, getSeriesByEjercicioAndRutina, removeRutina } = rutinaStore();
-  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setNombre, resetEntrenamiento } =
+  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setTitulo, resetEntrenamiento } =
     entrenamientoStore();
 
   const [editar, setEditar] = React.useState(false);
@@ -84,7 +84,7 @@ const DetallesRutina = () => {
       return;
     }
 
-    setNombre(rutina.Nombre);
+    setTitulo(rutina.Nombre);
     setFecha(new Date().toISOString());
 
     rutina.Ejercicios.forEach((element) => {

@@ -231,25 +231,28 @@ export type Database = {
       series_calistenia: {
         Row: {
           calorias: number | null
+          check: boolean
           created_at: string
           id: string
-          id_ejercicio: string | null
+          id_ejercicio: string
           id_entrenamiento: string | null
           repeticiones: number | null
         }
         Insert: {
           calorias?: number | null
+          check?: boolean
           created_at?: string
           id?: string
-          id_ejercicio?: string | null
+          id_ejercicio?: string
           id_entrenamiento?: string | null
           repeticiones?: number | null
         }
         Update: {
           calorias?: number | null
+          check?: boolean
           created_at?: string
           id?: string
-          id_ejercicio?: string | null
+          id_ejercicio?: string
           id_entrenamiento?: string | null
           repeticiones?: number | null
         }
@@ -273,29 +276,32 @@ export type Database = {
       series_cardio: {
         Row: {
           calorias: number | null
+          check: boolean
           created_at: string
           distancia: number | null
           duracion: number | null
           id: string
-          id_ejercicio: string | null
+          id_ejercicio: string
           id_entrenamiento: string | null
         }
         Insert: {
           calorias?: number | null
+          check?: boolean
           created_at?: string
           distancia?: number | null
           duracion?: number | null
           id?: string
-          id_ejercicio?: string | null
+          id_ejercicio: string
           id_entrenamiento?: string | null
         }
         Update: {
           calorias?: number | null
+          check?: boolean
           created_at?: string
           distancia?: number | null
           duracion?: number | null
           id?: string
-          id_ejercicio?: string | null
+          id_ejercicio?: string
           id_entrenamiento?: string | null
         }
         Relationships: [
@@ -318,27 +324,30 @@ export type Database = {
       series_fuerza: {
         Row: {
           calorias: number | null
+          check: boolean
           created_at: string
           id: string
-          id_ejercicio: string | null
+          id_ejercicio: string
           id_entrenamiento: string | null
           peso: number | null
           repeticiones: number | null
         }
         Insert: {
           calorias?: number | null
+          check?: boolean
           created_at?: string
           id?: string
-          id_ejercicio?: string | null
+          id_ejercicio: string
           id_entrenamiento?: string | null
           peso?: number | null
           repeticiones?: number | null
         }
         Update: {
           calorias?: number | null
+          check?: boolean
           created_at?: string
           id?: string
-          id_ejercicio?: string | null
+          id_ejercicio?: string
           id_entrenamiento?: string | null
           peso?: number | null
           repeticiones?: number | null

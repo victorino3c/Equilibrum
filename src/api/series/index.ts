@@ -61,3 +61,29 @@ export const getVolumenByEjercicio = (idEjercicio: string, idEntrenamiento: stri
     },
   });
 };
+
+export const getSeriesByEntrenamiento = (idEntrenamiento: string) => {
+  return useQuery({
+    queryKey: ['series', idEntrenamiento],
+    queryFn: async () => {
+      const { data: seriesFuerza, error: errorFuerza } = await supabase
+        .from('series_fuerza')
+        .select()
+        .eq('id_entrenamiento', idEntrenamiento);
+
+      const { data: seriesCardio, error: errorCardio } = await supabase
+        .from('series_cardio')
+        .select()
+        .eq('id_entrenamiento', idEntrenamiento);
+
+      const { data: seriesCalistenia, error: errorCalistenia } = await supabase
+        .from('series_calistenia')
+        .select()
+        .eq('id_entrenamiento', idEntrenamiento);
+
+      if (errorFuerza || errorCardio || errorCalistenia) throw Error('Error fetching series');
+
+      return [...seriesFuerza, ...seriesCardio, ...seriesCalistenia];
+    },
+  });
+};

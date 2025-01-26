@@ -2,17 +2,16 @@ import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import rutinaStore from '~/src/store/RutinaStore';
+import { getSeriesByEjercicioAndEntrenamiento } from '@api/series';
 
-import { SerieCalisteniaType } from '~/src/types/types';
+import { Database } from '~/src/database.types';
 
-//TEMP
-import { findSeriesCalisteniaByEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCalisteniaProps = {
   actual?: boolean;
   idEjercicio: string;
-  idEntrenamiento?: number;
+  idEntrenamiento?: string;
   idRutina?: string;
   editar?: boolean;
   showCheck?: boolean;
@@ -37,11 +36,7 @@ const CuerpoResumenEjercicioCalistenia = ({
 
   let series;
   if (!actual && !idRutina && idEntrenamiento) {
-    series = findSeriesCalisteniaByEjercicio(
-      //TODO: Cambiar a api de supabase (busca por ej y ent)
-      idEntrenamiento || -1,
-      parseInt(idEjercicio)
-    );
+    series = getSeriesByEjercicioAndEntrenamiento(idEjercicio, idEntrenamiento, 'calistenia').data;
   } else if (typeof idRutina != 'undefined') {
     series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
@@ -59,7 +54,7 @@ const CuerpoResumenEjercicioCalistenia = ({
       </View>
       <View style={styles.titulos}></View>
       <FlatList
-        data={series as SerieCalisteniaType[]}
+        data={series as Database['public']['Tables']['series_calistenia']['Row'][]}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.series}>
@@ -73,7 +68,7 @@ const CuerpoResumenEjercicioCalistenia = ({
                     ? updateSerieCalisteniaRepeticiones(item.id!, parseInt(value))
                     : updateSerieCalisteniaRutinaRepeticiones(idRutina, item.id!, parseInt(value))
                 }>
-                {item.Repeticiones}
+                {item.repeticiones}
               </TextInput>
               {showCheck && (
                 <View style={{ alignItems: 'flex-end' }}>

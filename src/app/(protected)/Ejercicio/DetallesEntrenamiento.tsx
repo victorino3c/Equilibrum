@@ -9,11 +9,12 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CabeceraDetallesEntrenamiento from '@components/Ejercicio/Entrenamiento/CabeceraDetallesEntrenamiento';
 import SensacionesEntrenamiento from '@components/Ejercicio/Entrenamiento/SensacionesEntrenamiento';
 import ResumenHistoriaEntrenamiento from '@components/Ejercicio/Entrenamiento/ResumenHistoriaEntrenamiento';
-import ResumenEjercicio from '@components/Ejercicio/Entrenamiento/ResumenEjercicio';
+//import ResumenEjercicio from '@components/Ejercicio/Entrenamiento/ResumenEjercicio';
+import TarjetaEntrenamiento from '@components/Ejercicio/Entrenamiento/TarjetaEntrenamiento/TarjetaEntrenamiento';
 
 import { getEntrenamiento, getEjerciciosEntrenamiento } from '@api/entrenamientos';
 
-import TarjetaEntrenamiento from '@components/Ejercicio/Entrenamiento/TarjetaEntrenamiento/TarjetaEntrenamiento';
+import TarjetaEjercicio from '@components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
 
 type DetallesEntrenamientoProps = {
   id: string;
@@ -57,10 +58,13 @@ const DetallesEntrenamiento = () => {
     ),
     ...(ejercicios.length > 0
       ? ejercicios.map((ejercicio) => (
-          <ResumenEjercicio // TODO: CAMBIAR PARA FUNCIONAR CON API
-            idEjercicio={parseInt(ejercicio)}
-            idEntrenamiento={parseInt(entrenamiento.id)}
-            editar={editar}
+          <TarjetaEjercicio
+            idEjercicio={ejercicio}
+            idEntrenamiento={entrenamiento.id}
+            editable={editar}
+            showCheck={editar}
+            actual={false}
+            style={{ marginBottom: 15, marginTop: 0 }}
           />
         ))
       : [
@@ -104,7 +108,7 @@ const DetallesEntrenamiento = () => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.container}
+        //contentContainerStyle={styles.container}
       />
     </>
   );

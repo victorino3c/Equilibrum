@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
 
 import { getEjerciciosFromIds } from '@api/ejercicios';
-import { getVolumenByEjercicio, getSeriesByEjercicioAndEntrenamiento } from '@api/series';
+import { getSeriesByEntrenamiento, getSeriesByEjercicioAndEntrenamiento } from '@api/series';
 
 import Skeleton from '@components/Utils/SkeletonView';
 
@@ -20,6 +20,11 @@ const ResumenHistoriaEntrenamiento = ({
 }: ResumenHistoriaEntrenamientoProps) => {
   // Get the exercises for the training
   const { data: ejercicios, isLoading, error } = getEjerciciosFromIds(idsEjercicios);
+  const {
+    data: series,
+    isLoading: isLoadingSeries,
+    error: errorSeries,
+  } = getSeriesByEntrenamiento(idEntrenamiento ?? '');
 
   if (isLoading || !ejercicios) {
     return <Skeleton height={160} />;
@@ -37,15 +42,11 @@ const ResumenHistoriaEntrenamiento = ({
 
   // Create the data for the timeline
   const data = ejercicios.map((ejercicio) => {
-    const series = getSeriesByEjercicioAndEntrenamiento(
-      ejercicio.id,
-      idEntrenamiento ?? '',
-      ejercicio.tipo_ejercicio
-    ).data;
+    const series_ejercicio = series?.filter((serie) => serie.id_ejercicio === ejercicio.id);
 
     return {
       title: ejercicio.nombre,
-      description: `${series?.reduce((acc, serie) => acc + (serie.calorias ?? 0), 0)} kcal • ${series?.length} series ${ejercicio.tipo_ejercicio === 'fuerza' ? '• ' + series?.reduce((acc, serie) => acc + (serie.calorias ?? 0), 0) + ' kg' : ''}`,
+      description: `${series_ejercicio?.reduce((acc, serie) => acc + (serie.calorias ?? 0), 0)} kcal • ${series_ejercicio?.length} series ${ejercicio.tipo_ejercicio === 'fuerza' ? '• ' + series_ejercicio?.reduce((acc, serie) => acc + (serie.calorias ?? 0), 0) + ' kg' : ''}`,
     };
   });
 

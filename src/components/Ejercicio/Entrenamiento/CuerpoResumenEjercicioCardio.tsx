@@ -2,17 +2,16 @@ import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import { rutinaStore } from '~/src/store/RutinaStore';
+import { getSeriesByEjercicioAndEntrenamiento } from '@api/series';
 
-import { SerieCardioType } from '~/src/types/types';
+import { Database } from '~/src/database.types';
 
-//TEMP
-import { findSeriesCardioByEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioCardioProps = {
   actual?: boolean;
   idEjercicio: string;
-  idEntrenamiento?: number;
+  idEntrenamiento?: string;
   idRutina?: string;
   editar?: boolean;
   showCheck?: boolean;
@@ -46,12 +45,8 @@ const CuerpoResumenEjercicioCardio = ({
   }
 
   let series;
-  if (!actual && !idRutina && idEntrenamiento) {
-    series = findSeriesCardioByEjercicio(
-      //TODO: Cambiar a api de supabase (busca por ej y ent)
-      idEntrenamiento || -1,
-      parseInt(idEjercicio)
-    );
+  if (!idRutina && idEntrenamiento && !actual) {
+    series = getSeriesByEjercicioAndEntrenamiento(idEjercicio, idEntrenamiento, 'cardio').data;
   } else if (typeof idRutina != 'undefined') {
     series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
@@ -70,7 +65,7 @@ const CuerpoResumenEjercicioCardio = ({
         {showCheck && <View style={{ width: 25 }} />}
       </View>
       <FlatList
-        data={series as SerieCardioType[]}
+        data={series as Database['public']['Tables']['series_cardio']['Row'][]}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.series}>
@@ -84,7 +79,7 @@ const CuerpoResumenEjercicioCardio = ({
                     ? updateSerieCardioDistancia(item.id!, parseInt(value))
                     : updateSerieCardioRutinaDistancia(idRutina, item.id!, parseInt(value))
                 }>
-                {item.Distancia}
+                {item.distancia}
               </TextInput>
               <TextInput
                 editable={editar}
@@ -93,9 +88,9 @@ const CuerpoResumenEjercicioCardio = ({
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
                     ? updateSerieCardioTiempo(item.id!, value)
-                    : updateSerieCardioRutinaTiempo(idRutina, item.id!, value)
+                    : updateSerieCardioRutinaTiempo(idRutina, item.id!, parseFloat(value))
                 }>
-                {item.Tiempo}
+                {item.duracion}
               </TextInput>
               <TextInput
                 editable={editar}
@@ -106,7 +101,7 @@ const CuerpoResumenEjercicioCardio = ({
                     ? updateSerieCardioCalorias(item.id!, parseInt(value))
                     : updateSerieCardioRutinaCalorias(idRutina, item.id!, parseInt(value))
                 }>
-                {item.Calorias}
+                {item.calorias}
               </TextInput>
               {showCheck && (
                 <View style={{ alignItems: 'flex-end' }}>

@@ -1,3 +1,4 @@
+import { Data } from 'react-native-timeline-flatlist';
 import { Database } from '~/src/database.types';
 
 export enum TipoEjercicio {
@@ -24,9 +25,9 @@ export enum Distancia {
 export type RutinaType = {
   Nombre: string;
   Ejercicios: Database['public']['Tables']['ejercicios']['Row'][];
-  SeriesCardio: SerieCardioType[];
-  SeriesFuerza: SerieFuerzaType[];
-  SeriesCalistenia: SerieCalisteniaType[];
+  SeriesCardio: Database['public']['Tables']['series_cardio']['Row'][];
+  SeriesFuerza: Database['public']['Tables']['series_fuerza']['Row'][];
+  SeriesCalistenia: Database['public']['Tables']['series_calistenia']['Row'][];
 };
 
 export type EjercicioType = {
@@ -39,29 +40,8 @@ export type EjercicioType = {
   Musculos?: string[];
 };
 
-export type SerieCardioType = {
-  id?: string;
-  //idEntrenamiento?: string;
-  idEjercicio: string;
-  check: boolean;
-  Distancia?: number;
-  Tiempo?: string;
-  Calorias?: number;
-};
+export type SerieCardioType = Database['public']['Tables']['series_cardio']['Row'];
 
-export type SerieFuerzaType = {
-  id?: string;
-  //idEntrenamiento?: number;
-  idEjercicio: string;
-  check: boolean;
-  Repeticiones?: number;
-  Peso?: number;
-};
+export type SerieFuerzaType = Database['public']['Tables']['series_fuerza']['Row'];
 
-export type SerieCalisteniaType = {
-  id?: string;
-  //idEntrenamiento?: number;
-  idEjercicio: string;
-  check: boolean;
-  Repeticiones?: number;
-};
+export type SerieCalisteniaType = Database['public']['Tables']['series_calistenia']['Row'];

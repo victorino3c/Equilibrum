@@ -17,16 +17,24 @@ import { rutinaStore } from '@store/RutinaStore';
 
 type TarjetaEjercicioProps = {
   idEjercicio: string;
+  idEntrenamiento?: string;
   rutina?: string;
   editable?: boolean;
   showCheck?: boolean;
+  actual?: boolean;
+  style?: object;
 };
+
+// TODO: Añadir la opción de eliminar ejercicio y añaadir serie a API
 
 const TarjetaEjercicio = ({
   idEjercicio,
+  idEntrenamiento,
   rutina,
   editable = true,
   showCheck = true,
+  actual = true,
+  style,
 }: TarjetaEjercicioProps) => {
   const { addSerieEjercicio, getSeriesByEjericio, removeEjercicio } = entrenamientoStore(); // Suponiendo que tienes una función eliminarEjercicio
   const { addSerieEjercicioRutina, removeEjercicioFromRutina } = rutinaStore();
@@ -48,14 +56,24 @@ const TarjetaEjercicio = ({
     let series = getSeriesByEjericio(Ejercicio.id);
 
     let newSerie = {
-      idEjercicio: Ejercicio.id,
+      id: '',
+      calorias: null,
+      id_entrenamiento: null,
+      repeticiones: null,
+      id_ejercicio: Ejercicio.id,
+      created_at: new Date().toISOString(),
       check: false,
     };
 
     if (series) {
       newSerie = {
         ...series[0],
-        idEjercicio: Ejercicio.id,
+        id: '',
+        calorias: null,
+        id_entrenamiento: null,
+        repeticiones: null,
+        id_ejercicio: Ejercicio.id,
+        created_at: new Date().toISOString(),
         check: false,
       };
     }
@@ -70,7 +88,12 @@ const TarjetaEjercicio = ({
     }
 
     let newSerie = {
-      idEjercicio: Ejercicio.id,
+      id: '',
+      calorias: null,
+      id_entrenamiento: null,
+      repeticiones: null,
+      id_ejercicio: Ejercicio.id,
+      created_at: new Date().toISOString(),
       check: false,
     };
 
@@ -93,7 +116,7 @@ const TarjetaEjercicio = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {showDeleteOption && editable && (
         <TouchableOpacity
           style={{
@@ -146,27 +169,30 @@ const TarjetaEjercicio = ({
         <View>
           {Ejercicio.tipo_ejercicio === 'cardio' ? (
             <CuerpoResumenEjercicioCardio
-              actual={true}
+              actual={actual}
               editar={editable}
               idEjercicio={idEjercicio}
+              idEntrenamiento={typeof idEntrenamiento === 'undefined' ? undefined : idEntrenamiento}
               idRutina={typeof rutina === 'undefined' ? undefined : rutina}
               showCheck={showCheck}
             />
           ) : null}
           {Ejercicio?.tipo_ejercicio === 'fuerza' ? (
             <CuerpoResumenEjercicioFuerza
-              actual={true}
+              actual={actual}
               editar={editable}
               idEjercicio={idEjercicio}
+              idEntrenamiento={typeof idEntrenamiento === 'undefined' ? undefined : idEntrenamiento}
               idRutina={typeof rutina === 'undefined' ? undefined : rutina}
               showCheck={showCheck}
             />
           ) : null}
           {Ejercicio?.tipo_ejercicio === 'calistenia' ? (
             <CuerpoResumenEjercicioCalistenia
-              actual={true}
+              actual={actual}
               editar={editable}
               idEjercicio={idEjercicio}
+              idEntrenamiento={typeof idEntrenamiento === 'undefined' ? undefined : idEntrenamiento}
               idRutina={typeof rutina === 'undefined' ? undefined : rutina}
               showCheck={showCheck}
             />

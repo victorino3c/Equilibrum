@@ -2,17 +2,16 @@ import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 import rutinaStore from '~/src/store/RutinaStore';
+import { getSeriesByEjercicioAndEntrenamiento } from '@api/series';
 
-import { SerieFuerzaType } from '~/src/types/types';
+import { Database } from '~/src/database.types';
 
-//TEMP
-import { findSeriesFuerzaByEjercicio } from '~/assets/ejercicio/entrenamientos';
 import CustomCheckbox from '../../Utils/CustomCheckBox';
 
 type CuerpoResumenEjercicioFuerzaProps = {
   actual?: boolean;
   idEjercicio: string;
-  idEntrenamiento?: number;
+  idEntrenamiento?: string;
   idRutina?: string;
   editar?: boolean;
   showCheck?: boolean;
@@ -44,12 +43,8 @@ const CuerpoResumenEjercicioFuerza = ({
   }
 
   let series;
-  if (!actual && typeof idRutina === 'undefined' && idEntrenamiento) {
-    series = findSeriesFuerzaByEjercicio(
-      //TODO: Cambiar a api de supabase (busca por ej y ent)
-      idEntrenamiento || -1,
-      parseInt(idEjercicio)
-    );
+  if (typeof idRutina === 'undefined' && idEntrenamiento && !actual) {
+    series = getSeriesByEjercicioAndEntrenamiento(idEjercicio, idEntrenamiento, 'fuerza').data;
   } else if (typeof idRutina !== 'undefined') {
     series = getSeriesByEjercicioAndRutina(idRutina, idEjercicio);
   } else {
@@ -67,7 +62,7 @@ const CuerpoResumenEjercicioFuerza = ({
         {showCheck && <View style={{ width: 25 }} />}
       </View>
       <FlatList
-        data={series as SerieFuerzaType[]}
+        data={series as Database['public']['Tables']['series_fuerza']['Row'][]}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.series}>
@@ -81,7 +76,7 @@ const CuerpoResumenEjercicioFuerza = ({
                     ? updateSerieFuerzaRepeticiones(item.id!, parseInt(value))
                     : updateSerieFuerzaRutinaRepeticiones(idRutina, item.id!, parseInt(value))
                 }>
-                {item.Repeticiones}
+                {item.repeticiones}
               </TextInput>
               <TextInput
                 editable={editar}
@@ -92,7 +87,7 @@ const CuerpoResumenEjercicioFuerza = ({
                     ? updateSerieFuerzaPeso(item.id!, parseInt(value))
                     : updateSerieFuerzaRutinaPeso(idRutina, item.id!, parseInt(value))
                 }>
-                {item.Peso}
+                {item.peso}
               </TextInput>
               {showCheck && (
                 <View style={{ alignItems: 'flex-end' }}>
