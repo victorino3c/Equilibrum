@@ -15,7 +15,7 @@ import SueñoHidratacion from '@components/Health/SueñoHidratacion';
 import CustomCalendar from '@components/Health/Calendar';
 import CalendarioReplegado from '@components/Utils/CalendarioReplegado';
 import TwoOptionsButton from '@components/Buttons/TwoOptions';
-import Ejercicio from '@components/Health/Ejercicio/Ejercicio';
+import Entrenamiento from '@components/Health/Ejercicio/Entrenamiento';
 import Nutricion from '@components/Health/Nutricion/Nutricion';
 
 import moment from 'moment';
@@ -108,10 +108,10 @@ export default function HealthLayout() {
         />
         {mode === 'Ejercicio' ? (
           ejercicio?.length === 0 ? (
-            <Ejercicio key={0} entrenamiento={null} />
+            <Entrenamiento key={0} entrenamiento={null} />
           ) : (
             ejercicio?.map((entrenamiento) => (
-              <Ejercicio key={entrenamiento.id} entrenamiento={entrenamiento} />
+              <Entrenamiento key={entrenamiento.id} entrenamiento={entrenamiento} />
             ))
           )
         ) : (

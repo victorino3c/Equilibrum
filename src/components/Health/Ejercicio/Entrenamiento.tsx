@@ -10,12 +10,12 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { Database } from '~/src/database.types';
 import Skeleton from '../../Utils/SkeletonView';
 
-type EjercicioProps = {
+type EntrenamientoProps = {
   entrenamiento: Database['public']['Tables']['entrenamiento']['Row'] | null;
   loading?: boolean;
 };
 
-const Ejercicio = ({ entrenamiento, loading }: EjercicioProps) => {
+const Entrenamiento = ({ entrenamiento, loading }: EntrenamientoProps) => {
   if (loading) {
     return <Skeleton height={160} />;
   }
@@ -67,7 +67,7 @@ const Ejercicio = ({ entrenamiento, loading }: EjercicioProps) => {
   );
 };
 
-export default Ejercicio;
+export default Entrenamiento;
 
 const styles = StyleSheet.create({
   container: {
