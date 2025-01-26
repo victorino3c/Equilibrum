@@ -112,7 +112,7 @@ const SensacionesEntrenamiento = ({
     );
   } else if (entrenamiento && entrenamiento.sensacion) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { padding: 20 }]}>
         <Text style={styles.tittle}>Sensaciones Entrenamiento</Text>
         <View style={styles.info}>
           <Text style={styles.infoText}>{getEmoji(entrenamiento.sensacion)}</Text>
