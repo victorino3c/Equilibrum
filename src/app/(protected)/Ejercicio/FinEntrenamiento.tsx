@@ -10,16 +10,18 @@ import SensacionesFinEntrenamiento from '@components/Ejercicio/Entrenamiento/EnC
 import { Entypo } from '@expo/vector-icons';
 
 const FinEntrenamiento = () => {
-  const [titulo, setTitulo] = useState('');
-  const [notas, setNotas] = useState('');
-  const [sensaciones, setSensaciones] = useState<number>(0);
-
   const {
     ejercicios,
     resetEntrenamiento,
+    titulo: tituloStore,
+    notas: notasStore,
     setTitulo: setTituloStore,
     setNotas: setNotasStore,
   } = entrenamientoStore();
+
+  const [titulo, setTitulo] = useState(tituloStore);
+  const [notas, setNotas] = useState(notasStore);
+  const [sensaciones, setSensaciones] = useState<number>(0);
 
   useEffect(() => {
     setTituloStore(titulo);

@@ -13,7 +13,7 @@ export interface EntrenamientoState {
   entrenamientoTerminado: boolean; // El entrenamiento ha terminado
   titulo: string;
   notas: string;
-  sensacion: number;
+  sensacion: Database['public']['Enums']['sensaciones_enum'];
   imagen: string[];
   numero: number;
   seconds: number;
@@ -30,7 +30,7 @@ export interface EntrenamientoState {
   setEntrenamientoTerminado: (entrenamientoTerminado: boolean) => void;
   setTitulo: (titulo: string) => void;
   setNotas: (notas: string) => void;
-  setSensacion: (sensacion: number) => void;
+  setSensacion: (sensacion: Database['public']['Enums']['sensaciones_enum']) => void;
   setImagen: (imagen: string) => void;
   stopTimer: () => void;
   startTimer: () => void;
@@ -82,7 +82,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       entrenamientoTerminado: false,
       titulo: '',
       notas: '',
-      sensacion: 0,
+      sensacion: 'Neutro',
       imagen: [],
       numero: 0,
       seconds: 0,
@@ -100,7 +100,8 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       setIsRunning: (isRunning: boolean) => set({ isRunning }),
       setTitulo: (titulo: string) => set({ titulo }),
       setNotas: (notas: string) => set({ notas }),
-      setSensacion: (sensacion: number) => set({ sensacion }),
+      setSensacion: (sensacion: Database['public']['Enums']['sensaciones_enum']) =>
+        set({ sensacion }),
       setImagen: (imagen: string) => set((state) => ({ imagen: [...state.imagen, imagen] })),
       stopTimer: () => set({ isRunning: false }),
       startTimer: () => {
@@ -289,7 +290,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           calorias: 0,
           titulo: '',
           notas: '',
-          sensacion: 0,
+          sensacion: 'Neutro',
           fecha: moment().format('YYYY-MM-DD'),
           ejercicios: [],
           seriesCardio: [],

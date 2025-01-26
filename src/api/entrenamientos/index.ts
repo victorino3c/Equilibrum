@@ -1,6 +1,8 @@
 import { supabase } from '@libs/supabase';
 import { useAuth } from '@providers/AuthProvider';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { Database } from '~/src/database.types';
 
 // Hook personalizado para obtener ejercicios
 export const getEntrenamientos = () => {
@@ -63,6 +65,43 @@ export const getEjerciciosEntrenamiento = (idEntrenamiento: string) => {
       if (error) throw new Error(error.message);
 
       return data;
+    },
+  });
+};
+
+// Hook personalizado para insertar un entrenamiento
+export const useInsertEntrenamiento = () => {
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useMutation({
+    async mutationFn({
+      calorias,
+      notas,
+      titulo,
+      duracion,
+      sensacion,
+      series,
+      volumen,
+      fecha,
+    }: Database['public']['Tables']['entrenamiento']['Insert']) {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      const { data, error } = await supabase
+        .from('entrenamiento')
+        .insert([
+          { user_id: userId, calorias, notas, titulo, duracion, sensacion, series, volumen, fecha },
+        ]);
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entrenamientos', userId] });
     },
   });
 };

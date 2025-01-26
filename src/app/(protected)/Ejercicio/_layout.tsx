@@ -1,18 +1,32 @@
 import { Stack, router } from 'expo-router';
 import { View, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../../../providers/AuthProvider';
+import { useAuth } from '@providers/AuthProvider';
 import { Redirect, Link } from 'expo-router';
-import CabeceraEntrenamiento from '~/src/components/Ejercicio/Entrenamiento/EnCurso/CabeceraEntrenamiento';
+import CabeceraEntrenamiento from '@components/Ejercicio/Entrenamiento/EnCurso/CabeceraEntrenamiento';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 
-import { entrenamientoStore } from '~/src/store/Entrenamientostore';
-import { rutinaStore } from '~/src/store/RutinaStore';
+import { entrenamientoStore } from '@store/Entrenamientostore';
+import { rutinaStore } from '@store/RutinaStore';
+
+import { useInsertEntrenamiento } from '@api/entrenamientos';
 
 export default function EjercicioLayout() {
-  const { resetEntrenamiento, allSeriesChecked } = entrenamientoStore();
+  const {
+    resetEntrenamiento,
+    allSeriesChecked,
+    titulo,
+    notas,
+    calorias,
+    volumen,
+    seconds,
+    sensacion,
+    fecha,
+  } = entrenamientoStore();
   const { updateRutina, removeRutina, tituloNuevaRutina, setTituloNuevaRutina, getRutina } =
     rutinaStore();
+
+  const insertEntrenamiento = useInsertEntrenamiento();
 
   const { session } = useAuth();
   const insets = useSafeAreaInsets();
@@ -22,7 +36,30 @@ export default function EjercicioLayout() {
   }
 
   const handleTerminar = () => {
-    resetEntrenamiento();
+    insertEntrenamiento.mutate(
+      {
+        calorias,
+        notas,
+        titulo,
+        duracion: seconds,
+        series: 20,
+        sensacion,
+        volumen,
+        fecha,
+      },
+      {
+        onSuccess: (data) => {
+          console.log('datos', data);
+          //TODO: Añadir series y ejercicios a la base de datos
+        },
+        onError: (error) => {
+          console.log(error);
+          Alert.alert('Error', 'No se ha podido guardar el entrenamiento.');
+        },
+      }
+    );
+
+    //resetEntrenamiento();
   };
 
   const handleTerminarEntrenamiento = () => {
