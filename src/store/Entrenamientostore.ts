@@ -21,7 +21,6 @@ export interface EntrenamientoState {
   volumen: number;
   calorias: number;
   fecha: string;
-  idUsuario: string;
   ejercicios: Database['public']['Tables']['ejercicios']['Row'][];
   seriesCardio: Database['public']['Tables']['series_cardio']['Row'][];
   seriesFuerza: Database['public']['Tables']['series_fuerza']['Row'][];
@@ -91,7 +90,6 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       volumen: 0,
       calorias: 0,
       fecha: moment().format('YYYY-MM-DD'),
-      idUsuario: '',
       ejercicios: [],
       seriesCardio: [],
       seriesFuerza: [],
@@ -287,6 +285,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       resetEntrenamiento: () =>
         set(() => ({
           isRunning: false,
+          entrenamientoTerminado: true,
           seconds: 0,
           volumen: 0,
           calorias: 0,
@@ -298,6 +297,8 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           seriesCardio: [],
           seriesFuerza: [],
           seriesCalistenia: [],
+
+          //imagen: string[];
         })),
       setFecha: (fecha: string) => set({ fecha }),
       getSeriesCardioByEjericio: (
