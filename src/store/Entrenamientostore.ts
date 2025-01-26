@@ -7,6 +7,7 @@ import uuid from 'react-native-uuid';
 import { Database } from '~/src/database.types';
 
 import moment from 'moment';
+import { SeriesFuerza } from '~/assets/ejercicio/entrenamientos';
 
 export interface EntrenamientoState {
   isRunning: boolean; // El cronómetro está en marcha
@@ -356,7 +357,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       updateSerieFuerzaPeso: (idSerie: string, peso: number) => {
         set((state) => ({
           seriesFuerza: state.seriesFuerza.map((serie) =>
-            serie.id === idSerie ? { ...serie, Peso: peso } : serie
+            serie.id === idSerie ? { ...serie, peso: peso } : serie
           ),
         }));
 
@@ -388,7 +389,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       updateSerieFuerzaRepeticiones: (idSerie: string, repeticiones: number) => {
         set((state) => ({
           seriesFuerza: state.seriesFuerza.map((serie) =>
-            serie.id === idSerie ? { ...serie, Repeticiones: repeticiones } : serie
+            serie.id === idSerie ? { ...serie, repeticiones: repeticiones } : serie
           ),
         }));
         // Get series and see if it is checked
@@ -418,7 +419,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       updateSerieCardioDistancia: (idSerie: string, distancia: number) =>
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
-            serie.id === idSerie ? { ...serie, Distancia: distancia } : serie
+            serie.id === idSerie ? { ...serie, distancia: distancia } : serie
           ),
         })),
       updateSerieCardioTiempo: (idSerie: string, tiempo: string) =>
@@ -430,7 +431,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       updateSerieCardioCalorias: (idSerie: string, calorias: number) => {
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
-            serie.id === idSerie ? { ...serie, Calorias: calorias } : serie
+            serie.id === idSerie ? { ...serie, calorias: calorias } : serie
           ),
         }));
 
@@ -458,7 +459,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       updateSerieCalisteniaRepeticiones: (idSerie: string, repeticiones: number) =>
         set((state) => ({
           seriesCalistenia: state.seriesCalistenia.map((serie) =>
-            serie.id === idSerie ? { ...serie, Repeticiones: repeticiones } : serie
+            serie.id === idSerie ? { ...serie, repeticiones: repeticiones } : serie
           ),
         })),
       updateCheckSerie: (idSerie: string, isCheck: boolean) => {

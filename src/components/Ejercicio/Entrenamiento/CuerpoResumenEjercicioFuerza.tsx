@@ -84,7 +84,7 @@ const CuerpoResumenEjercicioFuerza = ({
                 keyboardType="decimal-pad"
                 onChangeText={(value) =>
                   typeof idRutina === 'undefined'
-                    ? updateSerieFuerzaPeso(item.id!, parseInt(value))
+                    ? updateSerieFuerzaPeso(item.id, parseInt(value))
                     : updateSerieFuerzaRutinaPeso(idRutina, item.id!, parseInt(value))
                 }>
                 {item.peso}

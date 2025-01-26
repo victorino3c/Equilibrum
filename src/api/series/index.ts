@@ -87,3 +87,77 @@ export const getSeriesByEntrenamiento = (idEntrenamiento: string) => {
     },
   });
 };
+
+// Hook personalizado para insertar una serie
+export const useInsertSerieFuerza = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn({
+      id,
+      id_ejercicio,
+      id_entrenamiento,
+      check,
+      repeticiones,
+      peso,
+      calorias,
+    }: Database['public']['Tables']['series_fuerza']['Insert']) {
+      const { data, error } = await supabase
+        .from(`series_fuerza`)
+        .insert({ id, id_ejercicio, id_entrenamiento, check, repeticiones, peso, calorias });
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+  });
+};
+
+// Hook personalizado para insertar una serie de cardio
+export const useInsertSerieCardio = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn({
+      id,
+      id_ejercicio,
+      id_entrenamiento,
+      check,
+      duracion,
+      distancia,
+      calorias,
+    }: Database['public']['Tables']['series_cardio']['Insert']) {
+      const { data, error } = await supabase
+        .from(`series_cardio`)
+        .insert({ id, id_ejercicio, id_entrenamiento, check, duracion, distancia, calorias });
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+  });
+};
+
+// Hook personalizado para insertar una serie de calistenia
+export const useInsertSerieCalistenia = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn({
+      id,
+      id_ejercicio,
+      id_entrenamiento,
+      check,
+      repeticiones,
+      calorias,
+    }: Database['public']['Tables']['series_calistenia']['Insert']) {
+      const { data, error } = await supabase
+        .from(`series_calistenia`)
+        .insert({ id, id_ejercicio, id_entrenamiento, check, repeticiones, calorias });
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+  });
+};

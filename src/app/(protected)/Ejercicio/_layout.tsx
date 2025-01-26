@@ -5,11 +5,14 @@ import { Redirect, Link } from 'expo-router';
 import CabeceraEntrenamiento from '@components/Ejercicio/Entrenamiento/EnCurso/CabeceraEntrenamiento';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
 
 import { entrenamientoStore } from '@store/Entrenamientostore';
 import { rutinaStore } from '@store/RutinaStore';
 
 import { useInsertEntrenamiento } from '@api/entrenamientos';
+import { useInsertEjerciciosEntrenamiento } from '@api/ejercicios';
+import { useInsertSerieCalistenia, useInsertSerieCardio, useInsertSerieFuerza } from '@api/series';
 
 export default function EjercicioLayout() {
   const {
@@ -22,11 +25,23 @@ export default function EjercicioLayout() {
     seconds,
     sensacion,
     fecha,
+    seriesCalistenia,
+    seriesCardio,
+    seriesFuerza,
   } = entrenamientoStore();
   const { updateRutina, removeRutina, tituloNuevaRutina, setTituloNuevaRutina, getRutina } =
     rutinaStore();
 
   const insertEntrenamiento = useInsertEntrenamiento();
+  const insertEntrenamientoEjercicios = useInsertEjerciciosEntrenamiento();
+  const insertSerieFuerza = useInsertSerieFuerza();
+  const insertSerieCalistenia = useInsertSerieCalistenia();
+  const insertSerieCardio = useInsertSerieCardio();
+
+  const [id_entrenamiento, setIdEntrenamiento] = useState<string>('');
+  const [ejerciciosAñadidos, setEjerciciosAñadidos] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const ids_ejercicios: string[] = entrenamientoStore().ejercicios.map((ejercicio) => ejercicio.id);
 
   const { session } = useAuth();
   const insets = useSafeAreaInsets();
@@ -35,6 +50,92 @@ export default function EjercicioLayout() {
     return <Redirect href={'/(onboarding)'} />;
   }
 
+  // Insertar los ejercicios al entrenamiento despues de crearlo
+  useEffect(() => {
+    if (id_entrenamiento !== '') {
+      insertEntrenamientoEjercicios.mutate(
+        {
+          id_entrenamiento,
+          ids_ejercicios,
+        },
+        {
+          onSuccess: () => {
+            setEjerciciosAñadidos(true);
+            //resetEntrenamiento();
+            //router.navigate('./Entrenamiento');
+          },
+          onError: (error) => {
+            console.log(error);
+            setIdEntrenamiento('');
+            setError(error.message);
+            Alert.alert(
+              'Error',
+              'No se ha podido guardar el entrenamiento al añadir los ejercicios.'
+            );
+          },
+        }
+      );
+    }
+  }, [id_entrenamiento]);
+
+  // Insertar las series de los ejercicios al finalizar el añadido de los ejercicios
+  useEffect(() => {
+    if (ejerciciosAñadidos) {
+      seriesFuerza.forEach((serie) => {
+        insertSerieFuerza.mutate(
+          { ...serie, id_entrenamiento },
+          {
+            onError: (error) => {
+              setError(error.message);
+              setEjerciciosAñadidos(false);
+              setIdEntrenamiento('');
+              Alert.alert('Error', 'No se ha podido guardar las series de fuerza.');
+            },
+          }
+        );
+      });
+
+      seriesCardio.forEach((serie) => {
+        insertSerieCardio.mutate(
+          { ...serie, id_entrenamiento },
+          {
+            onError: (error) => {
+              setError(error.message);
+              setEjerciciosAñadidos(false);
+              setIdEntrenamiento('');
+              Alert.alert('Error', 'No se ha podido guardar las series de cardio.');
+            },
+          }
+        );
+      });
+
+      seriesCalistenia.forEach((serie) => {
+        insertSerieCalistenia.mutate(
+          { ...serie, id_entrenamiento },
+          {
+            onError: (error) => {
+              setError(error.message);
+              setEjerciciosAñadidos(false);
+              setIdEntrenamiento('');
+              Alert.alert('Error', 'No se ha podido guardar las series de calistenia.');
+            },
+          }
+        );
+      });
+
+      setIdEntrenamiento('');
+      setEjerciciosAñadidos(false);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      resetEntrenamiento();
+      router.navigate('/(protected)/(tabs)/(exercise)');
+    }
+  }, [ejerciciosAñadidos]);
+
+  // Insertar el entrenamiento al finalizar
   const handleTerminar = () => {
     insertEntrenamiento.mutate(
       {
@@ -49,17 +150,14 @@ export default function EjercicioLayout() {
       },
       {
         onSuccess: (data) => {
-          console.log('datos', data);
-          //TODO: Añadir series y ejercicios a la base de datos
+          setIdEntrenamiento(data.id);
         },
         onError: (error) => {
-          console.log(error);
+          setError(error.message);
           Alert.alert('Error', 'No se ha podido guardar el entrenamiento.');
         },
       }
     );
-
-    //resetEntrenamiento();
   };
 
   const handleTerminarEntrenamiento = () => {
@@ -175,11 +273,9 @@ export default function EjercicioLayout() {
                     <Text style={styles.headerTitle}>Entrenamiento</Text>
                   </View>
                   <View style={styles.headerItems}>
-                    <Link href="/(protected)/(tabs)/(exercise)" asChild>
-                      <TouchableOpacity onPress={handleTerminar}>
-                        <Text style={styles.botonGuardar}>Terminar</Text>
-                      </TouchableOpacity>
-                    </Link>
+                    <TouchableOpacity onPress={handleTerminar}>
+                      <Text style={styles.botonGuardar}>Terminar</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <CabeceraEntrenamiento />

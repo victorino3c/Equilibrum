@@ -5,6 +5,8 @@ import IconButton from '~/src/components/Buttons/IconButton';
 import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
 import { entrenamientoStore } from '~/src/store/Entrenamientostore';
 
+import { router } from 'expo-router';
+
 import { Feather, Ionicons } from '@expo/vector-icons';
 
 const FooterEntrenamiento = () => {
@@ -15,6 +17,11 @@ const FooterEntrenamiento = () => {
   const { resetEntrenamiento } = entrenamientoStore();
 
   const [modalVisible, setModalVisible] = React.useState(false);
+
+  const handleDescartarEntreno = () => {
+    resetEntrenamiento();
+    router.push('/(protected)/(tabs)/(exercise)');
+  };
 
   return (
     <View style={{ marginTop: 10 }}>
@@ -36,7 +43,7 @@ const FooterEntrenamiento = () => {
           style={[styles.botonesPequeños, { backgroundColor: '#FFBBB9' }]}
           textStyle={styles.botonBorrarText}
           icon={descartarIcon}
-          onPress={() => resetEntrenamiento()} // TEMP
+          onPress={() => handleDescartarEntreno()} // TEMP
           text="Descartar entreno"
         />
       </View>
