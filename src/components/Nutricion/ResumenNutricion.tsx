@@ -1,8 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import React from 'react';
 
-import { Link } from 'expo-router';
-
 //TEMP
 import { AlimentoType, PeriodoType, Medida } from '~/assets/nutricion/nutricion';
 

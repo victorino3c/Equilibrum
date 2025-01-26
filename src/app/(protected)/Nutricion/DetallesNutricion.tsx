@@ -1,10 +1,11 @@
 import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
-
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import moment from 'moment';
 
-import ResumenEstadisticasNutricion from '~/src/components/Nutricion/ResumenEstadisticas';
+//TEMP
 import {
   findAlimentosByPeriodo,
   findNutricionByDate,
@@ -13,12 +14,10 @@ import {
   findPeriodosByNutricion,
 } from '~/assets/nutricion/nutricion';
 
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import moment from 'moment';
-import TarjetaNutricion from '~/src/components/Nutricion/TarjetaNutricion/TarjetaNutricion';
-import ResumenHistoriaNutricion from '~/src/components/Nutricion/ResumenHistoriaNutricion';
-import ResumenNutricion from '~/src/components/Nutricion/ResumenNutricion';
-//TEMP
+import ResumenEstadisticasNutricion from '@components/Nutricion/ResumenEstadisticas';
+import TarjetaNutricion from '@components/Nutricion/TarjetaNutricion/TarjetaNutricion';
+import ResumenHistoriaNutricion from '@components/Nutricion/ResumenHistoriaNutricion';
+import ResumenNutricion from '@components/Nutricion/ResumenNutricion';
 
 type DetallesNutricionProps = {
   fecha: string;

@@ -5,7 +5,6 @@ import Timeline from 'react-native-timeline-flatlist';
 
 //TEMP
 import { findPeriodosByNutricion } from '~/assets/nutricion/nutricion';
-import Nutricion from '../Health/Nutricion/Nutricion';
 
 type ResumenHistoriaNutricionProps = {
   idNutricion: number;

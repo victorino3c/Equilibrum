@@ -4,10 +4,6 @@ import { Calendar } from 'react-native-calendars';
 import Feather from '@expo/vector-icons/Feather';
 import moment from 'moment';
 
-//TEMP
-import { getEntrenamientoDatesByUser } from '~/assets/ejercicio/entrenamientos';
-import { getNutricionDatesByUser } from '~/assets/nutricion/nutricion';
-
 const Colores = {
   1: '#34E5E5', //Solo entrenamiento
 };
