@@ -18,6 +18,7 @@ export default function EjercicioLayout() {
   const {
     resetEntrenamiento,
     allSeriesChecked,
+    getNumeroSeries,
     titulo,
     notas,
     calorias,
@@ -42,6 +43,7 @@ export default function EjercicioLayout() {
   const [ejerciciosAñadidos, setEjerciciosAñadidos] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const ids_ejercicios: string[] = entrenamientoStore().ejercicios.map((ejercicio) => ejercicio.id);
+  const num_series = getNumeroSeries();
 
   const { session } = useAuth();
   const insets = useSafeAreaInsets();
@@ -142,8 +144,8 @@ export default function EjercicioLayout() {
         calorias,
         notas,
         titulo,
-        duracion: seconds,
-        series: 20,
+        duracion: parseInt((seconds / 60).toFixed(0)),
+        series: num_series,
         sensacion,
         volumen,
         fecha,

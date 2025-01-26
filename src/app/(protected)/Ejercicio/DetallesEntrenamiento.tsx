@@ -1,10 +1,10 @@
 import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { FontAwesome6, Feather } from '@expo/vector-icons';
 
 import CabeceraDetallesEntrenamiento from '@components/Ejercicio/Entrenamiento/CabeceraDetallesEntrenamiento';
 import SensacionesEntrenamiento from '@components/Ejercicio/Entrenamiento/SensacionesEntrenamiento';
@@ -12,13 +12,20 @@ import ResumenHistoriaEntrenamiento from '@components/Ejercicio/Entrenamiento/Re
 //import ResumenEjercicio from '@components/Ejercicio/Entrenamiento/ResumenEjercicio';
 import TarjetaEntrenamiento from '@components/Ejercicio/Entrenamiento/TarjetaEntrenamiento/TarjetaEntrenamiento';
 
-import { getEntrenamiento, getEjerciciosEntrenamiento } from '@api/entrenamientos';
+import {
+  getEntrenamiento,
+  getEjerciciosEntrenamiento,
+  useDeleteEntrenamiento,
+} from '@api/entrenamientos';
 
 import TarjetaEjercicio from '@components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
+import IconButton from '@components/Buttons/IconButton';
 
 type DetallesEntrenamientoProps = {
   id: string;
 };
+
+const deleteIcon = <Feather name="trash-2" size={40} color="#E34716" />;
 
 const DetallesEntrenamiento = () => {
   const [editar, setEditar] = React.useState(false);
@@ -29,9 +36,15 @@ const DetallesEntrenamiento = () => {
 
   const { data: entrenamiento, isLoading: isLoadingEntrenamiento } = getEntrenamiento(id);
   const { data: ejercicios_, isLoading: isLoadingEjercicios } = getEjerciciosEntrenamiento(id);
+  const { mutate: deleteEntrenamiento } = useDeleteEntrenamiento();
 
   // Creo un array con los ids de los ejercicios
   const ejercicios = ejercicios_?.flatMap((ejercicio) => ejercicio.id_ejercicio);
+
+  const handleDeleteEntrenamiento = () => {
+    deleteEntrenamiento(id);
+    router.back();
+  };
 
   if (!entrenamiento || !ejercicios) {
     return null;
@@ -51,6 +64,15 @@ const DetallesEntrenamiento = () => {
       loading={isLoadingEjercicios && isLoadingEntrenamiento}
       editar={editar}
     />,
+    editar ? (
+      <IconButton
+        style={{ backgroundColor: '#FFBBB9', marginBottom: 25, marginTop: 10, paddingVertical: 35 }}
+        textStyle={{ color: '#E34716', fontSize: 24, fontWeight: 'bold' }}
+        icon={deleteIcon}
+        text="Borrar entrenamiento"
+        onPress={() => handleDeleteEntrenamiento()}
+      />
+    ) : null,
     editar ? null : <TarjetaEntrenamiento entrenamiento={entrenamiento} />,
     editar ? null : <SensacionesEntrenamiento entrenamiento={entrenamiento} />, // TODO: HACER QUE SE VEA EL SLIDER
     editar ? null : (

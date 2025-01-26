@@ -10,7 +10,7 @@ export const getEntrenamientos = () => {
   const userId = session?.user.id;
 
   return useQuery({
-    queryKey: ['entrenamientos', userId],
+    queryKey: ['entrenamientos'],
     queryFn: async () => {
       if (!userId) {
         throw new Error('No user id');
@@ -104,6 +104,30 @@ export const useInsertEntrenamiento = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['entrenamientos', userId] });
+    },
+  });
+};
+
+// Hook personalizado para eliminar un entrenamiento
+export const useDeleteEntrenamiento = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn(id: string) {
+      if (!id) {
+        throw new Error('No id');
+      }
+
+      const { error } = await supabase.from('entrenamiento').delete().eq('id', id);
+
+      if (error) throw new Error(error.message);
+
+      return id;
+    },
+    onSuccess: (id) => {
+      queryClient.invalidateQueries({ queryKey: ['entrenamiento', id] });
+      queryClient.invalidateQueries({ queryKey: ['entrenamientos'] });
+      queryClient.invalidateQueries({ queryKey: ['ejerciciosEntrenamiento', id] });
     },
   });
 };

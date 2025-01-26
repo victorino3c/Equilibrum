@@ -74,6 +74,7 @@ export interface EntrenamientoState {
   updateSerieCalisteniaRepeticiones: (idSerie: string, repeticiones: number) => void;
   updateCheckSerie: (idSerie: string, isCheck: boolean) => void;
   allSeriesChecked: () => boolean;
+  getNumeroSeries: () => number;
 }
 
 export const entrenamientoStore = create<EntrenamientoState>()(
@@ -534,6 +535,16 @@ export const entrenamientoStore = create<EntrenamientoState>()(
         const allCheckedCalistenia = seriesCalistenia.every((serie) => serie.check);
 
         return allCheckedFuerza && allCheckedCardio && allCheckedCalistenia;
+      },
+      getNumeroSeries: () => {
+        const seriesFuerza = entrenamientoStore.getState()
+          .seriesFuerza as Database['public']['Tables']['series_fuerza']['Row'][];
+        const serieCardio = entrenamientoStore.getState()
+          .seriesCardio as Database['public']['Tables']['series_cardio']['Row'][];
+        const seriesCalistenia = entrenamientoStore.getState()
+          .seriesCalistenia as Database['public']['Tables']['series_calistenia']['Row'][];
+
+        return seriesFuerza.length + serieCardio.length + seriesCalistenia.length;
       },
     }),
     {
