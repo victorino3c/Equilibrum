@@ -86,5 +86,8 @@ export const useInsertEjerciciosEntrenamiento = () => {
 
       return data;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entrenamientos'] });
+    },
   });
 };
