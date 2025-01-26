@@ -13,15 +13,19 @@ const Colores = {
 };
 
 type CustomCalendarProps = {
-  selectedDate: string;
+  selected: string;
   onCalendarChange: (value: string) => void;
-  setSelectedDate: (value: moment.Moment) => void;
+  onSelectDate: (value: moment.Moment) => void;
+  entrenamientos: { id: string; fecha: string }[] | undefined;
+  loading?: boolean;
 };
 
 export default function CustomCalendar({
-  selectedDate,
+  selected,
   onCalendarChange,
-  setSelectedDate,
+  onSelectDate,
+  entrenamientos = [],
+  loading = false,
 }: CustomCalendarProps) {
   const [markedDates, setMarkedDates] = useState({});
 
@@ -36,12 +40,10 @@ export default function CustomCalendar({
       },
     };
 
-    const entrenamientos = getEntrenamientoDatesByUser('victorino_3c');
-
-    entrenamientos.forEach((date) => {
+    entrenamientos.forEach((entrenamiento) => {
       newMarkedDates = {
         ...newMarkedDates,
-        [date]: {
+        [moment(entrenamiento.fecha).format('YYYY-MM-DD')]: {
           selected: true,
           selectedColor: Colores[1],
           text: { color: 'white' },
@@ -59,10 +61,10 @@ export default function CustomCalendar({
   return (
     <View style={styles.container}>
       <Calendar
-        current={selectedDate}
+        current={selected}
         minDate={moment().subtract(1, 'year').format('YYYY-MM-DD')}
         maxDate={moment().format('YYYY-MM-DD')}
-        onDayPress={(day: { dateString: string }) => setSelectedDate(moment(day.dateString))}
+        onDayPress={(day: { dateString: string }) => onSelectDate(moment(day.dateString))}
         monthFormat={'MMMM yyyy'}
         hideExtraDays={true}
         firstDay={1}

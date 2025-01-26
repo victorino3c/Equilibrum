@@ -78,9 +78,11 @@ export default function HealthLayout() {
           />
         ) : (
           <CustomCalendar
-            selectedDate={selectedDate.format('YYYY-MM-DD')}
-            setSelectedDate={(date) => setSelectedDate(date)}
+            onSelectDate={(date) => setSelectedDate(date)}
             onCalendarChange={setCalendar}
+            entrenamientos={entrenamientos}
+            selected={selectedDate.format('YYYY-MM-DD')}
+            loading={isLoadingObjetivos && isLoadingEntrenamientos}
           />
         )}
         <Text style={styles.fecha}>{selectedDate.format('DD MMMM, YYYY')}</Text>

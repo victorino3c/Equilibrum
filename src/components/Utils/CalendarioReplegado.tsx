@@ -26,7 +26,7 @@ const CalendarioReplegado = ({
   entrenamientos = [],
   selected,
   tipo,
-  loading = true,
+  loading = false,
 }: CalendarioReplegadoProps) => {
   const [dates, setDates] = useState<{ date: moment.Moment; visualization: number }[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>('');

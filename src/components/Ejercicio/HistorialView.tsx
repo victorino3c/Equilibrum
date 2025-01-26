@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React, { useEffect } from 'react';
 
 import { useState } from 'react';
@@ -47,11 +47,15 @@ const HistorialView = () => {
         />
       ) : (
         <CustomCalendar
-          selectedDate={selectedDate.format('YYYY-MM-DD')}
-          setSelectedDate={(date) => setSelectedDate(date)}
+          onSelectDate={(date) => setSelectedDate(date)}
           onCalendarChange={setCalendar}
+          selected={selectedDate.format('YYYY-MM-DD')}
+          entrenamientos={entrenamientos}
+          loading={isLoadingEntrenamientos}
         />
       )}
+      <Text style={styles.fecha}>{selectedDate.format('DD MMMM, YYYY')}</Text>
+
       {ejercicio?.length === 0 ? (
         <Entrenamiento key={0} entrenamiento={null} />
       ) : (
@@ -64,3 +68,12 @@ const HistorialView = () => {
 };
 
 export default HistorialView;
+
+const styles = StyleSheet.create({
+  fecha: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+});
