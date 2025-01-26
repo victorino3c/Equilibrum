@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import React, { memo, useState, useEffect } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
+import { router } from 'expo-router';
 
 import { entrenamientoStore } from '@store/Entrenamientostore';
 
 import CustomInput from '@components/Utils/CustomInput';
-import SensacionesFinEntrenamiento from '@components/Ejercicio/Entrenamiento/EnCurso/SensacionesFinEntrenamiento';
+import SensacionesEntrenamiento from '@components/Ejercicio/Entrenamiento/SensacionesEntrenamiento';
 
 import { Entypo } from '@expo/vector-icons';
 import { Database } from '~/src/database.types';
@@ -45,6 +45,7 @@ const FinEntrenamiento = () => {
           text: 'Descartar',
           onPress: () => {
             resetEntrenamiento();
+            router.navigate('/(protected)/(tabs)/(exercise)');
           },
         },
       ]
@@ -63,14 +64,14 @@ const FinEntrenamiento = () => {
       />
       <CustomInput
         placeholder="Notas del entrenamiento"
-        style={{ marginTop: 20, marginHorizontal: 10, height: 120 }}
+        style={{ marginVertical: 20, marginHorizontal: 10, height: 120 }}
         //textStyle={{ flex: 1 }}
         multiline={true}
         nol={4}
         texto={notas}
         setTexto={setNotas}
       />
-      <SensacionesFinEntrenamiento value={sensaciones} setValue={setSensaciones} />
+      <SensacionesEntrenamiento value={sensaciones} setValue={setSensaciones} editable={true} />
       <TouchableOpacity style={styles.buttonDescartar} onPress={handleDescartar}>
         <Entypo name="circle-with-cross" size={26} color="#E34716" />
         <Text style={styles.descartarTexto}>Descartar entrenamiento</Text>

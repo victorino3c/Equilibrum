@@ -25,7 +25,8 @@ type DetallesEntrenamientoProps = {
   id: string;
 };
 
-const deleteIcon = <Feather name="trash-2" size={40} color="#E34716" />;
+//const deleteIcon = <Feather name="trash-2" size={40} color="#E34716" />;
+const deleteIcon = <Feather name="delete" size={40} color="#E34716" />;
 
 const DetallesEntrenamiento = () => {
   const [editar, setEditar] = React.useState(false);
@@ -66,7 +67,7 @@ const DetallesEntrenamiento = () => {
     />,
     editar ? (
       <IconButton
-        style={{ backgroundColor: '#FFBBB9', marginBottom: 25, marginTop: 10, paddingVertical: 35 }}
+        style={{ backgroundColor: '#FFBBB9', marginBottom: 25, marginTop: 10, paddingVertical: 20 }}
         textStyle={{ color: '#E34716', fontSize: 24, fontWeight: 'bold' }}
         icon={deleteIcon}
         text="Borrar entrenamiento"
@@ -74,7 +75,7 @@ const DetallesEntrenamiento = () => {
       />
     ) : null,
     editar ? null : <TarjetaEntrenamiento entrenamiento={entrenamiento} />,
-    editar ? null : <SensacionesEntrenamiento entrenamiento={entrenamiento} />, // TODO: HACER QUE SE VEA EL SLIDER
+    <SensacionesEntrenamiento entrenamiento={entrenamiento} editable={editar} />, // TODO: HACER QUE SE VEA EL SLIDER
     editar ? null : (
       <ResumenHistoriaEntrenamiento idsEjercicios={ejercicios} idEntrenamiento={entrenamiento.id} />
     ),

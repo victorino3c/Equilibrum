@@ -8,21 +8,18 @@ import {
   Alert,
 } from 'react-native';
 import React from 'react';
-
+import { Stack, Link, router, useLocalSearchParams } from 'expo-router';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
-import IconButton from '../../../components/Buttons/IconButton';
-
-import { Stack, Link, router } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
 
 //import { getProfile } from '@api/profile';
 import { useAuth } from '@providers/AuthProvider';
 
-import { rutinaStore } from '~/src/store/RutinaStore';
-import { entrenamientoStore } from '~/src/store/Entrenamientostore';
+import IconButton from '@components/Buttons/IconButton';
+import TarjetaEjercicio from '@components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
+import EjerciciosModal from '@components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
 
-import TarjetaEjercicio from '~/src/components/Ejercicio/Entrenamiento/EnCurso/TarjetaEjercicio';
-import EjerciciosModal from '~/src/components/Ejercicio/Entrenamiento/EnCurso/EjerciciosModal';
+import { rutinaStore } from '@store/RutinaStore';
+import { entrenamientoStore } from '@store/Entrenamientostore';
 
 const DetallesRutina = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -40,7 +37,7 @@ const DetallesRutina = () => {
 
   const ejercicios = getRutina(rutinaStr)?.Ejercicios || [];
 
-  const icon = <Feather name="delete" size={45} color="#E34716" />;
+  const iconDelete = <Feather name="delete" size={45} color="#E34716" />;
   const iconSum = <Feather name="plus-circle" size={45} color="#6608ff" />;
 
   //const { data: profile, error, isLoading } = getProfile();
@@ -141,7 +138,7 @@ const DetallesRutina = () => {
       {editar ? (
         <Link href="/(protected)/(tabs)/(exercise)" asChild>
           <IconButton
-            icon={icon}
+            icon={iconDelete}
             text="Eliminar rutina"
             textStyle={{ color: '#E34716' }}
             style={{ backgroundColor: '#FFBBB9', shadowColor: '#E34716' }}
