@@ -15,7 +15,9 @@ import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 import { Database } from '~/src/database.types';
-import Skeleton from '../../Utils/SkeletonView';
+import Skeleton from '@components/Utils/SkeletonView';
+
+import { parseDuracion } from '@utils/funciones';
 
 type CabeceraDetallesEntrenamientoProps = {
   entrenamiento: Database['public']['Tables']['entrenamiento']['Row'];
@@ -48,9 +50,13 @@ const CabeceraDetallesEntrenamiento = ({
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.tittle} editable={editar}>
-        {entrenamiento.titulo}
-      </TextInput>
+      {editar ? (
+        <TextInput style={styles.tittle} editable={editar}>
+          {entrenamiento.titulo}
+        </TextInput>
+      ) : (
+        <Text style={styles.tittle}>{entrenamiento.titulo} </Text>
+      )}
       {entrenamiento.notas && (
         <TextInput style={styles.descripcion} editable={editar} multiline={true} numberOfLines={4}>
           {entrenamiento.notas}
@@ -80,7 +86,9 @@ const CabeceraDetallesEntrenamiento = ({
               onChangeText={setDuracion}
             />
           ) : (
-            <Text style={[styles.text, editar && { color: '#6608ff' }]}>{duracion} h</Text>
+            <Text style={[styles.text, editar && { color: '#6608ff' }]}>
+              {parseDuracion(entrenamiento.duracion || 0)}
+            </Text>
           )}
         </View>
       </View>
@@ -110,7 +118,6 @@ const styles = StyleSheet.create({
   tittle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
     padding: 0,
   },
   descripcion: {

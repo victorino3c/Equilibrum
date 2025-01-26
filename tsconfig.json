@@ -15,7 +15,8 @@
       "@protected/*": ["src/app/(protected)/*"],
       "@onborading/*": ["src/app/(onboarding)/*"],
       "@userInfo/*": ["src/app/(userInfo)/*"],
-      "@api/*": ["src/api/*"]
+      "@api/*": ["src/api/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]

@@ -1,14 +1,13 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import React from 'react';
-
 import moment from 'moment';
+import { Ionicons, Feather, AntDesign } from '@expo/vector-icons';
+import Skeleton from '@components/Utils/SkeletonView';
 
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Feather from '@expo/vector-icons/Feather';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { Database } from '~/src/database.types';
-import Skeleton from '../../Utils/SkeletonView';
+
+import { parseDuracion } from '@utils/funciones';
 
 type EntrenamientoProps = {
   entrenamiento: Database['public']['Tables']['entrenamiento']['Row'] | null;
@@ -51,7 +50,7 @@ const Entrenamiento = ({ entrenamiento, loading }: EntrenamientoProps) => {
         <View style={[styles.tituloView, { justifyContent: 'space-between' }]}>
           <View style={styles.info}>
             <AntDesign name="clockcircleo" size={24} color="#6608ff" />
-            <Text style={styles.textInfo}>{entrenamiento.duracion} h</Text>
+            <Text style={styles.textInfo}>{parseDuracion(entrenamiento.duracion || 0)}</Text>
           </View>
           <View style={styles.info}>
             <Text style={{ fontFamily: 'IcoMoon', fontSize: 24, color: '#6608ff' }}>&#xe901;</Text>
@@ -87,6 +86,7 @@ const styles = StyleSheet.create({
   },
   info: {
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
     flexDirection: 'row',
     gap: 5,
