@@ -25,8 +25,15 @@ const DetallesRutina = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
 
   const { getRutina, getSeriesByEjercicioAndRutina, removeRutina } = rutinaStore();
-  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setTitulo, resetEntrenamiento } =
-    entrenamientoStore();
+  const {
+    isRunning,
+    addEjercicio,
+    addSerieEjercicio,
+    setFecha,
+    setTitulo,
+    resetEntrenamiento,
+    setEntrenamientoTerminado,
+  } = entrenamientoStore();
 
   const [editar, setEditar] = React.useState(false);
 
@@ -64,12 +71,14 @@ const DetallesRutina = () => {
             onPress: () => {
               resetEntrenamiento();
               prefillEntrenamiento(idRutina);
+              setEntrenamientoTerminado(false);
             },
           },
         ]
       );
     } else {
       prefillEntrenamiento(idRutina);
+      setEntrenamientoTerminado(false);
     }
   };
 

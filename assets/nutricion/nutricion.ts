@@ -51,7 +51,7 @@ export type AlimentoType = {
 
 export const Nutriciones: Record<number, NutricionType> = {
   1: {
-    fecha: '2025-01-25',
+    fecha: '2025-02-11',
     idUsuario: 'victorino_3c',
     ObjetivoCalorias: 2200,
     Calorias: 1802,
@@ -64,7 +64,7 @@ export const Nutriciones: Record<number, NutricionType> = {
     Imagen: 'https://via.placeholder.com/150',
   },
   2: {
-    fecha: '2025-01-07',
+    fecha: '2025-02-09',
     idUsuario: 'victorino_3c',
     ObjetivoCalorias: 2200,
     Calorias: 1230,

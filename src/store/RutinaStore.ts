@@ -54,6 +54,7 @@ export interface RutinaState {
   updateSerieCardioRutinaTiempo: (rutina: string, idSerie: string, tiempo: number) => void;
   updateSerieCardioRutinaDistancia: (rutina: string, idSerie: string, distancia: number) => void;
   //updateCheckSerieRutina: (rutina: string, idEjercicio: number, idSerie: number) => void;
+  printRutinas: () => void;
 }
 
 export const rutinaStore = create<RutinaState>()(
@@ -250,6 +251,9 @@ export const rutinaStore = create<RutinaState>()(
         set((state) => ({
           rutinas: state.rutinas.map((r) => (r.Nombre === rutina ? rutinaObj : r)),
         }));
+      },
+      printRutinas: () => {
+        console.log(rutinaStore.getState().rutinas);
       },
     }),
     {

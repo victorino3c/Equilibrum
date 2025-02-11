@@ -16,8 +16,15 @@ import IconButton from '../Buttons/IconButton';
 
 const NuevoView = () => {
   const { rutinas, getRutina, getSeriesByEjercicioAndRutina } = rutinaStore();
-  const { isRunning, addEjercicio, addSerieEjercicio, setFecha, setTitulo, resetEntrenamiento } =
-    entrenamientoStore();
+  const {
+    isRunning,
+    addEjercicio,
+    addSerieEjercicio,
+    setFecha,
+    setTitulo,
+    resetEntrenamiento,
+    setEntrenamientoTerminado,
+  } = entrenamientoStore();
 
   //const rutinas = getRutinasByUser('victorino_3c');
   const handleEmpezarEntreno = (idRutina: string) => {
@@ -38,12 +45,14 @@ const NuevoView = () => {
             onPress: () => {
               resetEntrenamiento();
               prefillEntrenamiento(idRutina);
+              setEntrenamientoTerminado(false);
             },
           },
         ]
       );
     } else {
       prefillEntrenamiento(idRutina);
+      setEntrenamientoTerminado(false);
     }
   };
 
@@ -75,7 +84,11 @@ const NuevoView = () => {
     <View>
       <Text style={styles.fecha}>Inicio rápido</Text>
       <Link href="/Ejercicio/Entrenamiento" asChild>
-        <IconButton icon={icon} text="Empezar entrenamiento" />
+        <IconButton
+          icon={icon}
+          text="Empezar entrenamiento"
+          onPress={() => setEntrenamientoTerminado(false)}
+        />
       </Link>
       <View style={styles.rutinasView}>
         <Text style={styles.fecha}>Rutinas</Text>
