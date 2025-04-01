@@ -7,7 +7,6 @@ import uuid from 'react-native-uuid';
 import { Database } from '~/src/database.types';
 
 import moment from 'moment';
-import { SeriesFuerza } from '~/assets/ejercicio/entrenamientos';
 
 export interface EntrenamientoState {
   isRunning: boolean; // El cronómetro está en marcha

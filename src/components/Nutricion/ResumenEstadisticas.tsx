@@ -1,14 +1,25 @@
+//SHOW THE NUTRITION SUMMARY STATISTICS
+// This component displays the nutrition statistics of a user, including calories, proteins, carbohydrates, and fats.
+// It uses a circular progress bar to show the percentage of calories consumed compared to the goal.
+// It also displays the progress of proteins, carbohydrates, and fats in a horizontal bar format.
+// It has 2 modes: card and plane.
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import * as Progress from 'react-native-progress';
 
 type ResumenEstadisticasNutricionProps = {
-  Nutricion: any;
+  Nutricion: any | null;
+  isToday?: boolean | null;
   card: boolean;
 };
 
-const ResumenEstadisticasNutricion = ({ Nutricion, card }: ResumenEstadisticasNutricionProps) => {
+const ResumenEstadisticasNutricion = ({
+  Nutricion,
+  isToday,
+  card,
+}: ResumenEstadisticasNutricionProps) => {
   const percentage = (Nutricion.Calorias / Nutricion.ObjetivoCalorias) * 100;
 
   return (

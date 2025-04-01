@@ -1,6 +1,9 @@
 import { View, ScrollView } from 'react-native';
 import { useState } from 'react';
 
+import HoyView from '~/src/components/Nutricion/HoyView';
+import HistorialView from '~/src/components/Nutricion/HistorialView';
+
 import TwoOptionsButton from '~/src/components/Buttons/TwoOptions';
 
 export default function Nutrition() {
@@ -19,7 +22,7 @@ export default function Nutrition() {
           method={setSelectedView}
           selected={selectedView}
         />
-        {selectedView === 'Nuevo' ? null : null}
+        {selectedView === 'Hoy' ? <HoyView /> : <HistorialView />}
       </ScrollView>
     </View>
   );

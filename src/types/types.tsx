@@ -45,3 +45,10 @@ export type SerieCardioType = Database['public']['Tables']['series_cardio']['Row
 export type SerieFuerzaType = Database['public']['Tables']['series_fuerza']['Row'];
 
 export type SerieCalisteniaType = Database['public']['Tables']['series_calistenia']['Row'];
+
+export type NutricionInfo = {
+  Calorias: number;
+  Proteinas: number;
+  Carbohidratos: number;
+  Grasas: number;
+};
