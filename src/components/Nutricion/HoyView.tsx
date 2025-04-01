@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import ResumenEstadisticasNutricion from '@components/Nutricion/ResumenEstadisticas';
 import { useNutricionStore } from '@store/NutricionStore';
+import appStore from '@store/AppStore';
 
 const HoyView = () => {
   const [nutricion, setNutricion] = useState<any>(null);
@@ -11,7 +12,8 @@ const HoyView = () => {
   const { getNutricion } = useNutricionStore();
   useEffect(() => {
     const nutricionData = getNutricion();
-    setNutricion(nutricionData);
+    const objetivosNutricion = appStore.getState().objetivosNutricion;
+    setNutricion({ ...nutricionData, ...objetivosNutricion });
   }, []);
 
   return (

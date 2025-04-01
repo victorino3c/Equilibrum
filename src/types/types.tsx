@@ -52,3 +52,10 @@ export type NutricionInfo = {
   Carbohidratos: number;
   Grasas: number;
 };
+
+export type ObjetivosNutricion = {
+  objetivoCalorias: number;
+  objetivoProteinas: number;
+  objetivoCarbohidratos: number;
+  objetivoGrasas: number;
+};

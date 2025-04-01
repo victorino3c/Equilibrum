@@ -271,7 +271,18 @@ const useNutricionStore = create<NutricionState>()(
     }),
     {
       name: 'nutricion-storage',
-      getStorage: () => AsyncStorage,
+      storage: {
+        getItem: async (key) => {
+          const item = await AsyncStorage.getItem(key);
+          return item ? JSON.parse(item) : null;
+        },
+        setItem: async (key, value) => {
+          await AsyncStorage.setItem(key, JSON.stringify(value));
+        },
+        removeItem: async (key) => {
+          await AsyncStorage.removeItem(key);
+        },
+      },
       version: 1,
       migrate: async (persistedState: any) => {
         const storedDate = persistedState?.fecha;

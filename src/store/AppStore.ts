@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Generos, Peso, Distancia } from 'src/types/types';
+import { Generos, Peso, Distancia, ObjetivosNutricion } from 'src/types/types';
 
 export interface RutinaState {
   idUsuario?: string;
@@ -12,7 +12,7 @@ export interface RutinaState {
   peso: Peso;
   distancia: Distancia;
   nacimiento: Date;
-  objetivoCalorias: number;
+  objetivosNutricion: ObjetivosNutricion;
   objetivoSueño: number;
   objetivoAgua: number;
   setGenero: (genero: Generos) => void;
@@ -20,6 +20,10 @@ export interface RutinaState {
   setDistancia: (distancia: Distancia) => void;
   setNacimiento: (nacimiento: Date) => void;
   setObjetivoCalorias: (objetivoCalorias: number) => void;
+  setObjetivoProteinas: (objetivoProteinas: number) => void;
+  setObjetivoCarbohidratos: (objetivoCarbohidratos: number) => void;
+  setObjetivoGrasas: (objetivoGrasas: number) => void;
+  setObjetivoNutricion: (objetivosNutricion: ObjetivosNutricion) => void;
   setObjetivoSueño: (objetivoSueño: number) => void;
   setObjetivoAgua: (objetivoAgua: number) => void;
   setHasEnteredUserInfo: (hasEnteredUserInfo: boolean) => void;
@@ -35,14 +39,40 @@ export const appStore = create<RutinaState>()(
       peso: Peso.Kilgramos,
       distancia: Distancia.Kilometros,
       nacimiento: new Date(),
-      objetivoCalorias: 2200,
+      objetivosNutricion: {
+        objetivoCalorias: 2200,
+        objetivoProteinas: 100,
+        objetivoCarbohidratos: 100,
+        objetivoGrasas: 100,
+      },
       objetivoSueño: 8,
       objetivoAgua: 3.3,
       setGenero: (genero) => set((state) => ({ ...state, genero })),
       setPeso: (peso) => set((state) => ({ ...state, peso })),
       setDistancia: (distancia) => set((state) => ({ ...state, distancia })),
       setNacimiento: (nacimiento) => set((state) => ({ ...state, nacimiento })),
-      setObjetivoCalorias: (objetivoCalorias) => set((state) => ({ ...state, objetivoCalorias })),
+      setObjetivoCalorias: (objetivoCalorias) =>
+        set((state) => ({
+          ...state,
+          objetivosNutricion: { ...state.objetivosNutricion, objetivoCalorias },
+        })),
+      setObjetivoProteinas: (objetivoProteinas) =>
+        set((state) => ({
+          ...state,
+          objetivosNutricion: { ...state.objetivosNutricion, objetivoProteinas },
+        })),
+      setObjetivoCarbohidratos: (objetivoCarbohidratos) =>
+        set((state) => ({
+          ...state,
+          objetivosNutricion: { ...state.objetivosNutricion, objetivoCarbohidratos },
+        })),
+      setObjetivoGrasas: (objetivoGrasas) =>
+        set((state) => ({
+          ...state,
+          objetivosNutricion: { ...state.objetivosNutricion, objetivoGrasas },
+        })),
+      setObjetivoNutricion: (objetivosNutricion) =>
+        set((state) => ({ ...state, objetivosNutricion })),
       setObjetivoSueño: (objetivoSueño) => set((state) => ({ ...state, objetivoSueño })),
       setObjetivoAgua: (objetivoAgua) => set((state) => ({ ...state, objetivoAgua })),
       setHasEnteredUserInfo: (hasEnteredUserInfo) =>
