@@ -15,17 +15,21 @@ export enum Medida {
   tamaño = 'tamaño',
 }
 
+type NutricionInfo = {
+  Calorias: number;
+  Proteinas: number;
+  Carbohidratos: number;
+  Grasas: number;
+};
+
 export type NutricionType = {
   fecha: string;
   idUsuario: string; //Temporal, esto deberia ser una relacion con la tabla de usuarios
-  ObjetivoCalorias: number;
-  Calorias: number;
-  ObjetivoProteinas: number;
-  Proteinas: number;
-  ObjetivoGrasas: number;
-  Grasas: number;
-  ObjetivoCarbohidratos: number;
-  Carbohidratos: number;
+  macros: NutricionInfo;
+  objetivoCalorias: number;
+  objetivoProteinas: number;
+  objetivoGrasas: number;
+  objetivoCarbohidratos: number;
   Imagen?: string;
 };
 
@@ -53,41 +57,47 @@ export const Nutriciones: Record<number, NutricionType> = {
   1: {
     fecha: '2025-04-01',
     idUsuario: 'victorino_3c',
-    ObjetivoCalorias: 2200,
-    Calorias: 1802,
-    ObjetivoProteinas: 100,
-    Proteinas: 80,
-    ObjetivoGrasas: 102,
-    Grasas: 75,
-    ObjetivoCarbohidratos: 110,
-    Carbohidratos: 40,
+    macros: {
+      Calorias: 1802,
+      Proteinas: 80,
+      Carbohidratos: 40,
+      Grasas: 75,
+    },
+    objetivoProteinas: 100,
+    objetivoCalorias: 2200,
+    objetivoGrasas: 102,
+    objetivoCarbohidratos: 110,
     Imagen: 'https://via.placeholder.com/150',
   },
   2: {
     fecha: '2025-02-09',
     idUsuario: 'victorino_3c',
-    ObjetivoCalorias: 2200,
-    Calorias: 1230,
-    ObjetivoProteinas: 100,
-    Proteinas: 20,
-    ObjetivoGrasas: 102,
-    Grasas: 45,
-    ObjetivoCarbohidratos: 110,
-    Carbohidratos: 30,
+    macros: {
+      Calorias: 1230,
+      Proteinas: 20,
+      Carbohidratos: 30,
+      Grasas: 45,
+    },
+    objetivoCalorias: 2200,
+    objetivoProteinas: 100,
+    objetivoCarbohidratos: 110,
+    objetivoGrasas: 102,
     Imagen: 'https://via.placeholder.com/150',
   },
   // Añadir más ejercicios según sea necesario
   3: {
     fecha: '2025-01-09',
     idUsuario: 'victorino_3c',
-    ObjetivoCalorias: 2200,
-    Calorias: 1802,
-    ObjetivoProteinas: 100,
-    Proteinas: 80,
-    ObjetivoGrasas: 102,
-    Grasas: 75,
-    ObjetivoCarbohidratos: 110,
-    Carbohidratos: 40,
+    objetivoCalorias: 2200,
+    macros: {
+      Calorias: 1802,
+      Proteinas: 80,
+      Grasas: 75,
+      Carbohidratos: 40,
+    },
+    objetivoProteinas: 100,
+    objetivoGrasas: 102,
+    objetivoCarbohidratos: 110,
     Imagen: 'https://via.placeholder.com/150',
   },
 };

@@ -1,15 +1,22 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 import React, { useEffect, useState } from 'react';
-import moment from 'moment';
 
 import ResumenEstadisticasNutricion from '@components/Nutricion/ResumenEstadisticas';
-import { findNutricionByDate } from '~/assets/nutricion/nutricion';
+import { useNutricionStore } from '@store/NutricionStore';
 
 const HoyView = () => {
+  const [nutricion, setNutricion] = useState<any>(null);
+
+  const { getNutricion } = useNutricionStore();
+  useEffect(() => {
+    const nutricionData = getNutricion();
+    setNutricion(nutricionData);
+  }, []);
+
   return (
     <View>
-      <ResumenEstadisticasNutricion isToday={true} card={true} />
+      <ResumenEstadisticasNutricion Nutricion={nutricion} card={true} />
     </View>
   );
 };

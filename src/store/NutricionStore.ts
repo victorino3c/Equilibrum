@@ -12,20 +12,16 @@ import moment from 'moment';
 export interface NutricionState {
   fecha: string;
   macros: NutricionInfo;
-  //desayuno: Database['public']['Tables']['alimento']['Row'][];
-  //macrosDesayuno: NutricionInfo;
-  //comida: Database['public']['Tables']['alimento']['Row'][];
-  //macrosComida: NutricionInfo;
-  //cena: Database['public']['Tables']['alimento']['Row'][];
-  //macrosCena: NutricionInfo;
-  //snacks: Database['public']['Tables']['alimento']['Row'][];
-  //macrosSnacks: NutricionInfo;
   periodos: Partial<
     Record<
       Database['public']['Enums']['tipo_nutricion_enum'],
       { alimentos: Database['public']['Tables']['alimento']['Row'][]; macros: NutricionInfo }
     >
   >;
+  imagenesPeriodos: Partial<
+    Record<Database['public']['Enums']['tipo_nutricion_enum'], { imagen: string; id: string }>
+  >;
+  checkAndResetIfNewDay: () => void;
   setFecha: (fecha: string) => void;
   setMacros: (macros: NutricionInfo) => void;
   setAlimentos: (
@@ -56,6 +52,9 @@ export interface NutricionState {
       { alimentos: Database['public']['Tables']['alimento']['Row'][]; macros: NutricionInfo }
     >
   >;
+  addImagen: (tipo: Database['public']['Enums']['tipo_nutricion_enum'], imagen: string) => void;
+  removeImagen: (tipo: Database['public']['Enums']['tipo_nutricion_enum']) => void;
+  getImagen: (tipo: Database['public']['Enums']['tipo_nutricion_enum']) => string;
 }
 
 const useNutricionStore = create<NutricionState>()(
@@ -82,6 +81,54 @@ const useNutricionStore = create<NutricionState>()(
           alimentos: [],
           macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
         },
+      },
+      imagenesPeriodos: {
+        Desayuno: { imagen: '', id: uuid.v4() as string },
+        Comida: { imagen: '', id: uuid.v4() as string },
+        Cena: { imagen: '', id: uuid.v4() as string },
+        Snacks: { imagen: '', id: uuid.v4() as string },
+      },
+      checkAndResetIfNewDay: () => {
+        const storedDate = get().fecha;
+        const today = moment().format('YYYY-MM-DD');
+
+        if (storedDate != today) {
+          // Upload data before clearing
+          // TODO: Make function to upload data
+          // await uploadData(get());
+
+          // Reset store data
+          set({
+            fecha: today,
+            macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+            periodos: {
+              Desayuno: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+              Comida: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+              Cena: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+              Snacks: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+            },
+          });
+          set({
+            imagenesPeriodos: {
+              Desayuno: { imagen: '', id: uuid.v4() as string },
+              Comida: { imagen: '', id: uuid.v4() as string },
+              Cena: { imagen: '', id: uuid.v4() as string },
+              Snacks: { imagen: '', id: uuid.v4() as string },
+            },
+          });
+        }
       },
       setFecha: (fecha) => set({ fecha }),
       setMacros: (macros) => set({ macros }),
@@ -204,14 +251,69 @@ const useNutricionStore = create<NutricionState>()(
       getPeriodos: () => {
         return get().periodos;
       },
+      addImagen: (tipo, imagen) => {
+        const imagenesPeriodos = get().imagenesPeriodos;
+        if (imagenesPeriodos[tipo]) {
+          imagenesPeriodos[tipo].imagen = imagen;
+          set({ imagenesPeriodos });
+        }
+      },
+      removeImagen: (tipo) => {
+        const imagenesPeriodos = get().imagenesPeriodos;
+        if (imagenesPeriodos[tipo]) {
+          imagenesPeriodos[tipo].imagen = '';
+          set({ imagenesPeriodos });
+        }
+      },
+      getImagen: (tipo) => {
+        return get().imagenesPeriodos[tipo]?.imagen || '';
+      },
     }),
     {
       name: 'nutricion-storage',
       getStorage: () => AsyncStorage,
       version: 1,
-      migrate: (state) => {
-        // Perform migration logic here if needed
-        return state;
+      migrate: async (persistedState: any) => {
+        const storedDate = persistedState?.fecha;
+        const today = moment().format('YYYY-MM-DD');
+
+        if (storedDate && storedDate !== today) {
+          // Upload data before clearing
+          // TODO: Implement uploadData function
+          // await uploadData(persistedState);
+
+          // Reset store data
+          return {
+            ...persistedState,
+            fecha: today,
+            macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+            periodos: {
+              Desayuno: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+              Comida: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+              Cena: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+              Snacks: {
+                alimentos: [],
+                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+              },
+            },
+            imagenesPeriodos: {
+              Desayuno: { imagen: '', id: uuid.v4() as string },
+              Comida: { imagen: '', id: uuid.v4() as string },
+              Cena: { imagen: '', id: uuid.v4() as string },
+              Snacks: { imagen: '', id: uuid.v4() as string },
+            },
+          };
+        }
+        return persistedState;
       },
     }
   )

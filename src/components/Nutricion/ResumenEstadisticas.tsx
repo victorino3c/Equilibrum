@@ -4,23 +4,36 @@
 // It also displays the progress of proteins, carbohydrates, and fats in a horizontal bar format.
 // It has 2 modes: card and plane.
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import * as Progress from 'react-native-progress';
+import { Database } from '~/src/database.types';
+import { NutricionInfo } from '~/src/types/types';
 
 type ResumenEstadisticasNutricionProps = {
-  Nutricion: any | null;
-  isToday?: boolean | null;
+  Nutricion: {
+    macros: NutricionInfo;
+    objetivoCalorias: number;
+    objetivoProteinas: number;
+    objetivoCarbohidratos: number;
+    objetivoGrasas: number;
+  } | null;
   card: boolean;
 };
 
-const ResumenEstadisticasNutricion = ({
-  Nutricion,
-  isToday,
-  card,
-}: ResumenEstadisticasNutricionProps) => {
-  const percentage = (Nutricion.Calorias / Nutricion.ObjetivoCalorias) * 100;
+const ResumenEstadisticasNutricion = ({ Nutricion, card }: ResumenEstadisticasNutricionProps) => {
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+    if (Nutricion) {
+      setPercentage(((Nutricion.macros.Calorias || 0) / Nutricion.objetivoCalorias) * 100);
+    }
+  }, []);
+
+  if (!Nutricion) {
+    return null;
+  }
 
   return (
     <View style={card ? styles.container : styles.plane}>
@@ -35,8 +48,8 @@ const ResumenEstadisticasNutricion = ({
           backgroundColor="#e0e0e0"
         />
         <View style={styles.textContainer}>
-          <Text style={styles.textCalorias}>{Nutricion.Calorias} /</Text>
-          <Text style={styles.textCalorias}>{Nutricion.ObjetivoCalorias}</Text>
+          <Text style={styles.textCalorias}>{Nutricion.macros.Calorias} /</Text>
+          <Text style={styles.textCalorias}>{Nutricion.objetivoCalorias}</Text>
           <Text style={styles.textCalorias}>kcal</Text>
         </View>
       </View>
@@ -45,11 +58,11 @@ const ResumenEstadisticasNutricion = ({
           <View style={styles.statTextView}>
             <Text style={styles.text}>Proteinas</Text>
             <Text style={{ fontSize: 14 }}>
-              {Nutricion.Proteinas} / {Nutricion.ObjetivoProteinas} g
+              {Nutricion.macros.Proteinas} / {Nutricion.objetivoProteinas} g
             </Text>
           </View>
           <Progress.Bar
-            progress={Nutricion.Proteinas / Nutricion.ObjetivoProteinas}
+            progress={Nutricion.macros.Proteinas / Nutricion.objetivoProteinas}
             width={200}
             color="#6608ff"
             unfilledColor="#e5e5e5"
@@ -60,11 +73,11 @@ const ResumenEstadisticasNutricion = ({
           <View style={styles.statTextView}>
             <Text style={styles.text}>Carbohidratos</Text>
             <Text style={{ fontSize: 14 }}>
-              {Nutricion.Carbohidratos} / {Nutricion.ObjetivoCarbohidratos} g
+              {Nutricion.macros.Carbohidratos} / {Nutricion.objetivoCarbohidratos} g
             </Text>
           </View>
           <Progress.Bar
-            progress={Nutricion.Carbohidratos / Nutricion.ObjetivoCarbohidratos}
+            progress={Nutricion.macros.Carbohidratos / Nutricion.objetivoCarbohidratos}
             width={200}
             color="#6608ff"
             unfilledColor="#e5e5e5"
@@ -75,11 +88,11 @@ const ResumenEstadisticasNutricion = ({
           <View style={styles.statTextView}>
             <Text style={styles.text}>Grasas</Text>
             <Text style={{ fontSize: 14 }}>
-              {Nutricion.Grasas} / {Nutricion.ObjetivoGrasas} g
+              {Nutricion.macros.Grasas} / {Nutricion.objetivoGrasas} g
             </Text>
           </View>
           <Progress.Bar
-            progress={Nutricion.Grasas / Nutricion.ObjetivoGrasas}
+            progress={Nutricion.macros.Grasas / Nutricion.objetivoGrasas}
             width={200}
             color="#6608ff"
             unfilledColor="#e5e5e5"
