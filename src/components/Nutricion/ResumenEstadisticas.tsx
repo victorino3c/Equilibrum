@@ -23,17 +23,11 @@ type ResumenEstadisticasNutricionProps = {
 };
 
 const ResumenEstadisticasNutricion = ({ Nutricion, card }: ResumenEstadisticasNutricionProps) => {
-  const [percentage, setPercentage] = useState(0);
-
-  useEffect(() => {
-    if (Nutricion) {
-      setPercentage(((Nutricion.macros.Calorias || 0) / Nutricion.objetivoCalorias) * 100);
-    }
-  }, []);
-
   if (!Nutricion) {
     return null;
   }
+
+  const percentage = ((Nutricion.macros.Calorias || 0) / Nutricion.objetivoCalorias) * 100;
 
   return (
     <View style={card ? styles.container : styles.plane}>

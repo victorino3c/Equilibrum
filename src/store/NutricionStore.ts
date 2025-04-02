@@ -15,7 +15,13 @@ export interface NutricionState {
   periodos: Partial<
     Record<
       Database['public']['Enums']['tipo_nutricion_enum'],
-      { alimentos: Database['public']['Tables']['alimento']['Row'][]; macros: NutricionInfo }
+      {
+        alimentos: {
+          alimento: Database['public']['Tables']['alimento']['Row'];
+          cantidad: number;
+        }[];
+        macros: NutricionInfo;
+      }
     >
   >;
   imagenesPeriodos: Partial<
@@ -26,7 +32,7 @@ export interface NutricionState {
   setMacros: (macros: NutricionInfo) => void;
   setAlimentos: (
     tipo: Database['public']['Enums']['tipo_nutricion_enum'],
-    alimentos: Database['public']['Tables']['alimento']['Row'][]
+    alimentos: { alimento: Database['public']['Tables']['alimento']['Row']; cantidad: number }[]
   ) => void;
   setMacrosAlimentos: (
     tipo: Database['public']['Enums']['tipo_nutricion_enum'],
@@ -34,7 +40,7 @@ export interface NutricionState {
   ) => void;
   addAlimento: (
     tipo: Database['public']['Enums']['tipo_nutricion_enum'],
-    alimento: Database['public']['Tables']['alimento']['Row']
+    alimento: { alimento: Database['public']['Tables']['alimento']['Row']; cantidad: number }
   ) => void;
   removeAlimento: (tipo: Database['public']['Enums']['tipo_nutricion_enum'], id: string) => void;
   clearAlimentos: (tipo: Database['public']['Enums']['tipo_nutricion_enum']) => void;
@@ -44,12 +50,18 @@ export interface NutricionState {
   getMacros: () => NutricionInfo;
   getAlimentos: (
     tipo: Database['public']['Enums']['tipo_nutricion_enum']
-  ) => Database['public']['Tables']['alimento']['Row'][];
+  ) => { alimento: Database['public']['Tables']['alimento']['Row']; cantidad: number }[];
   getMacrosAlimentos: (tipo: Database['public']['Enums']['tipo_nutricion_enum']) => NutricionInfo;
   getPeriodos: () => Partial<
     Record<
       Database['public']['Enums']['tipo_nutricion_enum'],
-      { alimentos: Database['public']['Tables']['alimento']['Row'][]; macros: NutricionInfo }
+      {
+        alimentos: {
+          alimento: Database['public']['Tables']['alimento']['Row'];
+          cantidad: number;
+        }[];
+        macros: NutricionInfo;
+      }
     >
   >;
   addImagen: (tipo: Database['public']['Enums']['tipo_nutricion_enum'], imagen: string) => void;
@@ -161,10 +173,10 @@ const useNutricionStore = create<NutricionState>()(
         const macros = periodos[tipo].macros;
         const newAlimento = { ...alimento };
         const newMacros = {
-          Calorias: macros.Calorias + (alimento.calorias || 0),
-          Proteinas: macros.Proteinas + (alimento.proteina || 0),
-          Carbohidratos: macros.Carbohidratos + (alimento.carbohidratos || 0),
-          Grasas: macros.Grasas + (alimento.grasa || 0),
+          Calorias: macros.Calorias + (alimento.alimento.calorias || 0),
+          Proteinas: macros.Proteinas + (alimento.alimento.proteina || 0),
+          Carbohidratos: macros.Carbohidratos + (alimento.alimento.carbohidratos || 0),
+          Grasas: macros.Grasas + (alimento.alimento.grasa || 0),
         };
         periodos[tipo].alimentos = [...alimentos, newAlimento];
         periodos[tipo].macros = newMacros;
@@ -179,14 +191,14 @@ const useNutricionStore = create<NutricionState>()(
         }
         const alimentos = periodos[tipo].alimentos;
         const macros = periodos[tipo].macros;
-        const newAlimentos = alimentos.filter((alimento) => alimento.id !== id);
-        const removedAlimento = alimentos.find((alimento) => alimento.id === id);
+        const newAlimentos = alimentos.filter((alimento) => alimento.alimento.id !== id);
+        const removedAlimento = alimentos.find((alimento) => alimento.alimento.id === id);
         if (removedAlimento) {
           const newMacros = {
-            Calorias: macros.Calorias - (removedAlimento.calorias || 0),
-            Proteinas: macros.Proteinas - (removedAlimento.proteina || 0),
-            Carbohidratos: macros.Carbohidratos - (removedAlimento.carbohidratos || 0),
-            Grasas: macros.Grasas - (removedAlimento.grasa || 0),
+            Calorias: macros.Calorias - (removedAlimento.alimento.calorias || 0),
+            Proteinas: macros.Proteinas - (removedAlimento.alimento.proteina || 0),
+            Carbohidratos: macros.Carbohidratos - (removedAlimento.alimento.carbohidratos || 0),
+            Grasas: macros.Grasas - (removedAlimento.alimento.grasa || 0),
           };
           periodos[tipo].alimentos = newAlimentos;
           periodos[tipo].macros = newMacros;

@@ -1,24 +1,24 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import React from 'react';
 
-//TEMP
-import { AlimentoType, PeriodoType, Medida } from '~/assets/nutricion/nutricion';
-
+import { alimentoType, medidaEnum, NutricionInfo } from '~/src/types/types';
 import { Feather, FontAwesome6, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import PlantillaModal from './PlantillaModal';
+import { Database } from '~/src/database.types';
 
 type ResumenNutricionProps = {
-  periodo: PeriodoType;
-  alimentos: AlimentoType[];
+  periodo: Database['public']['Enums']['tipo_nutricion_enum'];
+  periodoMacros: NutricionInfo | undefined;
+  alimentos: { alimento: alimentoType; cantidad: number }[] | undefined;
   editar?: boolean;
 };
 
-const ResumenNutricion = ({ periodo, alimentos, editar }: ResumenNutricionProps) => {
+const ResumenNutricion = ({ periodo, periodoMacros, alimentos, editar }: ResumenNutricionProps) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalData, setModalData] = React.useState<any>(null);
 
   const showModal = () => {
-    setModalData({ periodo, alimentos });
+    setModalData({ periodoMacros, alimentos });
     setModalVisible(!modalVisible);
   };
 
@@ -27,7 +27,7 @@ const ResumenNutricion = ({ periodo, alimentos, editar }: ResumenNutricionProps)
       <PlantillaModal visible={modalVisible} data={modalData} setModalVisible={setModalVisible} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row', marginBottom: 5 }}>
-          <Text style={styles.tittle}>{periodo.periodo.toString()}</Text>
+          <Text style={styles.tittle}>{periodo}</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 15 }}>
           <Feather name="image" size={24} color="#777777" />
@@ -39,8 +39,8 @@ const ResumenNutricion = ({ periodo, alimentos, editar }: ResumenNutricionProps)
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Ionicons name="flame-outline" size={20} color="#FF6F15" style={{ marginBottom: 10 }} />
         <Text style={styles.text}>
-          {periodo.calorias} kcal | {periodo.grasas} g | {periodo.carbohidratos} g |{periodo.grasas}
-          g
+          {periodoMacros?.Calorias || 0} kcal | {periodoMacros?.Grasas || 0} g |{' '}
+          {periodoMacros?.Carbohidratos || 0} g | {periodoMacros?.Grasas || 0} g
         </Text>
       </View>
       <FlatList
@@ -50,13 +50,13 @@ const ResumenNutricion = ({ periodo, alimentos, editar }: ResumenNutricionProps)
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={styles.titulos}>
               <Text style={[styles.datos, { fontWeight: 'bold' }]}>{index + 1}</Text>
-              <Text style={styles.datos}>{item.nombre}</Text>
+              <Text style={styles.datos}>{item.alimento.nombre}</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
               <View style={[styles.titulos, { gap: 5 }]}>
                 <Text style={styles.cantidad}>{item.cantidad}</Text>
-                {item.medida !== Medida.tamaño && (
-                  <Text style={styles.cantidad}>{item.medida}</Text>
+                {item.alimento.tipo_medida !== medidaEnum.Peso && (
+                  <Text style={styles.cantidad}>{item.alimento.tipo_medida}</Text>
                 )}
               </View>
               <View>

@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import ResumenEstadisticasNutricion from '../../Nutricion/ResumenEstadisticas';
+import appStore from '@store/AppStore';
 import { Link } from 'expo-router';
 
 type NutricionProps = {
@@ -13,6 +14,12 @@ type NutricionProps = {
 };
 
 const Nutricion = ({ Nutricion, Fecha }: NutricionProps) => {
+  const { objetivosNutricion } = appStore.getState();
+  const nutricionData = {
+    ...Nutricion,
+    ...objetivosNutricion,
+  };
+
   if (Nutricion === null) {
     return (
       <View style={styles.container}>
@@ -26,7 +33,7 @@ const Nutricion = ({ Nutricion, Fecha }: NutricionProps) => {
   return (
     <Link href={`/Nutricion/DetallesNutricion?fecha=${Fecha.format('YYYY-MM-DD')}`} asChild>
       <TouchableOpacity style={styles.container}>
-        <ResumenEstadisticasNutricion Nutricion={Nutricion} card={false} />
+        <ResumenEstadisticasNutricion Nutricion={nutricionData} card={false} />
         <View style={styles.periodView}>
           <View style={styles.tituloView}>
             <View style={[styles.izq, Nutricion.Imagen && { flex: 1 }]}>

@@ -1,5 +1,5 @@
 import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -12,8 +12,12 @@ import {
   findNutricionIdByDate,
   findPeriodoIdByNutricion,
   findPeriodosByNutricion,
+  TipoPeriodo,
 } from '~/assets/nutricion/nutricion';
 
+import { Database } from '~/src/database.types';
+
+import appStore from '@store/AppStore';
 import ResumenEstadisticasNutricion from '@components/Nutricion/ResumenEstadisticas';
 import TarjetaNutricion from '@components/Nutricion/TarjetaNutricion/TarjetaNutricion';
 import ResumenHistoriaNutricion from '@components/Nutricion/ResumenHistoriaNutricion';
@@ -25,8 +29,15 @@ type DetallesNutricionProps = {
 
 const DetallesNutricion = () => {
   const [editar, setEditar] = React.useState(false);
+  const [Nutricion, setNutricion] = React.useState<any>(null);
 
   const { fecha }: DetallesNutricionProps = useLocalSearchParams();
+
+  useEffect(() => {
+    const nutricionData = findNutricionByDate(fecha);
+    const objetivosNutricion = appStore.getState().objetivosNutricion;
+    setNutricion({ ...nutricionData, ...objetivosNutricion });
+  }, []);
 
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
@@ -37,22 +48,39 @@ const DetallesNutricion = () => {
   }
 
   const Periodos = findPeriodosByNutricion(idNutricion) || [];
-  const Nutricion = findNutricionByDate(fecha);
 
   const data = [
     <Text style={styles.fecha}>{moment(fecha).format('DD MMMM, YYYY')}</Text>,
-    !editar ? (
-      <ResumenEstadisticasNutricion Nutricion={findNutricionByDate(fecha)} card={true} />
-    ) : null,
+    !editar ? <ResumenEstadisticasNutricion Nutricion={Nutricion} card={true} /> : null,
     !editar ? <TarjetaNutricion idNutricion={findNutricionIdByDate(fecha) || -1} /> : null,
     !editar ? <ResumenHistoriaNutricion idNutricion={findNutricionIdByDate(fecha) || -1} /> : null,
     ...(Periodos.length > 0
       ? Periodos.map((Periodo) => (
           <ResumenNutricion
-            periodo={Periodo}
+            // TODO: ARREGLAR PARA SER COMPATIBLE CON EL NUEVO TIPO DE NUTRICION DE SUPABASE
+            periodo={Periodo.periodo as Database['public']['Enums']['tipo_nutricion_enum']}
+            periodoMacros={{
+              Calorias: Periodo.calorias,
+              Proteinas: Periodo.proteinas,
+              Carbohidratos: Periodo.carbohidratos,
+              Grasas: Periodo.grasas,
+            }}
             alimentos={findAlimentosByPeriodo(
-              findPeriodoIdByNutricion(idNutricion, Periodo.periodo) || -1
-            )}
+              findPeriodoIdByNutricion(idNutricion, Periodo.periodo as TipoPeriodo) || -1
+            )?.map((alimento) => ({
+              alimento: {
+                calorias: alimento.alimento.calorias,
+                carbohidratos: alimento.alimento.carbohidratos,
+                created_at: '', // Provide a default or fetch this value
+                descripcion: null, // Provide a default or fetch this value
+                grasa: alimento.alimento.grasas,
+                id: '', // Provide a default or fetch this value
+                nombre: alimento.alimento.nombre,
+                proteina: alimento.alimento.proteinas,
+                tipo_medida: null, // Provide a default or fetch this value
+              },
+              cantidad: alimento.cantidad, // Provide a default or fetch this value
+            }))}
             editar={editar}
           />
         ))

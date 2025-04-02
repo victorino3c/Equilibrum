@@ -1,5 +1,7 @@
 // ~/assets/ejercicio/ejercicio.ts
 
+import { Database } from '~/src/database.types';
+
 export enum TipoPeriodo {
   Desayuno = 'Desayuno',
   Comida = 'Comida',
@@ -26,16 +28,12 @@ export type NutricionType = {
   fecha: string;
   idUsuario: string; //Temporal, esto deberia ser una relacion con la tabla de usuarios
   macros: NutricionInfo;
-  objetivoCalorias: number;
-  objetivoProteinas: number;
-  objetivoGrasas: number;
-  objetivoCarbohidratos: number;
   Imagen?: string;
 };
 
 export type PeriodoType = {
   idNutricion: number;
-  periodo: TipoPeriodo;
+  periodo: Database['public']['Enums']['tipo_nutricion_enum'];
   calorias: number;
   proteinas: number;
   carbohidratos: number;
@@ -43,14 +41,16 @@ export type PeriodoType = {
 };
 
 export type AlimentoType = {
-  idPeriodo: number;
-  nombre: string;
-  cantidad: number | string;
-  medida: Medida;
-  calorias: number;
-  proteinas: number;
-  carbohidratos: number;
-  grasas: number;
+  alimento: {
+    idPeriodo: number;
+    nombre: string;
+    medida: Medida;
+    calorias: number;
+    proteinas: number;
+    carbohidratos: number;
+    grasas: number;
+  };
+  cantidad: number;
 };
 
 export const Nutriciones: Record<number, NutricionType> = {
@@ -63,10 +63,6 @@ export const Nutriciones: Record<number, NutricionType> = {
       Carbohidratos: 40,
       Grasas: 75,
     },
-    objetivoProteinas: 100,
-    objetivoCalorias: 2200,
-    objetivoGrasas: 102,
-    objetivoCarbohidratos: 110,
     Imagen: 'https://via.placeholder.com/150',
   },
   2: {
@@ -78,26 +74,18 @@ export const Nutriciones: Record<number, NutricionType> = {
       Carbohidratos: 30,
       Grasas: 45,
     },
-    objetivoCalorias: 2200,
-    objetivoProteinas: 100,
-    objetivoCarbohidratos: 110,
-    objetivoGrasas: 102,
     Imagen: 'https://via.placeholder.com/150',
   },
   // Añadir más ejercicios según sea necesario
   3: {
     fecha: '2025-01-09',
     idUsuario: 'victorino_3c',
-    objetivoCalorias: 2200,
     macros: {
       Calorias: 1802,
       Proteinas: 80,
       Grasas: 75,
       Carbohidratos: 40,
     },
-    objetivoProteinas: 100,
-    objetivoGrasas: 102,
-    objetivoCarbohidratos: 110,
     Imagen: 'https://via.placeholder.com/150',
   },
 };
@@ -172,84 +160,100 @@ export const Periodos: Record<number, PeriodoType> = {
 
 export const Alimentos: Record<number, AlimentoType> = {
   1: {
-    idPeriodo: 1,
-    nombre: 'Leche',
-    cantidad: 200,
-    medida: Medida.mililitros,
-    calorias: 100,
-    proteinas: 10,
-    carbohidratos: 10,
-    grasas: 5,
+    alimento: {
+      idPeriodo: 1,
+      nombre: 'Huevo',
+      medida: Medida.unidades,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
+    cantidad: 2,
   },
   2: {
-    idPeriodo: 1,
-    nombre: 'Cereal',
-    cantidad: 50,
-    medida: Medida.gramos,
-    calorias: 200,
-    proteinas: 10,
-    carbohidratos: 20,
-    grasas: 5,
+    alimento: {
+      idPeriodo: 1,
+      nombre: 'Tostada',
+      medida: Medida.unidades,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
+    cantidad: 2,
   },
   3: {
-    idPeriodo: 2,
-    nombre: 'Arroz',
+    alimento: {
+      idPeriodo: 2,
+      nombre: 'Arroz',
+      medida: Medida.gramos,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
     cantidad: 100,
-    medida: Medida.gramos,
-    calorias: 200,
-    proteinas: 10,
-    carbohidratos: 20,
-    grasas: 5,
   },
   4: {
-    idPeriodo: 2,
-    nombre: 'Pollo',
+    alimento: {
+      idPeriodo: 2,
+      nombre: 'Pollo',
+      medida: Medida.gramos,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
     cantidad: 100,
-    medida: Medida.gramos,
-    calorias: 200,
-    proteinas: 10,
-    carbohidratos: 20,
-    grasas: 5,
   },
   5: {
-    idPeriodo: 3,
-    nombre: 'Pescado',
+    alimento: {
+      idPeriodo: 3,
+      nombre: 'Pasta',
+      medida: Medida.gramos,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
     cantidad: 100,
-    medida: Medida.gramos,
-    calorias: 200,
-    proteinas: 10,
-    carbohidratos: 20,
-    grasas: 5,
   },
   6: {
-    idPeriodo: 3,
-    nombre: 'Ensalada',
+    alimento: {
+      idPeriodo: 3,
+      nombre: 'Carne',
+      medida: Medida.gramos,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
     cantidad: 100,
-    medida: Medida.gramos,
-    calorias: 200,
-    proteinas: 10,
-    carbohidratos: 20,
-    grasas: 5,
   },
   7: {
-    idPeriodo: 4,
-    nombre: 'Yogurt',
+    alimento: {
+      idPeriodo: 4,
+      nombre: 'Yogur',
+      medida: Medida.gramos,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
     cantidad: 200,
-    medida: Medida.mililitros,
-    calorias: 100,
-    proteinas: 10,
-    carbohidratos: 10,
-    grasas: 5,
   },
   8: {
-    idPeriodo: 4,
-    nombre: 'Fruta',
-    cantidad: 'Mediano',
-    medida: Medida.tamaño,
-    calorias: 100,
-    proteinas: 10,
-    carbohidratos: 10,
-    grasas: 5,
+    alimento: {
+      idPeriodo: 4,
+      nombre: 'Fruta',
+      medida: Medida.unidades,
+      calorias: 200,
+      proteinas: 10,
+      carbohidratos: 20,
+      grasas: 5,
+    },
+    cantidad: 1,
   },
   // Añadir más ejercicios según sea necesario
 };
@@ -276,7 +280,7 @@ export const findPeriodosByNutricion = (idNutricion: number): PeriodoType[] => {
 export const findAlimentosByPeriodo = (idPeriodo: number): AlimentoType[] => {
   const alimentos: AlimentoType[] = [];
   for (const key in Alimentos) {
-    if (Alimentos[key].idPeriodo === idPeriodo) {
+    if (Alimentos[key].alimento.idPeriodo === idPeriodo) {
       alimentos.push(Alimentos[key]);
     }
   }
@@ -306,7 +310,10 @@ export const findPeriodoIdByNutricion = (
 
 export const findAlimentoIdByPeriodo = (idPeriodo: number, nombre: string): number | null => {
   for (const key in Alimentos) {
-    if (Alimentos[key].idPeriodo === idPeriodo && Alimentos[key].nombre === nombre) {
+    if (
+      Alimentos[key].alimento.idPeriodo === idPeriodo &&
+      Alimentos[key].alimento.nombre === nombre
+    ) {
       return parseInt(key);
     }
   }

@@ -1,4 +1,3 @@
-import { Data } from 'react-native-timeline-flatlist';
 import { Database } from '~/src/database.types';
 
 export enum TipoEjercicio {
@@ -20,6 +19,24 @@ export enum Peso {
 export enum Distancia {
   Kilometros = 'Km',
   Millas = 'Mi',
+}
+
+export enum medidaEnum {
+  Plato = 'Plato',
+  Racion = 'Racion',
+  Peso = 'Peso',
+  Grande = 'Grande',
+  Pequeño = 'Pequeño',
+  Mediano = 'Mediano',
+  Volumen = 'Volumen',
+  Taza = 'Taza',
+  //Unidad = 'Unidad',
+  //Onzas = 'Onzas',
+  //Gramos = 'Gramos',
+  //Mililitros = 'Mililitros',
+  //Litros = 'Litros',
+  //Kilogramo = 'Kilogramo',
+  //Libra = 'Libra',
 }
 
 export type RutinaType = {
@@ -59,3 +76,5 @@ export type ObjetivosNutricion = {
   objetivoCarbohidratos: number;
   objetivoGrasas: number;
 };
+
+export type alimentoType = Database['public']['Tables']['alimento']['Row'];
