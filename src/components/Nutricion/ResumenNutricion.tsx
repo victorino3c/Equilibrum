@@ -67,19 +67,12 @@ const ResumenNutricion = ({ periodo, periodoMacros, alimentos, editar }: Resumen
         )}
       />
       {editar && (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            gap: 10,
-            alignItems: 'center',
-            marginTop: 10,
-          }}>
+        <TouchableOpacity style={styles.botonAdd}>
           <Feather name="plus-circle" size={45} color="#6608ff" />
           <Text style={{ fontSize: 20, color: '#6608ff', textAlign: 'center', fontWeight: 'bold' }}>
             Añadir Alimento
           </Text>
-        </View>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -127,5 +120,14 @@ const styles = StyleSheet.create({
   cantidad: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  botonAdd: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    alignItems: 'center',
+    marginTop: 10,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
   },
 });

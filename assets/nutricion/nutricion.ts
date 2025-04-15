@@ -55,7 +55,7 @@ export type AlimentoType = {
 
 export const Nutriciones: Record<number, NutricionType> = {
   1: {
-    fecha: '2025-04-01',
+    fecha: '2025-04-15',
     idUsuario: 'victorino_3c',
     macros: {
       Calorias: 1802,

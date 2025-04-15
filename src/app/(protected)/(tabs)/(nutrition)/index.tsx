@@ -3,16 +3,20 @@ import { useState } from 'react';
 
 import HoyView from '~/src/components/Nutricion/HoyView';
 import HistorialView from '~/src/components/Nutricion/HistorialView';
-
 import TwoOptionsButton from '~/src/components/Buttons/TwoOptions';
+
+import { entrenamientoStore } from '@store/Entrenamientostore';
 
 export default function Nutrition() {
   const [selectedView, setSelectedView] = useState<string>('Hoy');
+  const { entrenamientoTerminado } = entrenamientoStore();
 
   return (
     <View className="flex-1">
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 70 }}
+        contentContainerStyle={
+          entrenamientoTerminado ? { paddingBottom: 70 } : { paddingBottom: 170 }
+        }
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}>
         <TwoOptionsButton
