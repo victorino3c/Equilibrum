@@ -26,10 +26,10 @@ const TarjetaNutricion = ({ idNutricion }: TarjetaEntrenamientoProps) => {
   const NutricionData = {
     username: nutricion.idUsuario,
     fecha: nutricion.fecha,
-    calorias: nutricion.Calorias,
-    proteinas: nutricion.Proteinas,
-    grasas: nutricion.Grasas,
-    carbohidratos: nutricion.Carbohidratos,
+    calorias: nutricion.macros.Calorias,
+    proteinas: nutricion.macros.Proteinas,
+    grasas: nutricion.macros.Grasas,
+    carbohidratos: nutricion.macros.Carbohidratos,
   };
 
   const data = [<TarjetaCalorias {...NutricionData} />, <TarjetaProteinas {...NutricionData} />];

@@ -1,14 +1,14 @@
 import { Text, View, ScrollView, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 
-//TEMP
-import { NutricionType, findNutricionByDate } from '~/assets/nutricion/nutricion';
-
 import { Database } from '~/src/database.types';
 
 import { getObjetivos } from '@api/objetivos';
 import { getEntrenamientos } from '@api/entrenamientos';
+import { useGetUserNutriciones } from '@api/nutricion';
 import { entrenamientoStore } from '@store/Entrenamientostore';
+import { useNutricionStore } from '@store/NutricionStore';
+import { appStore } from '@store/AppStore';
 
 import Formula from '@components/Health/Formula';
 import SueñoHidratacion from '@components/Health/SueñoHidratacion';
@@ -27,11 +27,18 @@ export default function HealthLayout() {
   const [ejercicio, setEjercicio] = useState<
     Database['public']['Tables']['entrenamiento']['Row'][] | undefined
   >(undefined);
-  const [nutricion, setNutricion] = useState<any>(null);
+  const [nutricion, setNutricion] = useState<
+    Database['public']['Tables']['nutricion']['Row'][] | undefined
+  >([]);
 
-  const { data: objetivos, isLoading: isLoadingObjetivos } = getObjetivos();
+  //const { data: objetivos, isLoading: isLoadingObjetivos } = getObjetivos();
+  // CAMBIADO A OBJETIVOS GUARDADOS EN EL STORE LOCAL
+  const { objetivosNutricion: objetivos, objetivoAgua, objetivoSueño } = appStore((state) => state);
   const { data: entrenamientos, isLoading: isLoadingEntrenamientos } = getEntrenamientos(); // Para ajustar bottom padding de scrollview
+  const { data: nutriciones, isLoading: isLoadingNutriciones } = useGetUserNutriciones();
   const { entrenamientoTerminado } = entrenamientoStore();
+
+  const caloriasNutricionToday = useNutricionStore((state) => state.macros.Calorias);
 
   const getEjercicio = (
     date: string
@@ -42,9 +49,21 @@ export default function HealthLayout() {
     return entrenamiento;
   };
 
-  const getNutricion = (date: string): NutricionType | null => {
-    //TODO: Cambiar por llamada a API como en getEjercicio
-    return findNutricionByDate(date);
+  const getNutricion = (
+    date: string
+  ): Database['public']['Tables']['nutricion']['Row'][] | undefined => {
+    const nutricion = nutriciones?.filter((nutricion) => {
+      return moment(nutricion.fecha).format('YYYY-MM-DD') === date;
+    });
+    return nutricion;
+  };
+
+  const getCalorias = () => {
+    if (selectedDate.isSame(moment(), 'day')) {
+      return caloriasNutricionToday;
+    } else {
+      return nutricion?.reduce((acc, curr) => acc + (curr.calorias ?? 0), 0);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +71,7 @@ export default function HealthLayout() {
     setNutricion(getNutricion(selectedDate.format('YYYY-MM-DD')));
   }, [selectedDate, calendar, isLoadingEntrenamientos]);
 
-  if (isLoadingObjetivos || isLoadingEntrenamientos) {
+  if (isLoadingEntrenamientos || isLoadingNutriciones) {
     return (
       <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
         <Text>Cargando...</Text>
@@ -73,8 +92,10 @@ export default function HealthLayout() {
             onSelectDate={(date) => setSelectedDate(date)}
             onCalendarChange={setCalendar}
             entrenamientos={entrenamientos}
+            nutriciones={nutriciones}
             selected={selectedDate}
-            loading={isLoadingObjetivos && isLoadingEntrenamientos}
+            //loading={isLoadingObjetivos && isLoadingEntrenamientos}
+            loading={isLoadingEntrenamientos}
           />
         ) : (
           <CustomCalendar
@@ -82,24 +103,25 @@ export default function HealthLayout() {
             onCalendarChange={setCalendar}
             entrenamientos={entrenamientos}
             selected={selectedDate.format('YYYY-MM-DD')}
-            loading={isLoadingObjetivos && isLoadingEntrenamientos}
+            //loading={isLoadingObjetivos && isLoadingEntrenamientos}
+            loading={isLoadingEntrenamientos}
           />
         )}
         <Text style={styles.fecha}>{selectedDate.format('DD MMMM, YYYY')}</Text>
 
         <Formula
-          objective={objetivos?.calorias?.toString() || '0'}
-          nutricion={nutricion?.Calorias || 0}
+          objective={objetivos?.objetivoCalorias?.toString() || '0'}
+          nutricion={getCalorias()?.toString() || '0'}
           exercise={(
             ejercicio?.reduce((acc, curr) => acc + (curr.calorias ?? 0), 0) || 0
           ).toString()}
-          loading={isLoadingObjetivos}
+          //loading={isLoadingObjetivos}
         />
         <SueñoHidratacion
           fecha={selectedDate.format('YYYY-MM-DD')}
-          objetivoHidratacion={objetivos?.agua || 3.3}
-          objetivoSueño={objetivos?.sueño || 0}
-          loading={isLoadingObjetivos}
+          objetivoHidratacion={objetivoAgua || 3.3}
+          objetivoSueño={objetivoSueño || 0}
+          //loading={isLoadingObjetivos}
         />
         <TwoOptionsButton
           option1="Ejercicio"
