@@ -23,6 +23,31 @@ export const useGetUserNutriciones = () => {
   });
 };
 
+export const useGetNutricionesOfDate = (date: string) => {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useQuery({
+    queryKey: ['nutriciones', userId, date],
+    queryFn: async () => {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      const { data, error } = await supabase
+        .from('nutricion')
+        .select()
+        .eq('user_id', userId)
+        .eq('fecha', date);
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+    enabled: !!userId,
+  });
+};
+
 export const useGetAlimentos = () => {
   //const { session } = useAuth();
   //const userId = session?.user.id;
