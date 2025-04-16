@@ -8,24 +8,46 @@ import CustomCalendar from '@components/Nutricion/Calendar';
 import CalendarioReplegado from '@components/Utils/CalendarioReplegado';
 
 import { useGetUserNutriciones } from '@api/nutricion';
-import Nutricion from '../Health/Nutricion/Nutricion';
+import Nutricion from '@components/Health/Nutricion/Nutricion';
 
 const HistorialView = () => {
   const [calendar, setCalendar] = useState<string>('R');
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
   const [nutricion, setNutricion] = useState<
-    Database['public']['Tables']['nutricion']['Row'][] | undefined
+    Database['public']['Tables']['nutricion']['Row'] | undefined
   >(undefined);
 
   const { data: nutriciones, isLoading: isLoadingNutriciones } = useGetUserNutriciones();
 
   const getNutricion = (
     date: string
-  ): Database['public']['Tables']['nutricion']['Row'][] | undefined => {
-    const nutricion = nutriciones?.filter((nutricion) => {
+  ): Database['public']['Tables']['nutricion']['Row'] | undefined => {
+    const nutricion_periodos = nutriciones?.filter((nutricion) => {
       return moment(nutricion.fecha).format('YYYY-MM-DD') === date;
     });
-    return nutricion;
+
+    if (nutricion_periodos?.length === 0 || nutricion_periodos === undefined) {
+      return undefined;
+    }
+
+    // Sum all macros for the selected date
+    const nutricion = nutricion_periodos.reduce(
+      (acc, curr) => {
+        acc.calorias += curr.calorias || 0;
+        acc.proteina += curr.proteina || 0;
+        acc.carbohidratos += curr.carbohidratos || 0;
+        acc.grasa += curr.grasa || 0;
+        return acc;
+      },
+      {
+        calorias: 0,
+        proteina: 0,
+        carbohidratos: 0,
+        grasa: 0,
+      }
+    );
+
+    return { ...nutricion_periodos[0], ...nutricion };
   };
 
   useEffect(() => {
