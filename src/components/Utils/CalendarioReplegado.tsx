@@ -14,7 +14,8 @@ import Skeleton from './SkeletonView';
 interface CalendarioReplegadoProps {
   onSelectDate: (date: moment.Moment) => void;
   onCalendarChange: (tipo: string) => void;
-  entrenamientos: { id: string; fecha: string }[] | undefined;
+  entrenamientos?: { id: string; fecha: string }[] | undefined;
+  nutriciones?: { tipo_nutricion: string; fecha: string }[] | undefined;
   selected: moment.Moment;
   tipo?: string;
   loading?: boolean;
@@ -24,6 +25,7 @@ const CalendarioReplegado = ({
   onSelectDate,
   onCalendarChange,
   entrenamientos = [],
+  nutriciones = [],
   selected,
   tipo,
   loading = false,
@@ -51,7 +53,10 @@ const CalendarioReplegado = ({
       // Check if the date has a nutrition
       if (tipo !== 'Ejercicio') {
         //HACER LO MISMO AQUI QUE CON LOS ENTRENAMIENTOS
-        const nutrition = findNutricionByDate(date.format('YYYY-MM-DD'));
+        //COMPROBAR QUE FUNCIONA
+        const nutrition = nutriciones.find(
+          (nutricion) => moment(nutricion.fecha).format('YYYY-MM-DD') === date.format('YYYY-MM-DD')
+        );
         visualization += nutrition ? 2 : 0;
       }
 

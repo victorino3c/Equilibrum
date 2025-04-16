@@ -30,6 +30,7 @@ export interface NutricionState {
   checkAndResetIfNewDay: () => void;
   setFecha: (fecha: string) => void;
   setMacros: (macros: NutricionInfo) => void;
+  updateMacros: () => void;
   setAlimentos: (
     tipo: Database['public']['Enums']['tipo_nutricion_enum'],
     alimentos: { alimento: Database['public']['Tables']['alimento']['Row']; cantidad: number }[]
@@ -144,6 +145,26 @@ const useNutricionStore = create<NutricionState>()(
       },
       setFecha: (fecha) => set({ fecha }),
       setMacros: (macros) => set({ macros }),
+      updateMacros: () => {
+        // Sum all macros from all periods
+        const periodos = get().periodos;
+        const macros = {
+          Calorias: 0,
+          Proteinas: 0,
+          Carbohidratos: 0,
+          Grasas: 0,
+        };
+        for (const periodo in periodos) {
+          if (periodos[periodo as keyof typeof periodos]) {
+            macros.Calorias += periodos[periodo as keyof typeof periodos]?.macros.Calorias || 0;
+            macros.Proteinas += periodos[periodo as keyof typeof periodos]?.macros.Proteinas || 0;
+            macros.Carbohidratos +=
+              periodos[periodo as keyof typeof periodos]?.macros.Carbohidratos || 0;
+            macros.Grasas += periodos[periodo as keyof typeof periodos]?.macros.Grasas || 0;
+          }
+        }
+        set({ macros });
+      },
       setAlimentos: (tipo, alimentos) => {
         const periodos = get().periodos;
         if (periodos[tipo]) {
@@ -180,6 +201,15 @@ const useNutricionStore = create<NutricionState>()(
         };
         periodos[tipo].alimentos = [...alimentos, newAlimento];
         periodos[tipo].macros = newMacros;
+
+        // Update the main macros
+        const mainMacros = get().macros;
+        mainMacros.Calorias += newAlimento.alimento.calorias || 0;
+        mainMacros.Proteinas += newAlimento.alimento.proteina || 0;
+        mainMacros.Carbohidratos += newAlimento.alimento.carbohidratos || 0;
+        mainMacros.Grasas += newAlimento.alimento.grasa || 0;
+        set({ macros: mainMacros });
+
         set({ periodos });
       },
       // TODO: REVISAR MECROS DE PERIODO, CREO QUE LO HACE MAL
@@ -202,6 +232,15 @@ const useNutricionStore = create<NutricionState>()(
           };
           periodos[tipo].alimentos = newAlimentos;
           periodos[tipo].macros = newMacros;
+
+          // Update the main macros
+          const mainMacros = get().macros;
+          mainMacros.Calorias -= removedAlimento.alimento.calorias || 0;
+          mainMacros.Proteinas -= removedAlimento.alimento.proteina || 0;
+          mainMacros.Carbohidratos -= removedAlimento.alimento.carbohidratos || 0;
+          mainMacros.Grasas -= removedAlimento.alimento.grasa || 0;
+          set({ macros: mainMacros });
+
           set({ periodos });
         }
       },

@@ -18,7 +18,7 @@ const sobreTi = () => {
   const {
     setHasEnteredUserInfo,
     objetivoAgua,
-    objetivoCalorias,
+    objetivosNutricion,
     objetivoSueño,
     setObjetivoAgua,
     setObjetivoCalorias,
@@ -51,7 +51,7 @@ const sobreTi = () => {
           icon={iconFire}
           text="Objetivo calorias"
           inputText="kcal"
-          selected={objetivoCalorias.toString()}
+          selected={objetivosNutricion.objetivoCalorias.toString()}
           setSelected={setObjetivoCalorias}
         />
         <IconInputText

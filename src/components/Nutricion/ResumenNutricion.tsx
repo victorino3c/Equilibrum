@@ -2,36 +2,68 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native
 import React from 'react';
 
 import { alimentoType, medidaEnum, NutricionInfo } from '~/src/types/types';
-import { Feather, FontAwesome6, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Feather, FontAwesome6, Ionicons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import PlantillaModal from './PlantillaModal';
+import AlimentosModal from './AlimentosModal';
+
 import { Database } from '~/src/database.types';
+import { useNutricionStore } from '@store/NutricionStore';
 
 type ResumenNutricionProps = {
   periodo: Database['public']['Enums']['tipo_nutricion_enum'];
   periodoMacros: NutricionInfo | undefined;
-  alimentos: { alimento: alimentoType; cantidad: number }[] | undefined;
+  alimentosPeriodo: { alimento: alimentoType; cantidad: number }[] | undefined;
+  alimentos?: alimentoType[];
   editar?: boolean;
 };
 
-const ResumenNutricion = ({ periodo, periodoMacros, alimentos, editar }: ResumenNutricionProps) => {
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [modalData, setModalData] = React.useState<any>(null);
+const ResumenNutricion = ({
+  periodo,
+  periodoMacros,
+  alimentosPeriodo,
+  alimentos,
+  editar,
+}: ResumenNutricionProps) => {
+  const [modalVisiblePlantilla, setModalVisiblePlantilla] = React.useState(false);
+  const [modalDataPlantilla, setModalDataPlantilla] = React.useState<any>(null);
+  const [modalVisibleAlimentos, setModalVisibleAlimentos] = React.useState(false);
 
-  const showModal = () => {
-    setModalData({ periodoMacros, alimentos });
-    setModalVisible(!modalVisible);
+  const { removeAlimento } = useNutricionStore();
+
+  const handleRemoveAlimento = (id: string) => {
+    removeAlimento(periodo, id);
+  };
+
+  const showModalPlantilla = () => {
+    setModalDataPlantilla({ periodoMacros, alimentosPeriodo });
+    setModalVisiblePlantilla(!modalVisiblePlantilla);
+  };
+
+  const showModalAlimentos = () => {
+    setModalVisibleAlimentos(!modalVisibleAlimentos);
   };
 
   return (
     <View style={styles.container}>
-      <PlantillaModal visible={modalVisible} data={modalData} setModalVisible={setModalVisible} />
+      <PlantillaModal
+        visible={modalVisiblePlantilla}
+        data={modalDataPlantilla}
+        setModalVisible={setModalVisiblePlantilla}
+      />
+      <AlimentosModal
+        visible={modalVisibleAlimentos}
+        alimentos={alimentos}
+        alimentosPeriodo={alimentosPeriodo?.map((item) => item.alimento)}
+        periodo={periodo}
+        setModalVisible={setModalVisibleAlimentos}
+      />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row', marginBottom: 5 }}>
           <Text style={styles.tittle}>{periodo}</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 15 }}>
           <Feather name="image" size={24} color="#777777" />
-          <TouchableOpacity onPress={() => showModal()}>
+          <TouchableOpacity onPress={() => showModalPlantilla()}>
             <FontAwesome6 name="bolt" size={24} color="#6608ff" />
           </TouchableOpacity>
         </View>
@@ -39,35 +71,43 @@ const ResumenNutricion = ({ periodo, periodoMacros, alimentos, editar }: Resumen
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Ionicons name="flame-outline" size={20} color="#FF6F15" style={{ marginBottom: 10 }} />
         <Text style={styles.text}>
-          {periodoMacros?.Calorias || 0} kcal | {periodoMacros?.Grasas || 0} g |{' '}
-          {periodoMacros?.Carbohidratos || 0} g | {periodoMacros?.Grasas || 0} g
+          {periodoMacros?.Calorias || 0} kcal | {periodoMacros?.Proteinas || 0} P |{' '}
+          {periodoMacros?.Carbohidratos || 0} C | {periodoMacros?.Grasas || 0} G
         </Text>
       </View>
       <FlatList
-        data={alimentos}
-        keyExtractor={(item, index) => index.toString()}
+        data={alimentosPeriodo}
+        //keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={styles.titulos}>
               <Text style={[styles.datos, { fontWeight: 'bold' }]}>{index + 1}</Text>
-              <Text style={styles.datos}>{item.alimento.nombre}</Text>
+              <View>
+                <Text style={{ fontSize: 20 }}>{item.alimento.nombre}</Text>
+                <Text style={styles.cantidad}>
+                  {item.alimento.calorias} kcal | {item.alimento.proteina} P |{' '}
+                  {item.alimento.carbohidratos} C | {item.alimento.grasa} G
+                </Text>
+              </View>
             </View>
             <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
               <View style={[styles.titulos, { gap: 5 }]}>
                 <Text style={styles.cantidad}>{item.cantidad}</Text>
-                {item.alimento.tipo_medida !== medidaEnum.Peso && (
+                {item.alimento.tipo_medida !== medidaEnum.Peso ? (
                   <Text style={styles.cantidad}>{item.alimento.tipo_medida}</Text>
+                ) : (
+                  <Text style={styles.cantidad}>g</Text>
                 )}
               </View>
-              <View>
-                <FontAwesome5 name="check-circle" size={24} color="black" />
-              </View>
+              <TouchableOpacity onPress={() => handleRemoveAlimento(item.alimento.id)}>
+                <Entypo name="circle-with-cross" size={24} color="red" />
+              </TouchableOpacity>
             </View>
           </View>
         )}
       />
       {editar && (
-        <TouchableOpacity style={styles.botonAdd}>
+        <TouchableOpacity style={styles.botonAdd} onPress={() => showModalAlimentos()}>
           <Feather name="plus-circle" size={45} color="#6608ff" />
           <Text style={{ fontSize: 20, color: '#6608ff', textAlign: 'center', fontWeight: 'bold' }}>
             Añadir Alimento
@@ -110,6 +150,7 @@ const styles = StyleSheet.create({
   titulos: {
     flexDirection: 'row',
     gap: 15,
+    //alignItems: 'center',
     paddingVertical: 5,
     paddingLeft: 15,
   },

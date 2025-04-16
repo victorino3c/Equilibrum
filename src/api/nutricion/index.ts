@@ -22,3 +22,19 @@ export const useGetUserNutriciones = () => {
     enabled: !!userId,
   });
 };
+
+export const useGetAlimentos = () => {
+  //const { session } = useAuth();
+  //const userId = session?.user.id;
+
+  return useQuery({
+    queryKey: ['alimentos'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('alimento').select();
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+  });
+};

@@ -8,6 +8,7 @@ import ResumenEstadisticasNutricion from '@components/Nutricion/ResumenEstadisti
 import ResumenNutricion from '@components/Nutricion/ResumenNutricion';
 import { useNutricionStore } from '@store/NutricionStore';
 import appStore from '@store/AppStore';
+import { useGetAlimentos } from '@api/nutricion';
 
 type periodosType = Partial<
   Record<
@@ -25,6 +26,7 @@ type periodosType = Partial<
 const HoyView = () => {
   const [nutricion, setNutricion] = useState<any>(null);
   const [periodos, setPeriodos] = useState<periodosType>({});
+  const { data: alimentos } = useGetAlimentos();
 
   const { getNutricion, getPeriodos } = useNutricionStore();
   useEffect(() => {
@@ -48,7 +50,8 @@ const HoyView = () => {
             <ResumenNutricion
               periodo={item as Database['public']['Enums']['tipo_nutricion_enum']}
               periodoMacros={periodo?.macros}
-              alimentos={periodo?.alimentos}
+              alimentosPeriodo={periodo?.alimentos}
+              alimentos={alimentos}
               editar={true}
             />
           );

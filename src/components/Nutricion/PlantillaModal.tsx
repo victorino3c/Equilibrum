@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { Stack } from 'expo-router';
-
 type PlantillaModalProps = {
   visible: boolean;
   data: any;
