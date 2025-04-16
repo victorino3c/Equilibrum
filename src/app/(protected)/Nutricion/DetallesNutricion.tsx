@@ -15,6 +15,8 @@ import {
   TipoPeriodo,
 } from '~/assets/nutricion/nutricion';
 
+import { useGetNutricionesOfDate } from '@api/nutricion';
+
 import { Database } from '~/src/database.types';
 
 import appStore from '@store/AppStore';
@@ -29,29 +31,42 @@ type DetallesNutricionProps = {
 
 const DetallesNutricion = () => {
   const [editar, setEditar] = React.useState(false);
-  const [Nutricion, setNutricion] = React.useState<any>(null);
 
   const { fecha }: DetallesNutricionProps = useLocalSearchParams();
 
-  useEffect(() => {
-    const nutricionData = findNutricionByDate(fecha);
-    const objetivosNutricion = appStore.getState().objetivosNutricion;
-    setNutricion({ ...nutricionData, ...objetivosNutricion });
-  }, []);
+  //const [Nutricion, setNutricion] = React.useState<any>(null);
+  const { data: Nutricion, isLoading } = useGetNutricionesOfDate(fecha);
+  const objetivosNutricion = appStore.getState().objetivosNutricion;
+
+  //useEffect(() => {
+  //  const nutricionData = findNutricionByDate(fecha);
+  //  const objetivosNutricion = appStore.getState().objetivosNutricion;
+  //  setNutricion({ ...nutricionData, ...objetivosNutricion });
+  //}, []);
 
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
   const idNutricion = findNutricionIdByDate(fecha) || -1;
 
-  if (!idNutricion) {
+  if (!Nutricion || isLoading) {
     return null;
   }
+
+  const NutricionEstadisticas = {
+    macros: {
+      Calorias: Nutricion.reduce((acc, curr) => acc + (curr.calorias || 0), 0),
+      Proteinas: Nutricion.reduce((acc, curr) => acc + (curr.proteina || 0), 0),
+      Carbohidratos: Nutricion.reduce((acc, curr) => acc + (curr.carbohidratos || 0), 0),
+      Grasas: Nutricion.reduce((acc, curr) => acc + (curr.grasa || 0), 0),
+    },
+    ...objetivosNutricion,
+  };
 
   const Periodos = findPeriodosByNutricion(idNutricion) || [];
 
   const data = [
     <Text style={styles.fecha}>{moment(fecha).format('DD MMMM, YYYY')}</Text>,
-    !editar ? <ResumenEstadisticasNutricion Nutricion={Nutricion} card={true} /> : null,
+    !editar ? <ResumenEstadisticasNutricion Nutricion={NutricionEstadisticas} card={true} /> : null,
     !editar ? <TarjetaNutricion idNutricion={findNutricionIdByDate(fecha) || -1} /> : null,
     !editar ? <ResumenHistoriaNutricion idNutricion={findNutricionIdByDate(fecha) || -1} /> : null,
     ...(Periodos.length > 0
