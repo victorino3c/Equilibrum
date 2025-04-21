@@ -17,7 +17,7 @@ type NutricionProps = {
 const Nutricion = ({ Nutricion, Fecha }: NutricionProps) => {
   const { objetivosNutricion } = appStore.getState();
 
-  if (Nutricion === undefined || !Nutricion) {
+  if (Nutricion === undefined || !Nutricion || Fecha.isSame()) {
     return (
       <View style={styles.container}>
         <Text style={[styles.titulo, { textAlign: 'center', paddingVertical: 30 }]}>
