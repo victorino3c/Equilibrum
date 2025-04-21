@@ -6,16 +6,9 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import moment from 'moment';
 
 //TEMP
-import {
-  findAlimentosByPeriodo,
-  findNutricionByDate,
-  findNutricionIdByDate,
-  findPeriodoIdByNutricion,
-  findPeriodosByNutricion,
-  TipoPeriodo,
-} from '~/assets/nutricion/nutricion';
+import { findNutricionIdByDate, findPeriodosByNutricion } from '~/assets/nutricion/nutricion';
 
-import { useGetNutricionesOfDate } from '@api/nutricion';
+import { useGetNutricionesOfDate, getAlimentosByPeriodo } from '@api/nutricion';
 
 import { Database } from '~/src/database.types';
 
@@ -24,6 +17,7 @@ import ResumenEstadisticasNutricion from '@components/Nutricion/ResumenEstadisti
 import TarjetaNutricion from '@components/Nutricion/TarjetaNutricion/TarjetaNutricion';
 import ResumenHistoriaNutricion from '@components/Nutricion/ResumenHistoriaNutricion';
 import ResumenNutricion from '@components/Nutricion/ResumenNutricion';
+import { useAuth } from '@providers/AuthProvider';
 
 type DetallesNutricionProps = {
   fecha: string;
@@ -32,17 +26,34 @@ type DetallesNutricionProps = {
 const DetallesNutricion = () => {
   const [editar, setEditar] = React.useState(false);
 
+  const { session } = useAuth();
+  const userId = session?.user.id;
+  if (!userId) {
+    return null;
+  }
+
   const { fecha }: DetallesNutricionProps = useLocalSearchParams();
 
   //const [Nutricion, setNutricion] = React.useState<any>(null);
   const { data: Nutricion, isLoading } = useGetNutricionesOfDate(fecha);
   const objetivosNutricion = appStore.getState().objetivosNutricion;
 
-  //useEffect(() => {
-  //  const nutricionData = findNutricionByDate(fecha);
-  //  const objetivosNutricion = appStore.getState().objetivosNutricion;
-  //  setNutricion({ ...nutricionData, ...objetivosNutricion });
-  //}, []);
+  const periodos = ['Desayuno', 'Comida', 'Cena', 'Snacks'];
+
+  var alimentosData: { [key: string]: any } = {};
+
+  periodos.forEach((periodo) => {
+    const { data } = getAlimentosByPeriodo(periodo, fecha, userId);
+    console.log('alimentosData', data);
+
+    if (data) {
+      alimentosData[periodo] = data;
+    } else {
+      alimentosData[periodo] = {};
+    }
+
+    return { data };
+  });
 
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
@@ -80,22 +91,11 @@ const DetallesNutricion = () => {
               Carbohidratos: Periodo.carbohidratos,
               Grasas: Periodo.grasas,
             }}
-            alimentos={findAlimentosByPeriodo(
-              findPeriodoIdByNutricion(idNutricion, Periodo.periodo as TipoPeriodo) || -1
-            )?.map((alimento) => ({
-              alimento: {
-                calorias: alimento.alimento.calorias,
-                carbohidratos: alimento.alimento.carbohidratos,
-                created_at: '', // Provide a default or fetch this value
-                descripcion: null, // Provide a default or fetch this value
-                grasa: alimento.alimento.grasas,
-                id: '', // Provide a default or fetch this value
-                nombre: alimento.alimento.nombre,
-                proteina: alimento.alimento.proteinas,
-                tipo_medida: null, // Provide a default or fetch this value
-              },
-              cantidad: alimento.cantidad, // Provide a default or fetch this value
-            }))}
+            alimentos={Object.values(alimentosData).flat()} // Flatten and extract data
+            alimentosPeriodo={alimentosData[Periodo.periodo]?.map((alimento: any) => ({
+              alimento: { ...alimento },
+              cantidad: alimento.cantidad,
+            }))} // Flatten and map to include 'alimento' property
             editar={editar}
           />
         ))
