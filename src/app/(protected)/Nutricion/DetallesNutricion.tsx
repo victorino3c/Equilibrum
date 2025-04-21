@@ -5,9 +5,6 @@ import { StatusBar } from 'expo-status-bar';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import moment from 'moment';
 
-//TEMP
-import { findNutricionIdByDate } from '~/assets/nutricion/nutricion';
-
 import { useGetNutricionesOfDate, getAlimentosByPeriodo } from '@api/nutricion';
 import { getProfile } from '@api/profile';
 
@@ -43,7 +40,12 @@ const DetallesNutricion = () => {
   const { data: Nutricion, isLoading } = useGetNutricionesOfDate(fecha);
   const objetivosNutricion = appStore.getState().objetivosNutricion;
 
-  var alimentosData: { [key: string]: any } = {};
+  var alimentosData: { [key: string]: any } = {
+    Desayuno: [],
+    Comida: [],
+    Cena: [],
+    Snacks: [],
+  };
 
   periodos.forEach((periodo) => {
     const { data } = getAlimentosByPeriodo(periodo, fecha, userId);
@@ -59,9 +61,7 @@ const DetallesNutricion = () => {
 
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
-  const idNutricion = findNutricionIdByDate(fecha) || -1;
-
-  if (!Nutricion || isLoading) {
+  if (!Nutricion || isLoading || !alimentosData) {
     return null;
   }
 

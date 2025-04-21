@@ -1,6 +1,7 @@
 import { supabase } from '@libs/supabase';
 import { useAuth } from '@providers/AuthProvider';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Database } from '~/src/database.types';
 
 export const useGetUserNutriciones = () => {
   const { session } = useAuth();
@@ -98,6 +99,78 @@ export const getAlimentosByPeriodo = (periodo: string, fecha: string, user_id: s
         };
       });
       return alimentosWithCantidad;
+    },
+  });
+};
+
+// Hook personalizado para insertar una nutricion
+export const useInsertNutricion = () => {
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useMutation({
+    async mutationFn({
+      tipo_nutricion,
+      calorias,
+      proteina,
+      carbohidratos,
+      grasa,
+      fecha,
+    }: Database['public']['Tables']['nutricion']['Insert']) {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      const { data, error } = await supabase
+        .from('entrenamiento')
+        .insert([
+          { user_id: userId, calorias, proteina, carbohidratos, grasa, tipo_nutricion, fecha },
+        ])
+        .select()
+        .single();
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+    onSuccess: ({ fecha }) => {
+      queryClient.invalidateQueries({ queryKey: ['nutricion', fecha, userId] });
+    },
+  });
+};
+
+// Hook personalizado para insertar un alimento en una nutricion
+export const useInsertAlimento = () => {
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useMutation({
+    async mutationFn({
+      id_alimento,
+      cantidad,
+      fecha_nutricion,
+      tipo_nutricion,
+    }: Database['public']['Tables']['nutricion_alimento']['Insert']) {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      const { data, error } = await supabase
+        .from('nutricion_alimento')
+        .insert([{ user_id: userId, id_alimento, cantidad, fecha_nutricion, tipo_nutricion }])
+        .select()
+        .single();
+
+      if (error) throw new Error(error.message);
+
+      return data;
+    },
+    onSuccess: ({ fecha_nutricion, id_alimento }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['nutricion', fecha_nutricion, id_alimento, userId],
+      });
     },
   });
 };

@@ -7,6 +7,8 @@ import uuid from 'react-native-uuid';
 import { Database } from '~/src/database.types';
 import { NutricionInfo } from '../types/types';
 
+import { useInsertNutricion, useInsertAlimento } from '@api/nutricion';
+
 import moment from 'moment';
 
 export interface NutricionState {
@@ -105,10 +107,72 @@ const useNutricionStore = create<NutricionState>()(
         const storedDate = get().fecha;
         const today = moment().format('YYYY-MM-DD');
 
+        if (!storedDate) {
+          console.error('No hay fecha almacenada.');
+          return;
+        }
+        if (storedDate === today) {
+          console.log('La fecha almacenada es la misma que la de hoy. No se hace nada.');
+          return;
+        }
+
+        // Hook personalizado para insertar una nutricion
+        const insertNutricion = useInsertNutricion();
+        const insertAlimento = useInsertAlimento();
+
         if (storedDate != today) {
           // Upload data before clearing
-          // TODO: Make function to upload data
-          // await uploadData(get());
+          insertNutricion.mutate({
+            tipo_nutricion: 'Desayuno',
+            calorias: get().periodos.Desayuno?.macros.Calorias || 0,
+            proteina: get().periodos.Desayuno?.macros.Proteinas || 0,
+            carbohidratos: get().periodos.Desayuno?.macros.Carbohidratos || 0,
+            grasa: get().periodos.Desayuno?.macros.Grasas || 0,
+            fecha: storedDate,
+          });
+          insertNutricion.mutate({
+            tipo_nutricion: 'Comida',
+            calorias: get().periodos.Comida?.macros.Calorias || 0,
+            proteina: get().periodos.Comida?.macros.Proteinas || 0,
+            carbohidratos: get().periodos.Comida?.macros.Carbohidratos || 0,
+            grasa: get().periodos.Comida?.macros.Grasas || 0,
+            fecha: storedDate,
+          });
+          insertNutricion.mutate({
+            tipo_nutricion: 'Cena',
+            calorias: get().periodos.Cena?.macros.Calorias || 0,
+            proteina: get().periodos.Cena?.macros.Proteinas || 0,
+            carbohidratos: get().periodos.Cena?.macros.Carbohidratos || 0,
+            grasa: get().periodos.Cena?.macros.Grasas || 0,
+            fecha: storedDate,
+          });
+          insertNutricion.mutate({
+            tipo_nutricion: 'Snacks',
+            calorias: get().periodos.Snacks?.macros.Calorias || 0,
+            proteina: get().periodos.Snacks?.macros.Proteinas || 0,
+            carbohidratos: get().periodos.Snacks?.macros.Carbohidratos || 0,
+            grasa: get().periodos.Snacks?.macros.Grasas || 0,
+            fecha: storedDate,
+          });
+
+          // Upload all alimentos
+          const periodos = get().periodos;
+          for (const periodo in periodos) {
+            if (periodos[periodo as keyof typeof periodos]) {
+              const alimentos = periodos[periodo as keyof typeof periodos]?.alimentos || [];
+              for (const alimento of alimentos) {
+                insertAlimento.mutate({
+                  tipo_nutricion: periodo as Database['public']['Enums']['tipo_nutricion_enum'],
+                  id_alimento: alimento.alimento.id,
+                  cantidad: alimento.cantidad,
+                  fecha_nutricion: storedDate,
+                  user_id: '', //TODO: Lo paso vacío porque no tengo el user_id y lo consigo en el hook
+                });
+              }
+            }
+          }
+
+          // If there is an error, do not reset the store
 
           // Reset store data
           set({
