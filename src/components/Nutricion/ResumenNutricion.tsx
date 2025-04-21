@@ -7,6 +7,7 @@ import PlantillaModal from './PlantillaModal';
 import AlimentosModal from './AlimentosModal';
 
 import { Database } from '~/src/database.types';
+import moment from 'moment';
 import { useNutricionStore } from '@store/NutricionStore';
 
 type ResumenNutricionProps = {
@@ -14,6 +15,7 @@ type ResumenNutricionProps = {
   periodoMacros: NutricionInfo | undefined;
   alimentosPeriodo: { alimento: alimentoType; cantidad: number }[] | undefined;
   alimentos?: alimentoType[];
+  fecha?: string;
   editar?: boolean;
 };
 
@@ -22,6 +24,7 @@ const ResumenNutricion = ({
   periodoMacros,
   alimentosPeriodo,
   alimentos,
+  fecha,
   editar,
 }: ResumenNutricionProps) => {
   const [modalVisiblePlantilla, setModalVisiblePlantilla] = React.useState(false);
@@ -31,6 +34,10 @@ const ResumenNutricion = ({
   const { removeAlimento } = useNutricionStore();
 
   const handleRemoveAlimento = (id: string) => {
+    if (fecha && fecha != moment().format('YYYY-MM-DD')) {
+      // TODO: Si quiero añadir edicion de nutricion en el pasado quitar if y añadir la logica
+      return;
+    }
     removeAlimento(periodo, id);
   };
 
@@ -99,9 +106,11 @@ const ResumenNutricion = ({
                   <Text style={styles.cantidad}>g</Text>
                 )}
               </View>
-              <TouchableOpacity onPress={() => handleRemoveAlimento(item.alimento.id)}>
-                <Entypo name="circle-with-cross" size={24} color="red" />
-              </TouchableOpacity>
+              {editar && (
+                <TouchableOpacity onPress={() => handleRemoveAlimento(item.alimento.id)}>
+                  <Entypo name="circle-with-cross" size={24} color="red" />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         )}

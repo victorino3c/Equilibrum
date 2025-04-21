@@ -7,29 +7,30 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 //TEMP
 import { findNutricionById, NutricionType } from '~/assets/nutricion/nutricion';
+import { NutricionInfo } from '~/src/types/types';
 
 type TarjetaEntrenamientoProps = {
-  idNutricion: number;
+  nutricion: NutricionInfo;
+  fecha: string;
+  username: string;
 };
 
-const TarjetaNutricion = ({ idNutricion }: TarjetaEntrenamientoProps) => {
+const TarjetaNutricion = ({ nutricion, fecha, username }: TarjetaEntrenamientoProps) => {
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
   const [currentPage, setCurrentPage] = React.useState(0);
-
-  const nutricion: NutricionType | null = findNutricionById(idNutricion);
 
   if (!nutricion) {
     return null;
   }
 
   const NutricionData = {
-    username: nutricion.idUsuario,
-    fecha: nutricion.fecha,
-    calorias: nutricion.macros.Calorias,
-    proteinas: nutricion.macros.Proteinas,
-    grasas: nutricion.macros.Grasas,
-    carbohidratos: nutricion.macros.Carbohidratos,
+    username: username,
+    fecha: fecha,
+    calorias: nutricion.Calorias,
+    proteinas: nutricion.Proteinas,
+    grasas: nutricion.Grasas,
+    carbohidratos: nutricion.Carbohidratos,
   };
 
   const data = [<TarjetaCalorias {...NutricionData} />, <TarjetaProteinas {...NutricionData} />];

@@ -6,9 +6,10 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import moment from 'moment';
 
 //TEMP
-import { findNutricionIdByDate, findPeriodosByNutricion } from '~/assets/nutricion/nutricion';
+import { findNutricionIdByDate } from '~/assets/nutricion/nutricion';
 
 import { useGetNutricionesOfDate, getAlimentosByPeriodo } from '@api/nutricion';
+import { getProfile } from '@api/profile';
 
 import { Database } from '~/src/database.types';
 
@@ -23,6 +24,8 @@ type DetallesNutricionProps = {
   fecha: string;
 };
 
+const periodos = ['Desayuno', 'Comida', 'Cena', 'Snacks'];
+
 const DetallesNutricion = () => {
   const [editar, setEditar] = React.useState(false);
 
@@ -32,19 +35,18 @@ const DetallesNutricion = () => {
     return null;
   }
 
+  const { data: profile } = getProfile();
+
   const { fecha }: DetallesNutricionProps = useLocalSearchParams();
 
   //const [Nutricion, setNutricion] = React.useState<any>(null);
   const { data: Nutricion, isLoading } = useGetNutricionesOfDate(fecha);
   const objetivosNutricion = appStore.getState().objetivosNutricion;
 
-  const periodos = ['Desayuno', 'Comida', 'Cena', 'Snacks'];
-
   var alimentosData: { [key: string]: any } = {};
 
   periodos.forEach((periodo) => {
     const { data } = getAlimentosByPeriodo(periodo, fecha, userId);
-    console.log('alimentosData', data);
 
     if (data) {
       alimentosData[periodo] = data;
@@ -73,33 +75,51 @@ const DetallesNutricion = () => {
     ...objetivosNutricion,
   };
 
-  const Periodos = findPeriodosByNutricion(idNutricion) || [];
-
   const data = [
     <Text style={styles.fecha}>{moment(fecha).format('DD MMMM, YYYY')}</Text>,
     !editar ? <ResumenEstadisticasNutricion Nutricion={NutricionEstadisticas} card={true} /> : null,
-    !editar ? <TarjetaNutricion idNutricion={findNutricionIdByDate(fecha) || -1} /> : null,
-    !editar ? <ResumenHistoriaNutricion idNutricion={findNutricionIdByDate(fecha) || -1} /> : null,
-    ...(Periodos.length > 0
-      ? Periodos.map((Periodo) => (
-          <ResumenNutricion
-            // TODO: ARREGLAR PARA SER COMPATIBLE CON EL NUEVO TIPO DE NUTRICION DE SUPABASE
-            periodo={Periodo.periodo as Database['public']['Enums']['tipo_nutricion_enum']}
-            periodoMacros={{
-              Calorias: Periodo.calorias,
-              Proteinas: Periodo.proteinas,
-              Carbohidratos: Periodo.carbohidratos,
-              Grasas: Periodo.grasas,
-            }}
-            alimentos={Object.values(alimentosData).flat()} // Flatten and extract data
-            alimentosPeriodo={alimentosData[Periodo.periodo]?.map((alimento: any) => ({
-              alimento: { ...alimento },
-              cantidad: alimento.cantidad,
-            }))} // Flatten and map to include 'alimento' property
-            editar={editar}
-          />
-        ))
-      : []),
+    !editar ? (
+      <TarjetaNutricion
+        nutricion={NutricionEstadisticas.macros}
+        fecha={fecha}
+        username={profile?.username || ''}
+      />
+    ) : null,
+    !editar ? <ResumenHistoriaNutricion nutricion={alimentosData} /> : null,
+    ...periodos.map((periodo) => (
+      <ResumenNutricion
+        fecha={fecha}
+        periodo={periodo as Database['public']['Enums']['tipo_nutricion_enum']}
+        periodoMacros={{
+          Calorias:
+            alimentosData[periodo]?.reduce(
+              (acc: any, curr: { calorias: any }) => acc + (curr.calorias || 0),
+              0
+            ) || 0,
+          Proteinas:
+            alimentosData[periodo]?.reduce(
+              (acc: any, curr: { proteina: any }) => acc + (curr.proteina || 0),
+              0
+            ) || 0,
+          Carbohidratos:
+            alimentosData[periodo]?.reduce(
+              (acc: any, curr: { carbohidratos: any }) => acc + (curr.carbohidratos || 0),
+              0
+            ) || 0,
+          Grasas:
+            alimentosData[periodo]?.reduce(
+              (acc: any, curr: { grasa: any }) => acc + (curr.grasa || 0),
+              0
+            ) || 0,
+        }}
+        alimentos={Object.values(alimentosData).flat()} // Flatten and extract data
+        alimentosPeriodo={alimentosData[periodo]?.map((alimento: any) => ({
+          alimento: { ...alimento },
+          cantidad: alimento.cantidad,
+        }))} // Flatten and map to include 'alimento' property
+        editar={editar}
+      />
+    )),
   ].filter((item) => item !== null);
 
   return (

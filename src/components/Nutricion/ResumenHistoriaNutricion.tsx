@@ -3,26 +3,23 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
 
-//TEMP
-import { findPeriodosByNutricion } from '~/assets/nutricion/nutricion';
-
 type ResumenHistoriaNutricionProps = {
-  idNutricion: number;
+  nutricion: any;
 };
 
+const periodos = ['Desayuno', 'Comida', 'Cena', 'Snacks'];
+
 // Define the component for the visual summary
-const ResumenHistoriaNutricion = ({ idNutricion }: ResumenHistoriaNutricionProps) => {
-  // Get the exercises for the training
-  const nutricion = findPeriodosByNutricion(idNutricion) || [];
-
-  if (nutricion.length === 0) {
-    return null;
-  }
-
+const ResumenHistoriaNutricion = ({ nutricion }: ResumenHistoriaNutricionProps) => {
   // Create the data for the timeline
-  const data = nutricion.map((periodo) => ({
-    title: periodo.periodo,
-    description: `${periodo.calorias} kcal | ${periodo.proteinas} g  | ${periodo.carbohidratos} g | ${periodo.grasas} g`,
+  const data = periodos.map((periodo) => ({
+    title: periodo,
+    description: `${
+      nutricion[periodo]?.reduce(
+        (acc: any, curr: { calorias: any }) => acc + (curr.calorias || 0),
+        0
+      ) || 0
+    } kcal | ${nutricion[periodo]?.reduce((acc: any, curr: { proteina: any }) => acc + (curr.proteina || 0), 0) || 0} P  | ${nutricion[periodo]?.reduce((acc: any, curr: { carbohidratos: any }) => acc + (curr.carbohidratos || 0), 0) || 0} C | ${nutricion[periodo]?.reduce((acc: any, curr: { grasa: any }) => acc + (curr.grasa || 0), 0) || 0}G`,
   }));
 
   return (
