@@ -5,8 +5,6 @@ import TarjetaProteinas from './TarjetaProteinas';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-//TEMP
-import { findNutricionById, NutricionType } from '~/assets/nutricion/nutricion';
 import { NutricionInfo } from '~/src/types/types';
 
 type TarjetaEntrenamientoProps = {

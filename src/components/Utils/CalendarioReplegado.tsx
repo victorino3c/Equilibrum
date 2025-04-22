@@ -5,9 +5,6 @@ import Date from '../Utils/Date';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-// TEMP
-import { findNutricionByDate } from '~/assets/nutricion/nutricion';
-
 import Feather from '@expo/vector-icons/Feather';
 import Skeleton from './SkeletonView';
 

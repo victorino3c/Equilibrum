@@ -7,7 +7,7 @@ import uuid from 'react-native-uuid';
 import { Database } from '~/src/database.types';
 import { NutricionInfo } from '../types/types';
 
-import { useInsertNutricion, useInsertAlimento } from '@api/nutricion';
+//import { useInsertNutricion, useInsertAlimento, insertNutricio } from '@api/nutricion';
 
 import moment from 'moment';
 
@@ -29,7 +29,7 @@ export interface NutricionState {
   imagenesPeriodos: Partial<
     Record<Database['public']['Enums']['tipo_nutricion_enum'], { imagen: string; id: string }>
   >;
-  checkAndResetIfNewDay: () => void;
+  checkAndResetIfNewDay: (queryclient: any, user_id: string) => void;
   setFecha: (fecha: string) => void;
   setMacros: (macros: NutricionInfo) => void;
   updateMacros: () => void;
@@ -103,7 +103,7 @@ const useNutricionStore = create<NutricionState>()(
         Cena: { imagen: '', id: uuid.v4() as string },
         Snacks: { imagen: '', id: uuid.v4() as string },
       },
-      checkAndResetIfNewDay: () => {
+      checkAndResetIfNewDay: (queryclient: any, user_id: string) => {
         const storedDate = get().fecha;
         const today = moment().format('YYYY-MM-DD');
 
@@ -112,101 +112,49 @@ const useNutricionStore = create<NutricionState>()(
           set({ fecha: today });
           return;
         }
-        if (storedDate === today) {
-          console.log('La fecha almacenada es la misma que la de hoy. No se hace nada.');
-          return;
-        }
 
-        // Hook personalizado para insertar una nutricion
-        const insertNutricion = useInsertNutricion();
-        const insertAlimento = useInsertAlimento();
+        //try {
+        //  insertNutricio({
+        //    user_id,
+        //    periodos_store: get().periodos,
+        //    storedDate,
+        //    today,
+        //  });
+        //} catch (error) {
+        //  console.error('Error al subir la nutrición:', error);
+        //}
 
-        if (storedDate != today) {
-          // Upload data before clearing
-          insertNutricion.mutate({
-            tipo_nutricion: 'Desayuno',
-            calorias: get().periodos.Desayuno?.macros.Calorias || 0,
-            proteina: get().periodos.Desayuno?.macros.Proteinas || 0,
-            carbohidratos: get().periodos.Desayuno?.macros.Carbohidratos || 0,
-            grasa: get().periodos.Desayuno?.macros.Grasas || 0,
-            fecha: storedDate,
-          });
-          insertNutricion.mutate({
-            tipo_nutricion: 'Comida',
-            calorias: get().periodos.Comida?.macros.Calorias || 0,
-            proteina: get().periodos.Comida?.macros.Proteinas || 0,
-            carbohidratos: get().periodos.Comida?.macros.Carbohidratos || 0,
-            grasa: get().periodos.Comida?.macros.Grasas || 0,
-            fecha: storedDate,
-          });
-          insertNutricion.mutate({
-            tipo_nutricion: 'Cena',
-            calorias: get().periodos.Cena?.macros.Calorias || 0,
-            proteina: get().periodos.Cena?.macros.Proteinas || 0,
-            carbohidratos: get().periodos.Cena?.macros.Carbohidratos || 0,
-            grasa: get().periodos.Cena?.macros.Grasas || 0,
-            fecha: storedDate,
-          });
-          insertNutricion.mutate({
-            tipo_nutricion: 'Snacks',
-            calorias: get().periodos.Snacks?.macros.Calorias || 0,
-            proteina: get().periodos.Snacks?.macros.Proteinas || 0,
-            carbohidratos: get().periodos.Snacks?.macros.Carbohidratos || 0,
-            grasa: get().periodos.Snacks?.macros.Grasas || 0,
-            fecha: storedDate,
-          });
-
-          // Upload all alimentos
-          const periodos = get().periodos;
-          for (const periodo in periodos) {
-            if (periodos[periodo as keyof typeof periodos]) {
-              const alimentos = periodos[periodo as keyof typeof periodos]?.alimentos || [];
-              for (const alimento of alimentos) {
-                insertAlimento.mutate({
-                  tipo_nutricion: periodo as Database['public']['Enums']['tipo_nutricion_enum'],
-                  id_alimento: alimento.alimento.id,
-                  cantidad: alimento.cantidad,
-                  fecha_nutricion: storedDate,
-                  user_id: '', //TODO: Lo paso vacío porque no tengo el user_id y lo consigo en el hook
-                });
-              }
-            }
-          }
-
-          // If there is an error, do not reset the store
-
-          // Reset store data
-          set({
-            fecha: today,
-            macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
-            periodos: {
-              Desayuno: {
-                alimentos: [],
-                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
-              },
-              Comida: {
-                alimentos: [],
-                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
-              },
-              Cena: {
-                alimentos: [],
-                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
-              },
-              Snacks: {
-                alimentos: [],
-                macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
-              },
+        // Reset store data
+        set({
+          fecha: today,
+          macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+          periodos: {
+            Desayuno: {
+              alimentos: [],
+              macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
             },
-          });
-          set({
-            imagenesPeriodos: {
-              Desayuno: { imagen: '', id: uuid.v4() as string },
-              Comida: { imagen: '', id: uuid.v4() as string },
-              Cena: { imagen: '', id: uuid.v4() as string },
-              Snacks: { imagen: '', id: uuid.v4() as string },
+            Comida: {
+              alimentos: [],
+              macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
             },
-          });
-        }
+            Cena: {
+              alimentos: [],
+              macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+            },
+            Snacks: {
+              alimentos: [],
+              macros: { Calorias: 0, Proteinas: 0, Carbohidratos: 0, Grasas: 0 },
+            },
+          },
+        });
+        set({
+          imagenesPeriodos: {
+            Desayuno: { imagen: '', id: uuid.v4() as string },
+            Comida: { imagen: '', id: uuid.v4() as string },
+            Cena: { imagen: '', id: uuid.v4() as string },
+            Snacks: { imagen: '', id: uuid.v4() as string },
+          },
+        });
       },
       setFecha: (fecha) => set({ fecha }),
       setMacros: (macros) => set({ macros }),

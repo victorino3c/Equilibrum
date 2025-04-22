@@ -41,6 +41,7 @@ export default function CustomCalendar({
       },
     };
 
+    //CAMBIAR
     const nutriciones = getNutricionDatesByUser('victorino_3c');
 
     //TODO: Cuando cambie nutriciones a API, cambiar esto
