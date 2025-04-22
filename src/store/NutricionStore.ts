@@ -108,7 +108,8 @@ const useNutricionStore = create<NutricionState>()(
         const today = moment().format('YYYY-MM-DD');
 
         if (!storedDate) {
-          console.error('No hay fecha almacenada.');
+          //console.error('No hay fecha almacenada.');
+          set({ fecha: today });
           return;
         }
         if (storedDate === today) {
@@ -243,7 +244,6 @@ const useNutricionStore = create<NutricionState>()(
         }
         set({ periodos });
       },
-      // TODO: REVISAR MECROS DE PERIODO, CREO QUE LO HACE MAL
       addAlimento: (tipo, alimento) => {
         const periodos = get().periodos;
         if (!periodos[tipo]) {
@@ -276,7 +276,6 @@ const useNutricionStore = create<NutricionState>()(
 
         set({ periodos });
       },
-      // TODO: REVISAR MECROS DE PERIODO, CREO QUE LO HACE MAL
       removeAlimento: (tipo, id) => {
         const periodos = get().periodos;
         if (!periodos[tipo]) {

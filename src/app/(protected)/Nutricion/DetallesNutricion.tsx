@@ -50,18 +50,14 @@ const DetallesNutricion = () => {
   periodos.forEach((periodo) => {
     const { data } = getAlimentosByPeriodo(periodo, fecha, userId);
 
-    if (data) {
-      alimentosData[periodo] = data;
-    } else {
-      alimentosData[periodo] = {};
-    }
+    alimentosData[periodo] = data ?? [];
 
     return { data };
   });
 
   const renderItem = ({ item }: { item: JSX.Element }) => <View>{item}</View>;
 
-  if (!Nutricion || isLoading || !alimentosData) {
+  if (!Nutricion || isLoading || !alimentosData || alimentosData === undefined) {
     return null;
   }
 
@@ -85,7 +81,9 @@ const DetallesNutricion = () => {
         username={profile?.username || ''}
       />
     ) : null,
-    !editar ? <ResumenHistoriaNutricion nutricion={alimentosData} /> : null,
+    !editar && alimentosData !== undefined ? (
+      <ResumenHistoriaNutricion nutricion={alimentosData} />
+    ) : null,
     ...periodos.map((periodo) => (
       <ResumenNutricion
         fecha={fecha}
