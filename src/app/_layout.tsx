@@ -15,9 +15,9 @@ export default function RootLayout() {
         <AuthProvider>
           <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
           <Stack>
-            <Stack.Screen name="(protected)" options={{ headerShown: false }} />
             <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
             <Stack.Screen name="(userInfo)" options={{ headerShown: false }} />
+            <Stack.Screen name="(protected)" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>
         </AuthProvider>

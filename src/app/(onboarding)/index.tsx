@@ -1,140 +1,49 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  Alert,
-  TouchableWithoutFeedback,
-  Keyboard,
-  TouchableOpacity,
-} from 'react-native';
-import { useState } from 'react';
-import { useAuth } from '@providers/AuthProvider';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
-import IconInputTextLeft from '~/src/components/inputs/IconInputTextLeft';
+import React from 'react';
 
-import { Feather } from '@expo/vector-icons';
-
-export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [username, setUsername] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { signUp, setProfileUsername } = useAuth();
-
-  const iconUser = <Feather name="user" size={26} color="#6608ff" />;
-  const iconMail = <Feather name="mail" size={26} color="#6608ff" />;
-  const iconLock = <Feather name="unlock" size={26} color="#6608ff" />;
-
-  const handleSignUp = async () => {
-    if (password !== passwordConfirmation) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
-
-    if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
-      return;
-    }
-
-    setLoading(true);
-    const { session } = await signUp(email, password);
-    const { id } = session?.user;
-    await setProfileUsername(id!, username);
-    setLoading(false);
-  };
-
+const onboarding = () => {
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.container}>
-        <Text style={styles.titleText}>Registrarse</Text>
-        <IconInputTextLeft
-          icon={iconUser}
-          selected={username}
-          setSelected={setUsername}
-          placeholder="victorino_3c"
-        />
-        <IconInputTextLeft
-          icon={iconMail}
-          selected={email}
-          setSelected={setEmail}
-          placeholder="nicolas@gmail.com"
-        />
-        <IconInputTextLeft
-          icon={iconLock}
-          selected={password}
-          setSelected={setPassword}
-          placeholder="Contraseña"
-          password={true}
-        />
-        <IconInputTextLeft
-          icon={iconLock}
-          selected={passwordConfirmation}
-          setSelected={setPasswordConfirmation}
-          placeholder="Confirmar contraseña"
-          password={true}
-        />
-        <TouchableOpacity
-          style={styles.continuarButton}
-          onPress={() => {
-            handleSignUp();
-          }}
-          disabled={loading}>
-          <Text style={{ color: 'white', fontSize: 30, fontWeight: '500' }}>
-            {loading ? 'Creando cuenta' : 'Regitrarse'}
-          </Text>
-        </TouchableOpacity>
-
-        <Link href="/(onboarding)/signIn" style={styles.textButton}>
-          Iniciar sesión
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <View style={{ marginTop: 30, alignItems: 'flex-end', paddingRight: 20 }}>
+        <Link href="/(onboarding)/signUp" style={styles.textButton}>
+          Saltar
         </Link>
       </View>
-    </TouchableWithoutFeedback>
+      <View style={styles.titleTextView}>
+        <Text style={styles.titleText}>Bienvenido a</Text>
+        <Text style={{ ...styles.titleText, fontWeight: 700 }}>Equilibrum</Text>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text>onboarding</Text>
+      </View>
+    </SafeAreaView>
   );
-}
+};
+
+export default onboarding;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
   textButton: {
-    color: 'blue',
+    color: '#6608ff',
     textAlign: 'center',
-    textDecorationLine: 'underline',
-    fontSize: 16,
-  },
-  input: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginTop: 5,
-    marginBottom: 20,
-    borderRadius: 5,
+    fontSize: 20,
+    fontWeight: '500',
   },
   titleText: {
     fontSize: 35,
     color: '#6608ff',
-    fontWeight: '700',
-    marginBottom: 20,
+    //fontWeight: '700',
+    marginBottom: 0,
+    textAlign: 'center',
   },
-  continuarButton: {
-    alignSelf: 'center',
-    backgroundColor: '#6608ff',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
-    paddingHorizontal: 50,
-    alignItems: 'center',
-    marginTop: 20,
-    marginHorizontal: 10,
-    elevation: 5,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  titleTextView: {
+    marginBottom: 20,
   },
 });

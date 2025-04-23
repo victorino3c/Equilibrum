@@ -2,36 +2,58 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,
+  Alert,
   TouchableWithoutFeedback,
   Keyboard,
-  Touchable,
+  TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
-import { useAuth } from '~/src/providers/AuthProvider';
-import { Feather, AntDesign, FontAwesome } from '@expo/vector-icons';
-import IconInputTextLeft from '~/src/components/inputs/IconInputTextLeft';
+import { useAuth } from '@providers/AuthProvider';
 import { Link } from 'expo-router';
+import IconInputTextLeft from '~/src/components/inputs/IconInputTextLeft';
 
-export default function SignIn() {
+import { Feather } from '@expo/vector-icons';
+
+export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signUp, setProfileUsername } = useAuth();
 
+  const iconUser = <Feather name="user" size={26} color="#6608ff" />;
   const iconMail = <Feather name="mail" size={26} color="#6608ff" />;
   const iconLock = <Feather name="unlock" size={26} color="#6608ff" />;
 
-  const handleSignIn = async () => {
+  const handleSignUp = async () => {
+    if (password !== passwordConfirmation) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters long');
+      return;
+    }
+
     setLoading(true);
-    await signIn(email, password);
+    const { session } = await signUp(email, password);
+    const { id } = session?.user;
+    await setProfileUsername(id!, username);
     setLoading(false);
   };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-        <Text style={styles.titleText}>Iniciar sesion</Text>
+        <Text style={styles.titleText}>Registrarse</Text>
+        <IconInputTextLeft
+          icon={iconUser}
+          selected={username}
+          setSelected={setUsername}
+          placeholder="victorino_3c"
+        />
         <IconInputTextLeft
           icon={iconMail}
           selected={email}
@@ -45,36 +67,26 @@ export default function SignIn() {
           placeholder="Contraseña"
           password={true}
         />
-        <Text style={[styles.textButton, { textAlign: 'right' }]}>¿Olvidó su contraseña?</Text>
-
-        <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16 }}>
-          O inicia sesión con:
-        </Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15, gap: 40 }}>
-          <TouchableOpacity>
-            <AntDesign name="google" size={44} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <FontAwesome name="facebook" size={44} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <FontAwesome name="apple" size={44} color="black" />
-          </TouchableOpacity>
-        </View>
-
+        <IconInputTextLeft
+          icon={iconLock}
+          selected={passwordConfirmation}
+          setSelected={setPasswordConfirmation}
+          placeholder="Confirmar contraseña"
+          password={true}
+        />
         <TouchableOpacity
           style={styles.continuarButton}
           onPress={() => {
-            handleSignIn();
+            handleSignUp();
           }}
           disabled={loading}>
           <Text style={{ color: 'white', fontSize: 30, fontWeight: '500' }}>
-            {loading ? 'Iniciando sesion' : 'Iniciar sesión'}
+            {loading ? 'Creando cuenta' : 'Regitrarse'}
           </Text>
         </TouchableOpacity>
 
-        <Link href="/(onboarding)/signUp" style={styles.textButton}>
-          Registrarse
+        <Link href="/(onboarding)/signIn" style={styles.textButton}>
+          Iniciar sesión
         </Link>
       </View>
     </TouchableWithoutFeedback>
@@ -111,8 +123,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#6608ff',
     borderRadius: 15,
     padding: 10,
-    paddingHorizontal: 50,
     marginBottom: 10,
+    paddingHorizontal: 50,
     alignItems: 'center',
     marginTop: 20,
     marginHorizontal: 10,
