@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 
 import { Database } from '~/src/database.types';
 
-import { getObjetivos } from '@api/objetivos';
 import { getEntrenamientos } from '@api/entrenamientos';
 import { useGetUserNutriciones } from '@api/nutricion';
 import { entrenamientoStore } from '@store/Entrenamientostore';

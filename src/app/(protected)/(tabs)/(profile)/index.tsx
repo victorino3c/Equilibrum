@@ -1,21 +1,30 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-
-import { useAuth } from '~/src/providers/AuthProvider';
-import { useQueryClient } from '@providers/QueryProvider';
-import { appStore } from '@store/AppStore';
-import { useNutricionStore } from '@store/NutricionStore';
-
-import { useInsertNutricio } from '~/src/utils/insertNutricio';
+import { Pressable, ScrollView, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import moment from 'moment';
 import { Link } from 'expo-router';
+import { useState } from 'react';
+
+import { useAuth } from '~/src/providers/AuthProvider';
+import { appStore } from '@store/AppStore';
+import { useQueryClient } from '@providers/QueryProvider';
+import { entrenamientoStore } from '@store/Entrenamientostore';
+import { useNutricionStore } from '@store/NutricionStore';
+import { useInsertNutricio } from '~/src/utils/insertNutricio';
+
+import Graficas from '@components/Profile/Graficas';
+import UserCard from '@components/Profile/UserCard';
+import ThreeOptionsButton from '@components/Buttons/ThreeOptionsButton';
+import InformacionButtons from '~/src/components/Profile/InformacionButtons';
+import Objetivos from '@components/Profile/Objetivos';
 
 export default function Profile() {
+  //CODIGO PREVIO
+
   const { signOut, session } = useAuth();
   const user_id = session?.user.id || '';
   const queryClient = useQueryClient();
   const { insertNutricio } = useInsertNutricio(queryClient);
   const { setHasEnteredUserInfo } = appStore();
-  const { clearAll, clearAlimentos, getPeriodos, fecha } = useNutricionStore();
+  const { clearAll, getPeriodos, fecha } = useNutricionStore();
 
   const handleSignOut = async () => {
     await signOut();
@@ -40,6 +49,39 @@ export default function Profile() {
       return;
     }
   };
+
+  //CODIGO NUEVO
+
+  const { entrenamientoTerminado } = entrenamientoStore();
+
+  const [graficaOpcion, setGraficaOpcion] = useState<string>('Ejercicio');
+
+  return (
+    <ScrollView
+      style={{ flex: 1, backgroundColor: 'transparent', paddingTop: 20 }}
+      contentContainerStyle={
+        entrenamientoTerminado ? { paddingBottom: 100 } : { paddingBottom: 170 }
+      }>
+      <Link href="/(protected)/Profile/DetallesPerfil?editar=false" asChild>
+        <Pressable>
+          <UserCard />
+        </Pressable>
+      </Link>
+      <ThreeOptionsButton
+        option1="Ejercicio"
+        option2="General"
+        option3="Nutrición"
+        method={setGraficaOpcion}
+        selected={graficaOpcion}
+        style={{ marginTop: 20 }}
+      />
+      <Graficas selected={graficaOpcion} />
+      <Text style={styles.title}>Información</Text>
+      <InformacionButtons />
+      <Text style={styles.title}>Objetivos</Text>
+      <Objetivos />
+    </ScrollView>
+  );
 
   return (
     <View className="flex-1 items-center justify-center">
@@ -72,3 +114,12 @@ export default function Profile() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginVertical: 10,
+    paddingHorizontal: 15,
+  },
+});
