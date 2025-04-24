@@ -7,6 +7,7 @@ import { useNutricionStore } from '@store/NutricionStore';
 
 import { useInsertNutricio } from '~/src/utils/insertNutricio';
 import moment from 'moment';
+import { Link } from 'expo-router';
 
 export default function Profile() {
   const { signOut, session } = useAuth();
@@ -63,6 +64,11 @@ export default function Profile() {
         }}>
         <Text className="rounded-lg bg-blue-500 p-3 text-center text-xl">Nutricion to db</Text>
       </TouchableOpacity>
+      <Link href="/(protected)/Profile/DetallesPerfil" asChild>
+        <TouchableOpacity style={{ marginTop: 10 }}>
+          <Text className="rounded-lg bg-blue-500 p-3 text-center text-xl">Detalles Perfil</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }

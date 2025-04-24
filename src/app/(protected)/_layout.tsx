@@ -24,6 +24,7 @@ export default function ProtectedLayout() {
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="Ejercicio" options={{ headerShown: false }} />
+          <Stack.Screen name="Profile" options={{ headerShown: false }} />
         </Stack>
       </View>
     </SafeAreaProvider>
