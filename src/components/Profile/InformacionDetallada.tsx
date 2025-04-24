@@ -3,46 +3,45 @@ import React from 'react';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 import { appStore } from '@store/AppStore';
-
-const iconFire = <Ionicons name="flame-outline" size={26} color="#FF6F15" />;
-const iconSueño = <Feather name="moon" size={26} color="#6608ff" />;
-const iconAgua = <Ionicons name="water-outline" size={26} color="#00BFFF" />;
+import { getProfile } from '@api/profile';
+import moment from 'moment';
+import { useAuth } from '~/src/providers/AuthProvider';
 
 interface ObjetivosProps {
   editar?: boolean;
 }
 
-const Objetivos = ({ editar }: ObjetivosProps) => {
-  const { objetivoAgua, objetivoSueño, objetivosNutricion } = appStore();
+const InformacionDetallada = ({ editar }: ObjetivosProps) => {
+  const { nacimiento, genero } = appStore();
+  const { session } = useAuth();
+
+  const nacimientoDate = moment(new Date(nacimiento).toUTCString()).format('DD MMMM, YYYY');
 
   return (
     <View style={styles.container}>
       <View style={{ ...styles.objetivosContainer, justifyContent: 'space-between' }}>
         <View style={styles.objetivosContainer}>
-          {iconFire}
-          <Text style={styles.text}>Objetivo calorias</Text>
+          <Text style={styles.text}>Correo</Text>
         </View>
-        <Text style={styles.objetivosText}>{objetivosNutricion.objetivoCalorias} Kcal</Text>
+        <Text style={styles.objetivosText}>{session?.user.email}</Text>
       </View>
       <View style={{ ...styles.objetivosContainer, justifyContent: 'space-between' }}>
         <View style={styles.objetivosContainer}>
-          {iconSueño}
-          <Text style={styles.text}>Objetivo sueño</Text>
+          <Text style={styles.text}>Nacimiento</Text>
         </View>
-        <Text style={styles.objetivosText}>{objetivoSueño} Horas</Text>
+        <Text style={styles.objetivosText}>{nacimientoDate}</Text>
       </View>
       <View style={{ ...styles.objetivosContainer, justifyContent: 'space-between' }}>
         <View style={styles.objetivosContainer}>
-          {iconAgua}
-          <Text style={styles.text}>Objetivo agua</Text>
+          <Text style={styles.text}>Genero </Text>
         </View>
-        <Text style={styles.objetivosText}>{objetivoAgua} L</Text>
+        <Text style={styles.objetivosText}>{genero}</Text>
       </View>
     </View>
   );
 };
 
-export default Objetivos;
+export default InformacionDetallada;
 
 const styles = StyleSheet.create({
   container: {

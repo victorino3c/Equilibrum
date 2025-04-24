@@ -17,19 +17,13 @@ export default function EjercicioLayout() {
   return (
     <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
       <Stack screenOptions={{ headerShown: false }} initialRouteName="DetallesPerfil">
+        <Stack.Screen name="DetallesPerfil" />
         <Stack.Screen
-          name="DetallesPerfil"
+          name="Medidas"
           options={{
             headerShown: true,
-            title: 'Detalles Perfil',
+            title: 'Medidas',
             headerTitleAlign: 'center',
-            headerRight: () => {
-              return (
-                <Link href="/(protected)/(tabs)/(profile)/Configuracion">
-                  <Ionicons name="settings-outline" size={24} color="#000" />
-                </Link>
-              );
-            },
           }}
         />
       </Stack>

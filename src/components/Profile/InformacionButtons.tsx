@@ -1,24 +1,31 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { Link } from 'expo-router';
 
 const InformacionButtons = () => {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', gap: 15 }}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Medidas</Text>
-        </TouchableOpacity>
+        <Link href="/(protected)/Profile/Medidas" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Medidas</Text>
+          </TouchableOpacity>
+        </Link>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Logros</Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: 'row', gap: 15 }}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Ejercicio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Alimentos</Text>
-        </TouchableOpacity>
+        <Link href="/(protected)/Ejercicio/Ejercicios" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Ejercicios</Text>
+          </TouchableOpacity>
+        </Link>
+        <Link href="/(protected)/Nutricion/Alimentos" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Alimentos</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </View>
   );

@@ -257,7 +257,7 @@ export const rutinaStore = create<RutinaState>()(
       },
     }),
     {
-      name: 'entrenamiento-storage',
+      name: 'rutina-storage',
       storage: {
         getItem: async (key) => {
           const item = await AsyncStorage.getItem(key);

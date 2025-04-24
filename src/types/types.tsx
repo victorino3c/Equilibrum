@@ -78,3 +78,24 @@ export type ObjetivosNutricion = {
 };
 
 export type alimentoType = Database['public']['Tables']['alimento']['Row'];
+
+export type medidaType = {
+  id: string;
+  tipo_medida: tipoMedidaEnum;
+  fecha: string;
+  unidad: string;
+  valor: number;
+  // imagen: string; // Cambiado a string
+};
+
+export enum tipoMedidaEnum {
+  Peso = 'Peso',
+  Altura = 'Altura',
+  Cintura = 'Cintura',
+  Cadera = 'Cadera',
+  Muslo = 'Muslo',
+  Brazo = 'Brazo',
+  Pantorrilla = 'Pantorrilla',
+  Cuello = 'Cuello',
+  // Agrega más tipos de medidas según sea necesario
+}
