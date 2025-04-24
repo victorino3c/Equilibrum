@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
 
 import { getEjerciciosFromIds } from '@api/ejercicios';
-import { getSeriesByEntrenamiento, getSeriesByEjercicioAndEntrenamiento } from '@api/series';
+import { getSeriesByEntrenamiento } from '@api/series';
 
 import Skeleton from '@components/Utils/SkeletonView';
 

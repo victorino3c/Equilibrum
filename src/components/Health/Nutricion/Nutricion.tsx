@@ -2,8 +2,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Feather from '@expo/vector-icons/Feather';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import ResumenEstadisticasNutricion from '../../Nutricion/ResumenEstadisticas';
 import appStore from '@store/AppStore';
 import { Database } from '~/src/database.types';
