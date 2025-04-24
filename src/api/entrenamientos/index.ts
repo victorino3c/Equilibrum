@@ -131,3 +131,69 @@ export const useDeleteEntrenamiento = () => {
     },
   });
 };
+
+export const getNumberEntrenamientos = () => {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useQuery({
+    queryKey: ['numberEntrenamientos'],
+    queryFn: async () => {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      const { data, error } = await supabase
+        .from('entrenamiento')
+        .select('id')
+        .eq('user_id', userId);
+
+      if (error) throw new Error(error.message);
+
+      return data.length;
+    },
+    enabled: !!userId, // Solo se ejecuta si hay un userId
+  });
+};
+
+export const getVolumeLiftedSinceDate = (date: string) => {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useQuery({
+    queryKey: ['volumeLiftedSinceDate', date],
+    queryFn: async () => {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      //Get all entrenamientos since date
+      const { data: entrenamientos, error: entrenamientosError } = await supabase
+        .from('entrenamiento')
+        .select('id')
+        .eq('user_id', userId)
+        .gte('fecha', date);
+
+      if (entrenamientosError) throw new Error(entrenamientosError.message);
+
+      //Get all series fuerza on entrenamientos since date
+      const { data: seriesFuerza, error: seriesFuerzaError } = await supabase
+        .from('series_fuerza')
+        .select('id, id_ejercicio, repeticiones, peso')
+        .in(
+          'id_entrenamiento',
+          entrenamientos.map((entrenamiento) => entrenamiento.id)
+        );
+
+      if (seriesFuerzaError) throw new Error(seriesFuerzaError.message);
+
+      //Sumar el volumen levantado
+      const volumeLifted = seriesFuerza.reduce((acc, serie) => {
+        return acc + (serie.peso ?? 0) * (serie.repeticiones ?? 0);
+      }, 0);
+
+      return volumeLifted;
+    },
+    enabled: !!userId, // Solo se ejecuta si hay un userId
+  });
+};
