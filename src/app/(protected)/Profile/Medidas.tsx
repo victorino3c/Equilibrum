@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { medidasStore } from '@store/MedidasStore';
 import { tipoMedidaEnum } from '~/src/types/types';
 import CarrouselMedidas from '~/src/components/Medidas/CarrouselMedidas';
+import GraficaMedidas from '~/src/components/Medidas/GraficaMedidas';
 
 const Medidas = () => {
   const { medidas, addMedida, clearMedidas } = medidasStore();
@@ -31,6 +32,7 @@ const Medidas = () => {
       </TouchableOpacity>
 
       <CarrouselMedidas medidas={medidas} />
+      <GraficaMedidas medidas={medidas} />
     </ScrollView>
   );
 };

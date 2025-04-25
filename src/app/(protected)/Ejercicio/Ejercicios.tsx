@@ -37,19 +37,25 @@ const Ejercicios = () => {
           styles.headerButton,
           { marginHorizontal: 10, flex: 0, borderRadius: 15, marginBottom: 20 },
         ]}>
-        {ejercicios!.map((ejercicio, index) => (
-          <View key={index} style={{ margin: 10 }}>
-            <TouchableOpacity onPress={() => {}}>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <View style={styles.image} />
-                <View style={{ justifyContent: 'space-between' }}>
-                  <Text style={styles.tituloEjercicio}>{ejercicio.nombre}</Text>
-                  <Text>{ejercicio.musculos?.map((m) => `${m}, `)}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+        {isLoading ? (
+          <View style={{ justifyContent: 'center', alignItems: 'center', height: 200 }}>
+            <Text>Cargando...</Text>
           </View>
-        ))}
+        ) : (
+          ejercicios?.map((ejercicio, index) => (
+            <View key={index} style={{ margin: 10 }}>
+              <TouchableOpacity onPress={() => {}}>
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={styles.image} />
+                  <View style={{ justifyContent: 'space-between' }}>
+                    <Text style={styles.tituloEjercicio}>{ejercicio.nombre}</Text>
+                    <Text>{ejercicio.musculos?.map((m) => `${m}, `)}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </View>
     </ScrollView>
   );

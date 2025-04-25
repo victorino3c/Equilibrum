@@ -10,7 +10,7 @@ const Alimentos = () => {
   const { data: alimentos } = useGetAlimentos();
 
   return (
-    <View>
+    <>
       <Stack.Screen
         name="Nutricion/Alimentos"
         options={{
@@ -72,7 +72,7 @@ const Alimentos = () => {
           )}
         </View>
       </ScrollView>
-    </View>
+    </>
   );
 };
 

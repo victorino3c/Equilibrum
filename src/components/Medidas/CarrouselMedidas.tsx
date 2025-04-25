@@ -11,28 +11,34 @@ const CarrouselMedidas = ({ medidas }: CarrouselMedidasProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Carrousel medidas</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 10 }}>
-        {medidas.map((medida) => (
-          <View key={medida.id} style={styles.item}>
-            <Text
-              style={{
-                paddingBottom: 5,
-                width: '100%',
-                fontWeight: 'bold',
-                backgroundColor: '#9f9f9f',
-                color: '#fff',
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-                textAlign: 'center',
-              }}>
-              {medida.fecha}
-            </Text>
-          </View>
-        ))}
-      </ScrollView>
+      {medidas.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 10 }}>
+          {medidas.map((medida) => (
+            <View key={medida.id} style={styles.item}>
+              <Text
+                style={{
+                  paddingBottom: 5,
+                  width: '100%',
+                  fontWeight: 'bold',
+                  backgroundColor: '#9f9f9f',
+                  color: '#fff',
+                  borderBottomLeftRadius: 10,
+                  borderBottomRightRadius: 10,
+                  textAlign: 'center',
+                }}>
+                {medida.fecha}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={styles.noItems}>
+          <Text style={styles.noItemsText}>No hay medidas</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -68,5 +74,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     borderRadius: 10,
     justifyContent: 'flex-end',
+  },
+  noItems: {
+    height: 150,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noItemsText: {
+    fontSize: 18,
+    color: '#9f9f9f',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
