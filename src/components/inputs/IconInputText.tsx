@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, ViewStyle, TextStyle, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+  TextInput,
+  KeyboardTypeOptions,
+} from 'react-native';
 import React, { useState } from 'react';
 
 interface IconInputTextProps {
@@ -9,6 +17,7 @@ interface IconInputTextProps {
   setSelected: (value: any) => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  keyBoardType?: KeyboardTypeOptions;
 }
 
 const IconInputText = ({
@@ -19,6 +28,7 @@ const IconInputText = ({
   selected,
   setSelected,
   textStyle,
+  keyBoardType,
 }: IconInputTextProps) => {
   return (
     <View style={[styles.container, style]}>
@@ -26,7 +36,10 @@ const IconInputText = ({
         {icon}
         <Text style={[styles.text, textStyle]}>{text}</Text>
       </View>
-      <TextInput style={styles.textInput} onChangeText={setSelected}>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={setSelected}
+        keyboardType={keyBoardType ? keyBoardType : 'ascii-capable'}>
         {selected}
       </TextInput>
       <Text style={styles.textInput}>{inputText}</Text>

@@ -1,14 +1,15 @@
 import { View, Text, StyleSheet, ViewStyle, TextStyle, Button } from 'react-native';
 import React, { useState } from 'react';
-import DatePicker from 'react-native-date-picker';
+import DatePicker from 'react-native-ui-datepicker';
+import moment from 'moment';
 
 interface IconInputProps {
   icon: JSX.Element;
   text: string;
-  selected: Date;
-  open: boolean;
+  selected: any;
+  open?: boolean;
   setSelected: (value: any) => void;
-  setOpen: (value: boolean) => void;
+  setOpen?: (value: boolean) => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
@@ -23,13 +24,25 @@ const IconInputDateSelector = ({
   setOpen,
   textStyle,
 }: IconInputProps) => {
+  console.log(selected);
   return (
     <View style={[styles.container, style]}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
         {icon}
         <Text style={[styles.text, textStyle]}>{text}</Text>
       </View>
-      <DatePicker date={selected} onDateChange={setSelected} />
+      <DatePicker
+        mode="single"
+        firstDayOfWeek={1}
+        style={{ flex: 1 }}
+        date={selected}
+        onChange={({ date }) => {
+          if (date) {
+            setSelected(date);
+          }
+        }}
+        locale="es"
+      />
     </View>
   );
 };
@@ -54,6 +67,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    padding: 20,
   },
   text: {
     fontSize: 20,

@@ -15,24 +15,12 @@ import { Link } from 'expo-router';
 const iconoMedida = <Feather name="activity" size={24} color="#6608ff" />;
 
 const Medidas = () => {
-  const { medidas, addMedida, clearMedidas } = medidasStore();
+  const { medidas, clearMedidas } = medidasStore();
   const [selectedMedida, setSelectedMedida] = useState<string>('Peso');
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
-        <TouchableOpacity
-          onPress={() => {
-            addMedida({
-              id: '1',
-              tipo_medida: selectedMedida as tipoMedidaEnum,
-              fecha: '2023-10-01',
-              valor: 70,
-              unidad: 'kg',
-            });
-          }}>
-          <Text>Agregar Medida</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             clearMedidas();
