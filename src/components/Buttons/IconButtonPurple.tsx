@@ -9,21 +9,22 @@ type IconButtonProps = {
   textStyle?: object;
 };
 
-const IconButton = React.forwardRef<React.ElementRef<typeof TouchableOpacity>, IconButtonProps>(
-  ({ icon, text, onPress, style, textStyle }, ref) => {
-    return (
-      <TouchableOpacity
-        ref={ref}
-        style={{ ...styles.empezarEntrenamiento, ...style }}
-        onPress={onPress}>
-        {icon}
-        <Text style={[styles.buttonText, textStyle]}>{text}</Text>
-      </TouchableOpacity>
-    );
-  }
-);
+const IconButtonPurple = React.forwardRef<
+  React.ElementRef<typeof TouchableOpacity>,
+  IconButtonProps
+>(({ icon, text, onPress, style, textStyle }, ref) => {
+  return (
+    <TouchableOpacity
+      ref={ref}
+      style={{ ...styles.empezarEntrenamiento, ...style }}
+      onPress={onPress}>
+      {icon}
+      <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+    </TouchableOpacity>
+  );
+});
 
-export default IconButton;
+export default IconButtonPurple;
 
 const styles = StyleSheet.create({
   empezarEntrenamiento: {
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'white',
+    backgroundColor: '#6608ff',
     padding: 20,
     marginHorizontal: 10,
     marginVertical: 15,
@@ -48,6 +49,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#6608ff',
+    color: '#fff',
   },
 });

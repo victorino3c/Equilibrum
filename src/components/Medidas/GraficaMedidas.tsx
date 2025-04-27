@@ -1,30 +1,21 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 
-import { Feather } from '@expo/vector-icons';
 import { medidaType, tipoMedidaEnum } from '~/src/types/types';
 
-import IconInputSelector from '@components/inputs/IconInputSelector';
+import { Picker } from '@react-native-picker/picker';
+import Grafica from './Grafica';
 
 interface GraficaMedidasProps {
   medidas: medidaType[];
+  selectedMedida: string;
+  setSelectedMedida: (medida: string) => void;
 }
 
-const GraficaMedidas = ({ medidas }: GraficaMedidasProps) => {
-  const iconoSelector = <Feather name="bar-chart-2" size={24} color="black" />;
-
-  const [selectedMedida, setSelectedMedida] = useState<string>('Selecciona una medida');
-
+const GraficaMedidas = ({ medidas, selectedMedida, setSelectedMedida }: GraficaMedidasProps) => {
   return (
     <View style={styles.container}>
-      <Text>GraficaMedidas</Text>
-      <IconInputSelector
-        icon={iconoSelector}
-        text={selectedMedida ? selectedMedida : 'Selecciona una medida'}
-        selected={selectedMedida}
-        setSelected={setSelectedMedida}
-        options={Object.values(tipoMedidaEnum).map((medida) => medida)}
-      />
+      <Grafica medida={selectedMedida} />
     </View>
   );
 };
@@ -47,6 +38,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     backgroundColor: '#fff',
-    padding: 20,
+    //padding: 20,
   },
 });
