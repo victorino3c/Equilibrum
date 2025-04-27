@@ -11,9 +11,11 @@ const InformacionButtons = () => {
             <Text style={styles.buttonText}>Medidas</Text>
           </TouchableOpacity>
         </Link>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Logros</Text>
-        </TouchableOpacity>
+        <Link href="/(protected)/Profile/Logros" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Logros</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
       <View style={{ flexDirection: 'row', gap: 15 }}>
         <Link href="/(protected)/Ejercicio/Ejercicios" asChild>

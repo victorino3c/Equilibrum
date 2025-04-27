@@ -26,6 +26,14 @@ export default function EjercicioLayout() {
             headerTitleAlign: 'center',
           }}
         />
+        <Stack.Screen
+          name="Logros"
+          options={{
+            headerShown: true,
+            title: 'Logros',
+            headerTitleAlign: 'center',
+          }}
+        />
       </Stack>
     </View>
   );

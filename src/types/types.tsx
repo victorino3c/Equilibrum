@@ -98,3 +98,16 @@ export enum tipoMedidaEnum {
   Cuello = 'Cuello',
   // Agrega más tipos de medidas según sea necesario
 }
+
+export interface valoresLogros {
+  volumenTotal: number;
+  distanciaTotal: number;
+  entrenamientosTotal: number;
+  caloriasConsumidasTotal: number;
+  proteinasTotal: number;
+  grasasTotal: number;
+  carbohidratosTotal: number;
+  diasObjetivoAgua: number;
+  diasObjetivoSueño: number;
+  [key: string]: number; // Add index signature to allow string keys
+}
