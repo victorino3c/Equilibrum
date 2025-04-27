@@ -9,7 +9,7 @@ const Logros = () => {
   const [modo, setModo] = useState<string>('Ejercicio');
 
   return (
-    <View style={{ marginHorizontal: 10 }}>
+    <View style={{ marginHorizontal: 10, flex: 1 }}>
       <ThreeOptionsButton
         style={{ marginTop: 20 }}
         option1="Ejercicio"

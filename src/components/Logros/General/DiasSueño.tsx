@@ -5,20 +5,20 @@ import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
 import LogrosStore from '@store/LogrosStore';
 
-interface NumeroEntrenamientosProps {
+interface DiasSueñoProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-const NumeroEntrenamientos = ({ open, setOpen }: NumeroEntrenamientosProps) => {
+const DiasSueño = ({ open, setOpen }: DiasSueñoProps) => {
   const { valores } = LogrosStore();
 
-  const numeroEntrenos = valores.entrenamientosTotal || 0;
+  const diasTotales = valores.diasObjetivoSueño || 0;
 
   if (!open) {
     return (
       <TouchableOpacity style={styles.containerClosed} onPress={() => setOpen(!open)}>
-        <Text style={styles.titulo}>Numero de entrenamientos</Text>
+        <Text style={styles.titulo}>Días cumplendo objetivo sueño</Text>
         <Feather name="chevron-down" size={24} color="black" />
       </TouchableOpacity>
     );
@@ -28,25 +28,28 @@ const NumeroEntrenamientos = ({ open, setOpen }: NumeroEntrenamientosProps) => {
     <View>
       <TouchableOpacity style={styles.containerOpen} onPress={() => setOpen(!open)}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.titulo}>Numero de entrenamientos</Text>
+          <Text style={styles.titulo}>Días cumplendo objetivo sueño</Text>
           <Feather name="chevron-up" size={24} color="black" />
         </View>
       </TouchableOpacity>
-      <Logro objetivo={10} actual={numeroEntrenos} titulo="Realiza 10 entrenamientos" />
-      <Logro objetivo={50} actual={numeroEntrenos} titulo="Realiza 50 entrenamientos" />
-      <Logro objetivo={200} actual={numeroEntrenos} titulo="Realiza 200 entrenamientos" />
+      <Logro objetivo={50} actual={diasTotales} titulo="Objetivo cumplido 50 dias" />
+      <Logro objetivo={150} actual={diasTotales} titulo="Objetivo cumplido 150 dias" />
+      <Logro objetivo={365} actual={diasTotales} titulo="Objetivo cumplido 365 dias" />
     </View>
   );
 };
 
-export default NumeroEntrenamientos;
+export default DiasSueño;
 
 const styles = StyleSheet.create({
   containerClosed: {
     flexDirection: 'row',
+    marginTop: 20,
     justifyContent: 'space-between',
   },
-  containerOpen: {},
+  containerOpen: {
+    marginTop: 20,
+  },
   titulo: {
     fontSize: 20,
     fontWeight: 'bold',

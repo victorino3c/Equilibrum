@@ -56,7 +56,7 @@ const UserCard = ({ editar }: UserCardProps) => {
           <Text style={{ fontSize: 14, color: 'gray' }}>#{entrenamientos || 0} entrenamientos</Text>
         </View>
         <View style={{ alignSelf: 'center', paddingRight: 10 }}>
-          <Link href="/(protected)/Profile/DetallesPerfil?editar=true" push asChild>
+          <Link href="/(protected)/Profile/DetallesPerfil?editar=true" asChild>
             <TouchableOpacity>
               <Feather name="edit-3" size={24} color="#6608ff" />
             </TouchableOpacity>

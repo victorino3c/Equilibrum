@@ -16,8 +16,7 @@ export default function EjercicioLayout() {
 
   return (
     <View className="flex-1" style={{ backgroundColor: 'transparent' }}>
-      <Stack screenOptions={{ headerShown: false }} initialRouteName="DetallesPerfil">
-        <Stack.Screen name="DetallesPerfil" />
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           name="Medidas"
           options={{

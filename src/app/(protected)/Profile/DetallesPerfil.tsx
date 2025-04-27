@@ -10,7 +10,7 @@ import InformacionDetallada from '@components/Profile/InformacionDetallada';
 const DetallesPerfil = () => {
   const { editar: editarParam } = useLocalSearchParams();
 
-  const [editar, setEditar] = useState(editarParam === 'true');
+  const [editar, setEditar] = useState(editarParam === 'false');
 
   useEffect(() => {
     if (editarParam === 'true') {
@@ -23,7 +23,7 @@ const DetallesPerfil = () => {
   return (
     <View style={{ flex: 1, paddingTop: 20 }}>
       <Stack.Screen
-        name="DetallesPerfil"
+        name="Profile/DetallesPerfil"
         options={{
           headerShown: true,
           title: 'Detalles Perfil',

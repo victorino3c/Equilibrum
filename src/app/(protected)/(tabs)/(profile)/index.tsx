@@ -62,7 +62,7 @@ export default function Profile() {
       contentContainerStyle={
         entrenamientoTerminado ? { paddingBottom: 100 } : { paddingBottom: 170 }
       }>
-      <Link href="/(protected)/Profile/DetallesPerfil" replace asChild>
+      <Link href="/(protected)/Profile/DetallesPerfil" asChild>
         <Pressable>
           <UserCard />
         </Pressable>

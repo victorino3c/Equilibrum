@@ -5,20 +5,20 @@ import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
 import LogrosStore from '@store/LogrosStore';
 
-interface NumeroEntrenamientosProps {
+interface DistanciaTotalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-const NumeroEntrenamientos = ({ open, setOpen }: NumeroEntrenamientosProps) => {
+const DistanciaTotal = ({ open, setOpen }: DistanciaTotalProps) => {
   const { valores } = LogrosStore();
 
-  const numeroEntrenos = valores.entrenamientosTotal || 0;
+  const distanciaTotal = valores.distanciaTotal || 0;
 
   if (!open) {
     return (
       <TouchableOpacity style={styles.containerClosed} onPress={() => setOpen(!open)}>
-        <Text style={styles.titulo}>Numero de entrenamientos</Text>
+        <Text style={styles.titulo}>Distancia recorrida</Text>
         <Feather name="chevron-down" size={24} color="black" />
       </TouchableOpacity>
     );
@@ -28,25 +28,28 @@ const NumeroEntrenamientos = ({ open, setOpen }: NumeroEntrenamientosProps) => {
     <View>
       <TouchableOpacity style={styles.containerOpen} onPress={() => setOpen(!open)}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.titulo}>Numero de entrenamientos</Text>
+          <Text style={styles.titulo}>Distancia recorrida</Text>
           <Feather name="chevron-up" size={24} color="black" />
         </View>
       </TouchableOpacity>
-      <Logro objetivo={10} actual={numeroEntrenos} titulo="Realiza 10 entrenamientos" />
-      <Logro objetivo={50} actual={numeroEntrenos} titulo="Realiza 50 entrenamientos" />
-      <Logro objetivo={200} actual={numeroEntrenos} titulo="Realiza 200 entrenamientos" />
+      <Logro objetivo={100} actual={distanciaTotal} titulo="Recorre 100 kilometros" />
+      <Logro objetivo={1000} actual={distanciaTotal} titulo="Recorre 1.000 kilometros" />
+      <Logro objetivo={5000} actual={distanciaTotal} titulo="Recorre 5.000 kilometros" />
     </View>
   );
 };
 
-export default NumeroEntrenamientos;
+export default DistanciaTotal;
 
 const styles = StyleSheet.create({
   containerClosed: {
     flexDirection: 'row',
+    marginTop: 20,
     justifyContent: 'space-between',
   },
-  containerOpen: {},
+  containerOpen: {
+    marginTop: 20,
+  },
   titulo: {
     fontSize: 20,
     fontWeight: 'bold',
