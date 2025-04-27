@@ -80,7 +80,6 @@ export type ObjetivosNutricion = {
 export type alimentoType = Database['public']['Tables']['alimento']['Row'];
 
 export type medidaType = {
-  id: string;
   tipo_medida: tipoMedidaEnum;
   fecha: string; // YYYY-MM-DD
   unidad: string;

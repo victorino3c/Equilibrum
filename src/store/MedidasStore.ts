@@ -4,18 +4,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import uuid from 'react-native-uuid';
 
-import { medidaType } from '~/src/types/types';
+import { medidaType, tipoMedidaEnum } from '~/src/types/types';
 
 import { Database } from '~/src/database.types';
 
 export interface MedidasState {
   medidas: medidaType[];
   addMedida: (medida: medidaType) => void;
-  removeMedida: (id: string) => void;
-  updateMedida: (id: string, updatedMedida: Partial<medidaType>) => void;
+  removeMedida: (fecha: string, tipo: tipoMedidaEnum, valor: number) => void;
+  updateMedida: (
+    fecha: string,
+    tipo: tipoMedidaEnum,
+    valor: number,
+    updatedMedida: Partial<medidaType>
+  ) => void;
   clearMedidas: () => void;
   getMedidas: () => medidaType[];
-  getMedidaById: (id: string) => medidaType | undefined;
   getMedidaByDate: (date: string) => medidaType | undefined;
   getMedidaByType: (type: string) => medidaType | undefined;
 }
@@ -29,15 +33,20 @@ export const medidasStore = create<MedidasState>()(
           medidas: [...state.medidas, { ...medida, id: uuid.v4() }],
         }));
       },
-      removeMedida: (id) => {
+      removeMedida: (fecha, tipo, valor) => {
         set((state) => ({
-          medidas: state.medidas.filter((medida) => medida.id !== id),
+          medidas: state.medidas.filter(
+            (medida) =>
+              !(medida.fecha === fecha && medida.tipo_medida === tipo && medida.valor === valor)
+          ),
         }));
       },
-      updateMedida: (id, updatedMedida) => {
+      updateMedida: (fecha, tipo, valor, updatedMedida) => {
         set((state) => ({
           medidas: state.medidas.map((medida) =>
-            medida.id === id ? { ...medida, ...updatedMedida } : medida
+            medida.fecha === fecha && medida.valor === valor && medida.tipo_medida === tipo
+              ? { ...medida, ...updatedMedida }
+              : medida
           ),
         }));
       },
@@ -46,9 +55,6 @@ export const medidasStore = create<MedidasState>()(
       },
       getMedidas: () => {
         return get().medidas;
-      },
-      getMedidaById: (id) => {
-        return get().medidas.find((medida) => medida.id === id);
       },
       getMedidaByDate: (date) => {
         return get().medidas.find((medida) => medida.fecha === date);

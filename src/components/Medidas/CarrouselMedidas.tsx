@@ -1,13 +1,24 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import React from 'react';
 
-import { medidaType } from '~/src/types/types';
+import { medidaType, tipoMedidaEnum } from '~/src/types/types';
+
+import { medidasStore } from '@store/MedidasStore';
 
 interface CarrouselMedidasProps {
   medidas: medidaType[];
 }
 
 const CarrouselMedidas = ({ medidas }: CarrouselMedidasProps) => {
+  const { removeMedida } = medidasStore();
+
+  const handleRemove = (fecha: string, tipo: tipoMedidaEnum, value: number) => {
+    Alert.alert('Borrar medida', 'Seguro que quieres borrar la medida?', [
+      { text: 'Si', onPress: () => removeMedida(fecha, tipo, value) },
+      { text: 'No', style: 'cancel' },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Carrousel medidas</Text>
@@ -17,7 +28,12 @@ const CarrouselMedidas = ({ medidas }: CarrouselMedidasProps) => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 10 }}>
           {medidas.map((medida) => (
-            <View key={medida.id} style={styles.item}>
+            <TouchableOpacity
+              onPress={() => {
+                handleRemove(medida.fecha, medida.tipo_medida, medida.valor);
+              }}
+              key={medida.fecha + medida.valor.toString() + medida.tipo_medida}
+              style={styles.item}>
               <Text
                 style={{
                   paddingBottom: 5,
@@ -31,7 +47,7 @@ const CarrouselMedidas = ({ medidas }: CarrouselMedidasProps) => {
                 }}>
                 {medida.fecha}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       ) : (

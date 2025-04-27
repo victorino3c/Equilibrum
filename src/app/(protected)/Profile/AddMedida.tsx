@@ -36,7 +36,6 @@ const AddMedida = () => {
     }
 
     const new_medida = {
-      id: '1',
       tipo_medida: medida as tipoMedidaEnum,
       fecha: fecha,
       valor: value,
