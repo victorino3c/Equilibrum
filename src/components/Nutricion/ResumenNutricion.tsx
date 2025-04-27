@@ -38,6 +38,7 @@ const ResumenNutricion = ({
       // TODO: Si quiero añadir edicion de nutricion en el pasado quitar if y añadir la logica
       return;
     }
+
     removeAlimento(periodo, id);
   };
 

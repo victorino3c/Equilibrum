@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface DiasAguaProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface DiasAguaProps {
 }
 
 const DiasAgua = ({ open, setOpen }: DiasAguaProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const diasTotales = valores.diasObjetivoAgua || 0;
 

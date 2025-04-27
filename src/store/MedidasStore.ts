@@ -6,8 +6,6 @@ import uuid from 'react-native-uuid';
 
 import { medidaType, tipoMedidaEnum } from '~/src/types/types';
 
-import { Database } from '~/src/database.types';
-
 export interface MedidasState {
   medidas: medidaType[];
   addMedida: (medida: medidaType) => void;

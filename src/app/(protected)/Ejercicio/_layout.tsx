@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 
 import { entrenamientoStore } from '@store/Entrenamientostore';
 import { rutinaStore } from '@store/RutinaStore';
+import logrosStore from '@store/LogrosStore';
 
 import { useInsertEntrenamiento } from '@api/entrenamientos';
 import { useInsertEjerciciosEntrenamiento } from '@api/ejercicios';
@@ -44,6 +45,8 @@ export default function EjercicioLayout() {
   const [error, setError] = useState<string>('');
   const ids_ejercicios: string[] = entrenamientoStore().ejercicios.map((ejercicio) => ejercicio.id);
   const num_series = getNumeroSeries();
+
+  const { updateValor, valores } = logrosStore();
 
   const { session } = useAuth();
   const insets = useSafeAreaInsets();
@@ -160,6 +163,13 @@ export default function EjercicioLayout() {
         },
       }
     );
+
+    const valor = {
+      ...valores,
+      entrenamientosTotal: valores.entrenamientosTotal + 1,
+    };
+
+    updateValor(valor);
   };
 
   const handleTerminarEntrenamiento = () => {

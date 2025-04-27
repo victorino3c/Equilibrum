@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface CarbohidratosTotalProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface CarbohidratosTotalProps {
 }
 
 const CarbohidratosTotal = ({ open, setOpen }: CarbohidratosTotalProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const carbohidratosTotal = valores.carbohidratosTotal || 0;
 

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface GrasaTotalProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface GrasaTotalProps {
 }
 
 const GrasaTotal = ({ open, setOpen }: GrasaTotalProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const grasaTotal = valores.grasasTotal || 0;
 

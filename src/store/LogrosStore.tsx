@@ -2,11 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import uuid from 'react-native-uuid';
-
 import { valoresLogros } from '~/src/types/types';
-
-import { Database } from '~/src/database.types';
 
 export interface LogrosState {
   valores: valoresLogros;
@@ -14,9 +10,10 @@ export interface LogrosState {
   addValor: (valor: string, cantidad: number) => void;
   minusValor: (valor: string, cantidad: number) => void;
   changeValor: (valor: string, newValue: number) => void;
+  updateValor: (newValores: valoresLogros) => void;
 }
 
-export const medidasStore = create<LogrosState>()(
+export const logrosStore = create<LogrosState>()(
   persist(
     (set, get) => ({
       valores: {
@@ -57,6 +54,15 @@ export const medidasStore = create<LogrosState>()(
           },
         }));
       },
+      updateValor: (newValores) => {
+        set((state) => {
+          //console.log('Before update:', state.valores);
+          //console.log(newValores);
+          const updatedValores = { ...state.valores, ...newValores };
+          //console.log('After update:', updatedValores);
+          return { valores: updatedValores };
+        });
+      },
     }),
     {
       name: 'logros-storage',
@@ -80,4 +86,4 @@ export const medidasStore = create<LogrosState>()(
   )
 );
 
-export default medidasStore;
+export default logrosStore;

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface DiasSueñoProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface DiasSueñoProps {
 }
 
 const DiasSueño = ({ open, setOpen }: DiasSueñoProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const diasTotales = valores.diasObjetivoSueño || 0;
 

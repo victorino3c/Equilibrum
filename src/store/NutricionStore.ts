@@ -7,6 +7,8 @@ import uuid from 'react-native-uuid';
 import { Database } from '~/src/database.types';
 import { NutricionInfo } from '../types/types';
 
+import logrosStore from '@store/LogrosStore';
+
 //import { useInsertNutricion, useInsertAlimento, insertNutricio } from '@api/nutricion';
 
 import moment from 'moment';
@@ -223,6 +225,7 @@ const useNutricionStore = create<NutricionState>()(
         set({ macros: mainMacros });
 
         set({ periodos });
+
       },
       removeAlimento: (tipo, id) => {
         const periodos = get().periodos;

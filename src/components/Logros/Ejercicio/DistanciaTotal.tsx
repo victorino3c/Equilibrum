@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface DistanciaTotalProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface DistanciaTotalProps {
 }
 
 const DistanciaTotal = ({ open, setOpen }: DistanciaTotalProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const distanciaTotal = valores.distanciaTotal || 0;
 

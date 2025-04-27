@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface CaloriasTotalProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface CaloriasTotalProps {
 }
 
 const CaloriasTotal = ({ open, setOpen }: CaloriasTotalProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const caloriasTotal = valores.caloriasConsumidasTotal || 0;
 

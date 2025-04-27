@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import Logro from '../Logro';
-import LogrosStore from '@store/LogrosStore';
+import logrosStore from '@store/LogrosStore';
 
 interface NumeroEntrenamientosProps {
   open: boolean;
@@ -11,7 +11,7 @@ interface NumeroEntrenamientosProps {
 }
 
 const NumeroEntrenamientos = ({ open, setOpen }: NumeroEntrenamientosProps) => {
-  const { valores } = LogrosStore();
+  const { valores } = logrosStore();
 
   const numeroEntrenos = valores.entrenamientosTotal || 0;
 

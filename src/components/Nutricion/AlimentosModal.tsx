@@ -6,6 +6,7 @@ import CustomInput from '~/src/components/Utils/CustomInput';
 import { alimentoType } from '~/src/types/types';
 
 import { useNutricionStore } from '@store/NutricionStore';
+import logrosStore from '@store/LogrosStore';
 
 type AlimentoModalProps = {
   visible: boolean;
@@ -23,7 +24,8 @@ const AlimentosModal = ({
   setModalVisible,
 }: AlimentoModalProps) => {
   const { addAlimento } = useNutricionStore();
-  const [cantidad, setCantidad] = useState<number>(0);
+  const { updateValor, valores } = logrosStore();
+  const [cantidad, setCantidad] = useState<number>(1);
   const [selectedAlimento, setSelectedAlimento] = useState<alimentoType | null>(null);
 
   const handlePress = (id: string) => {
@@ -42,6 +44,20 @@ const AlimentosModal = ({
   useEffect(() => {
     if (selectedAlimento) {
       addAlimento(periodo, { alimento: selectedAlimento, cantidad });
+
+      const valor = {
+        ...valores,
+        ...{
+          caloriasConsumidasTotal:
+            valores.caloriasConsumidasTotal + (selectedAlimento.calorias || 0) * cantidad,
+          proteinasTotal: valores.proteinasTotal + (selectedAlimento.proteina || 0) * cantidad,
+          grasasTotal: valores.grasasTotal + (selectedAlimento.grasa || 0) * cantidad,
+          carbohidratosTotal:
+            valores.carbohidratosTotal + (selectedAlimento.carbohidratos || 0) * cantidad,
+        },
+      };
+
+      updateValor(valor);
       setSelectedAlimento(null);
       setModalVisible(false);
     }

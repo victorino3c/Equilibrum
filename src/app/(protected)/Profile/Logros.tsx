@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native';
 import React, { useState } from 'react';
 import ThreeOptionsButton from '~/src/components/Buttons/ThreeOptionsButton';
-import LogrosEjercicio from '~/src/components/Logros/LogrosEjercicio';
-import LogrosNutricion from '~/src/components/Logros/LogrosNutricion';
-import LogrosGeneral from '~/src/components/Logros/LogrosGeneral';
+import LogrosEjercicio from '@components/Logros/LogrosEjercicio';
+import LogrosNutricion from '@components/Logros/LogrosNutricion';
+import LogrosGeneral from '@components/Logros/LogrosGeneral';
 
 const Logros = () => {
   const [modo, setModo] = useState<string>('Ejercicio');
