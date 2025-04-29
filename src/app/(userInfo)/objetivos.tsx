@@ -11,7 +11,7 @@ import { Link, router } from 'expo-router';
 
 import { appStore } from '@store/AppStore';
 
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconInputText from '~/src/components/inputs/IconInputText';
 
 const sobreTi = () => {
@@ -23,11 +23,15 @@ const sobreTi = () => {
     setObjetivoAgua,
     setObjetivoCalorias,
     setObjetivoSueño,
+    setObjetivoCarbohidratos,
+    setObjetivoProteinas,
+    setObjetivoGrasas,
   } = appStore();
 
   const iconFire = <Ionicons name="flame-outline" size={26} color="#FF6F15" />;
   const iconSueño = <Feather name="moon" size={26} color="#6608ff" />;
   const iconAgua = <Ionicons name="water-outline" size={26} color="#00BFFF" />;
+  const iconGrams = <MaterialCommunityIcons name="weight-gram" size={26} color="#6608ff" />;
 
   const handleEmpezar = () => {
     setHasEnteredUserInfo(true);
@@ -53,6 +57,28 @@ const sobreTi = () => {
           inputText="kcal"
           selected={objetivosNutricion.objetivoCalorias.toString()}
           setSelected={setObjetivoCalorias}
+        />
+
+        <IconInputText
+          icon={iconGrams}
+          text="Objetivo proteina"
+          inputText="g"
+          selected={objetivosNutricion.objetivoProteinas.toString()}
+          setSelected={setObjetivoProteinas}
+        />
+        <IconInputText
+          icon={iconGrams}
+          text="Objetivo grasas"
+          inputText="g"
+          selected={objetivosNutricion.objetivoGrasas.toString()}
+          setSelected={setObjetivoGrasas}
+        />
+        <IconInputText
+          icon={iconGrams}
+          text="Objetivo carbohidratos"
+          inputText="g"
+          selected={objetivosNutricion.objetivoCarbohidratos.toString()}
+          setSelected={setObjetivoCarbohidratos}
         />
         <IconInputText
           icon={iconSueño}

@@ -86,7 +86,6 @@ const SueñoHidratacion = ({
       }
     }
 
-    console.log(objetivoHidratacion, objetivosDiarios?.agua, value);
     updateObjetivosDiariosAguaByFecha({ fecha, agua: value });
   };
 
