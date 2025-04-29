@@ -18,6 +18,7 @@ export interface EntrenamientoState {
   numero: number;
   seconds: number;
   volumen: number;
+  distancia: number;
   calorias: number;
   fecha: string;
   ejercicios: Database['public']['Tables']['ejercicios']['Row'][];
@@ -46,6 +47,7 @@ export interface EntrenamientoState {
   removeSerieEjercicio: (idSerie: string) => void;
   calcularVolumen: () => void;
   calcularCalorias: () => void;
+  calcularDistancia: () => void;
   resetEntrenamiento: () => void;
   setFecha: (fecha: string) => void;
   getSeriesCardioByEjericio: (
@@ -87,6 +89,7 @@ export const entrenamientoStore = create<EntrenamientoState>()(
       numero: 0,
       seconds: 0,
       volumen: 0,
+      distancia: 0,
       calorias: 0,
       fecha: moment().format('YYYY-MM-DD'),
       ejercicios: [],
@@ -185,10 +188,11 @@ export const entrenamientoStore = create<EntrenamientoState>()(
             if ((serie as Database['public']['Tables']['series_cardio']['Row']).check) {
               set((state) => {
                 const calorias =
-                  state.calorias +
-                  ((nuevaSerie as Database['public']['Tables']['series_cardio']['Row']).calorias ??
-                    0);
-                return { calorias };
+                  (nuevaSerie as Database['public']['Tables']['series_cardio']['Row']).calorias ??
+                  0;
+                const distancia_serie =
+                  (serie as Database['public']['Tables']['series_cardio']['Row']).distancia ?? 0;
+                return { calorias, distancia: state.distancia + distancia_serie };
               });
             }
 
@@ -275,6 +279,14 @@ export const entrenamientoStore = create<EntrenamientoState>()(
             0
           );
           return { volumen };
+        }),
+      calcularDistancia: () =>
+        set((state) => {
+          const distancia = state.seriesCardio.reduce(
+            (acc, serie) => acc + (serie.distancia ?? 0),
+            0
+          );
+          return { distancia };
         }),
       calcularCalorias: () =>
         set((state) => {
@@ -417,12 +429,33 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           return { volumen: newTotalWeight };
         });
       },
-      updateSerieCardioDistancia: (idSerie: string, distancia: number) =>
+      updateSerieCardioDistancia: (idSerie: string, distancia: number) => {
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
             serie.id === idSerie ? { ...serie, distancia: distancia } : serie
           ),
-        })),
+        }));
+        // Get series and see if it is checked
+        const serie = entrenamientoStore
+          .getState()
+          .seriesFuerza.find((serie) => serie.id === idSerie);
+
+        if (serie?.check == false) return;
+
+        // Get previous weight lifted in the series
+        const totalDistance = entrenamientoStore
+          .getState()
+          .seriesCardio.reduce((acc, serie) => acc + (serie.distancia ?? 0), 0);
+
+        // Update total weight lifted
+        set((state) => {
+          const newTotalDistance =
+            totalDistance -
+            (state.seriesCardio.find((serie) => serie.id === idSerie)?.distancia ?? 0) +
+            distancia;
+          return { distancia: newTotalDistance };
+        });
+      },
       updateSerieCardioTiempo: (idSerie: string, tiempo: string) =>
         set((state) => ({
           seriesCardio: state.seriesCardio.map((serie) =>
@@ -508,10 +541,16 @@ export const entrenamientoStore = create<EntrenamientoState>()(
           const calories =
             (serie as Database['public']['Tables']['series_cardio']['Row']).calorias ?? 0;
 
+          const serieDistance =
+            ejercicio.tipo_ejercicio === 'cardio'
+              ? ((serie as Database['public']['Tables']['series_cardio']['Row']).distancia ?? 0)
+              : 0;
+
           //Update total calories burned
           set((state) => {
             const newTotalCalories = state.calorias + (isCheck ? calories : -calories);
-            return { calorias: newTotalCalories };
+            const newTotalDistancia = state.distancia + (isCheck ? serieDistance : -serieDistance);
+            return { calorias: newTotalCalories, distancia: newTotalDistancia };
           });
         } else if (ejercicio.tipo_ejercicio === 'calistenia') {
           //Update serie

@@ -6,7 +6,7 @@ import TarjetaEjercicio from '~/src/components/Ejercicio/Entrenamiento/EnCurso/T
 import React, { memo } from 'react';
 
 const Entrenamiento = () => {
-  const { stopTimer, ejercicios } = entrenamientoStore();
+  const { stopTimer, ejercicios, distancia } = entrenamientoStore();
 
   return (
     <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>

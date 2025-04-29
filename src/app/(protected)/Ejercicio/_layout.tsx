@@ -14,6 +14,7 @@ import logrosStore from '@store/LogrosStore';
 import { useInsertEntrenamiento } from '@api/entrenamientos';
 import { useInsertEjerciciosEntrenamiento } from '@api/ejercicios';
 import { useInsertSerieCalistenia, useInsertSerieCardio, useInsertSerieFuerza } from '@api/series';
+import DistanciaTotal from '~/src/components/Logros/Ejercicio/DistanciaTotal';
 
 export default function EjercicioLayout() {
   const {
@@ -24,6 +25,7 @@ export default function EjercicioLayout() {
     notas,
     calorias,
     volumen,
+    distancia,
     seconds,
     sensacion,
     fecha,
@@ -167,6 +169,8 @@ export default function EjercicioLayout() {
     const valor = {
       ...valores,
       entrenamientosTotal: valores.entrenamientosTotal + 1,
+      volumenTotal: valores.volumenTotal + volumen,
+      distanciaTotal: valores.distanciaTotal + distancia,
     };
 
     updateValor(valor);

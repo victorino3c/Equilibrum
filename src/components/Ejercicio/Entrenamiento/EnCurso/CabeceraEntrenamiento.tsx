@@ -8,7 +8,7 @@ import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icon
 import Timer from '~/src/components/Utils/Timer';
 
 const CabeceraEntrenamiento = () => {
-  const { volumen, calorias } = entrenamientoStore();
+  const { volumen, calorias, distancia } = entrenamientoStore();
 
   return (
     <View style={styles.container}>
