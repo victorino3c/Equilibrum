@@ -15,7 +15,7 @@ export default function Nutrition() {
     <View className="flex-1">
       <ScrollView
         contentContainerStyle={
-          entrenamientoTerminado ? { paddingBottom: 70 } : { paddingBottom: 170 }
+          entrenamientoTerminado ? { paddingBottom: 100 } : { paddingBottom: 200 }
         }
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}>

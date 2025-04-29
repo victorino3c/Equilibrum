@@ -16,12 +16,10 @@ export const useInsertNutricio = (queryClient: any) => {
     storedDate: string;
     today: string;
   }) => {
-    if (storedDate === today) {
-      console.log('La fecha almacenada es la misma que la de hoy. No se hace nada.');
-      return;
-    }
-
-    console.log('Subiendo nutricion a la base de datos');
+    //if (storedDate === today) {
+    //  console.log('La fecha almacenada es la misma que la de hoy. No se hace nada.');
+    //  return;
+    //}
 
     // Insert nutrition data
     for (const periodo of ['Desayuno', 'Comida', 'Cena', 'Snacks']) {
