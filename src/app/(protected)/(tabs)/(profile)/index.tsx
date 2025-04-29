@@ -32,7 +32,7 @@ export default function Profile() {
 
   const handleInsert = async () => {
     const periodos_store = getPeriodos();
-    const storedDate = '2025-04-20'; //fecha;
+    const storedDate = fecha; //fecha;
     const today = moment().format('YYYY-MM-DD');
 
     if (storedDate === today) {
@@ -60,7 +60,7 @@ export default function Profile() {
     <ScrollView
       style={{ flex: 1, backgroundColor: 'transparent', paddingTop: 20 }}
       contentContainerStyle={
-        entrenamientoTerminado ? { paddingBottom: 100 } : { paddingBottom: 170 }
+        entrenamientoTerminado ? { paddingBottom: 100 } : { paddingBottom: 200 }
       }>
       <Link href="/(protected)/Profile/DetallesPerfil" asChild>
         <Pressable>

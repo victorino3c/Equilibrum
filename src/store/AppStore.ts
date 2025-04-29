@@ -8,6 +8,7 @@ export interface RutinaState {
   idUsuario?: string;
   hasLogged: boolean;
   hasEnteredUserInfo: boolean;
+  notificaciones: boolean;
   genero: Generos;
   peso: Peso;
   distancia: Distancia;
@@ -15,6 +16,7 @@ export interface RutinaState {
   objetivosNutricion: ObjetivosNutricion;
   objetivoSueño: number;
   objetivoAgua: number;
+  setNotifiaciones: (enabled: boolean) => void;
   setGenero: (genero: Generos) => void;
   setPeso: (peso: Peso) => void;
   setDistancia: (distancia: Distancia) => void;
@@ -35,6 +37,7 @@ export const appStore = create<RutinaState>()(
       idUsuario: undefined,
       hasLogged: false,
       hasEnteredUserInfo: false,
+      notificaciones: true,
       genero: Generos.Masculino,
       peso: Peso.Kilgramos,
       distancia: Distancia.Kilometros,
@@ -47,6 +50,7 @@ export const appStore = create<RutinaState>()(
       },
       objetivoSueño: 8,
       objetivoAgua: 3.3,
+      setNotifiaciones: (enabled) => set((state) => ({ ...state, notificaciones: enabled })),
       setGenero: (genero) => set((state) => ({ ...state, genero })),
       setPeso: (peso) => set((state) => ({ ...state, peso })),
       setDistancia: (distancia) => set((state) => ({ ...state, distancia })),
