@@ -18,7 +18,7 @@ const DiasAgua = ({ open, setOpen }: DiasAguaProps) => {
   if (!open) {
     return (
       <TouchableOpacity style={styles.containerClosed} onPress={() => setOpen(!open)}>
-        <Text style={styles.titulo}>Días cumplendo objetivo hidratación</Text>
+        <Text style={styles.titulo}>Días cumpliendo objetivo hidratación</Text>
         <Feather name="chevron-down" size={24} color="black" />
       </TouchableOpacity>
     );
@@ -28,7 +28,7 @@ const DiasAgua = ({ open, setOpen }: DiasAguaProps) => {
     <View>
       <TouchableOpacity style={styles.containerOpen} onPress={() => setOpen(!open)}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.titulo}>Días cumplendo objetivo hidratación</Text>
+          <Text style={styles.titulo}>Días cumpliendo objetivo hidratación</Text>
           <Feather name="chevron-up" size={24} color="black" />
         </View>
       </TouchableOpacity>

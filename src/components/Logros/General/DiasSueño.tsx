@@ -18,7 +18,7 @@ const DiasSueño = ({ open, setOpen }: DiasSueñoProps) => {
   if (!open) {
     return (
       <TouchableOpacity style={styles.containerClosed} onPress={() => setOpen(!open)}>
-        <Text style={styles.titulo}>Días cumplendo objetivo sueño</Text>
+        <Text style={styles.titulo}>Días cumpliendo objetivo sueño</Text>
         <Feather name="chevron-down" size={24} color="black" />
       </TouchableOpacity>
     );
@@ -28,7 +28,7 @@ const DiasSueño = ({ open, setOpen }: DiasSueñoProps) => {
     <View>
       <TouchableOpacity style={styles.containerOpen} onPress={() => setOpen(!open)}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.titulo}>Días cumplendo objetivo sueño</Text>
+          <Text style={styles.titulo}>Días cumpliendo objetivo sueño</Text>
           <Feather name="chevron-up" size={24} color="black" />
         </View>
       </TouchableOpacity>

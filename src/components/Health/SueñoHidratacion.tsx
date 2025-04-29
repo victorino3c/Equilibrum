@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 import moment from 'moment';
 
+import logrosStore from '@store/LogrosStore';
+
 import Feather from '@expo/vector-icons/Feather';
 import Slider from '@react-native-community/slider';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -28,6 +30,8 @@ const SueñoHidratacion = ({
   objetivoSueño,
   loading = false,
 }: SueñoHidratacionProps) => {
+  const { valores, updateValor } = logrosStore();
+
   // Define the color of the slider based on the value
   const getSliderColor = (value: number) => {
     if (value === 0) return '#d3d3d3'; // Grey color for 0 value
@@ -58,6 +62,14 @@ const SueñoHidratacion = ({
       updateObjetivosDiariosSueñoByFecha({ fecha, sueño: null });
     }
     try {
+      if (objetivosDiarios?.sueño != parseInt(text) || objetivosDiarios?.sueño === 0) {
+        if (objetivoSueño === objetivosDiarios?.sueño && parseInt(text) < objetivoSueño) {
+          updateValor({ ...valores, diasObjetivoSueño: valores.diasObjetivoSueño - 1 });
+        } else if (parseInt(text) >= objetivoSueño) {
+          updateValor({ ...valores, diasObjetivoSueño: valores.diasObjetivoSueño + 1 });
+        }
+      }
+
       updateObjetivosDiariosSueñoByFecha({ fecha, sueño: parseInt(text) });
     } catch (error) {
       console.error(error);
@@ -66,6 +78,15 @@ const SueñoHidratacion = ({
   };
 
   const handleAguaChange = (value: number) => {
+    if (objetivosDiarios?.agua != value || objetivosDiarios?.agua === 0) {
+      if (objetivoHidratacion === objetivosDiarios?.agua && value < objetivoHidratacion) {
+        updateValor({ ...valores, diasObjetivoAgua: valores.diasObjetivoAguạ - 1 });
+      } else if (value == objetivoHidratacion) {
+        updateValor({ ...valores, diasObjetivoAgua: valores.diasObjetivoAgua + 1 });
+      }
+    }
+
+    console.log(objetivoHidratacion, objetivosDiarios?.agua, value);
     updateObjetivosDiariosAguaByFecha({ fecha, agua: value });
   };
 
