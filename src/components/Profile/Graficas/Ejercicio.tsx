@@ -2,16 +2,50 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import moment from 'moment';
+import {
+  BarChart,
+  LineChart,
+  lineDataItem,
+  PieChart,
+  PopulationPyramid,
+  RadarChart,
+} from 'react-native-gifted-charts';
 
-import { getVolumeLiftedSinceDate } from '~/src/api/entrenamientos';
+import { getVolumeLiftedSinceDate, getVolumePerWeekForGivenMonths } from '@api/entrenamientos';
 import { Ionicons } from '@expo/vector-icons';
+import Skeleton from '../../Utils/SkeletonView';
 
 const graphOptions = ['Volumen', 'Repeticiones', 'Series', 'Calorias'];
+
+const data = [
+  { value: 50, label: 'hola', showVerticalLine: true },
+  { value: 80, label: 'hola', dataPointText: 'true' },
+  { value: 90 },
+  { value: 70 },
+  { value: 60 },
+  { value: 70 },
+  { value: 70 },
+  { value: 70 },
+];
+const data2 = [
+  { value: 40 },
+  { value: 90 },
+  { value: 100 },
+  { value: 50 },
+  { value: 50 },
+  { value: 60 },
+];
 
 const Ejercicio = () => {
   const { data: volume } = getVolumeLiftedSinceDate(
     moment().subtract(7, 'days').format('YYYY-MM-DD')
   );
+  const { data: volumenMes, isLoading } = getVolumePerWeekForGivenMonths(1);
+
+  //Get maxValue from the volumenMes data
+  const getMaxVolumeValue = () => {
+    return volumenMes?.reduce((max, item) => (item.value > max ? item.value : max), 0);
+  };
 
   const [selectedMode, setSelectedMode] = React.useState('Volumen');
 
@@ -27,7 +61,23 @@ const Ejercicio = () => {
         </View>
       </View>
       <View style={styles.grafica}>
-        <Text style={{ fontSize: 18, color: 'black' }}>Gráfica ejercicio</Text>
+        {!isLoading && selectedMode === 'Volumen' ? (
+          <LineChart
+            data={volumenMes as lineDataItem[]}
+            //dataSet={[{ data }]}
+            //data2={data2}
+            lineGradient={true}
+            //stepChart={true}
+            stepValue={getMaxVolumeValue()! / 4}
+            maxValue={getMaxVolumeValue()}
+            width={300}
+            //adjustToWidth={true}
+            isAnimated={true}
+            animateOnDataChange={true}
+          />
+        ) : (
+          <Skeleton height={300} width={300} />
+        )}
       </View>
       <View
         style={{
@@ -66,14 +116,15 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 20,
     justifyContent: 'space-between',
     width: '100%',
   },
   grafica: {
     backgroundColor: 'white',
+    //flex: 1,
+    width: '100%',
     flexDirection: 'row',
-    paddingVertical: 60,
-    alignSelf: 'center',
   },
   graficaButton: {
     backgroundColor: 'lightgray',

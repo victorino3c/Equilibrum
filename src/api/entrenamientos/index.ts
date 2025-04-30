@@ -197,3 +197,101 @@ export const getVolumeLiftedSinceDate = (date: string) => {
     enabled: !!userId, // Solo se ejecuta si hay un userId
   });
 };
+
+export const getVolumePerWeekForGivenMonths = (months: number) => {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  return useQuery({
+    queryKey: ['volumePerWeekForGivenMonths', months],
+    queryFn: async () => {
+      if (!userId) {
+        throw new Error('No user id');
+      }
+
+      // Calculate the start date based on the number of months
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - months);
+      const formattedStartDate = startDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
+      // Get all entrenamientos since the start date
+      const { data: entrenamientos, error: entrenamientosError } = await supabase
+        .from('entrenamiento')
+        .select('id, fecha')
+        .eq('user_id', userId)
+        .gte('fecha', formattedStartDate);
+
+      if (entrenamientosError) throw new Error(entrenamientosError.message);
+
+      if (!entrenamientos || entrenamientos.length === 0) {
+        return [];
+      }
+
+      // Get all series fuerza for the retrieved entrenamientos
+      const { data: seriesFuerza, error: seriesFuerzaError } = await supabase
+        .from('series_fuerza')
+        .select('id, id_entrenamiento, repeticiones, peso')
+        .in(
+          'id_entrenamiento',
+          entrenamientos.map((entrenamiento) => entrenamiento.id)
+        );
+
+      if (seriesFuerzaError) throw new Error(seriesFuerzaError.message);
+
+      // Group series by week and calculate volume per week
+      const volumePerWeek: { [week: string]: number } = {};
+
+      entrenamientos.forEach((entrenamiento) => {
+        const week = formatWeekRange(getWeekFromDate(entrenamiento.fecha)); // Helper function to get the week of the year
+        if (!volumePerWeek[week]) {
+          volumePerWeek[week] = 0;
+        }
+
+        const seriesForEntrenamiento = seriesFuerza.filter(
+          (serie) => serie.id_entrenamiento === entrenamiento.id
+        );
+
+        const volumeForEntrenamiento = seriesForEntrenamiento.reduce(
+          (acc, serie) => acc + (serie.peso ?? 0) * (serie.repeticiones ?? 0),
+          0
+        );
+
+        volumePerWeek[week] += volumeForEntrenamiento;
+      });
+
+      // Convert the volumePerWeek object into an array of { week, volume } for easier use
+      return Object.entries(volumePerWeek).map(([week, volume]) => ({
+        value: volume,
+        label: week,
+        dataPointText: volume.toString(),
+      }));
+    },
+    enabled: !!userId, // Only execute if there is a userId
+  });
+};
+
+// Helper function to get the week of the year from a date
+const getWeekFromDate = (date: string): string => {
+  const d = new Date(date);
+  const firstDayOfYear = new Date(d.getFullYear(), 0, 1);
+  const pastDaysOfYear = (d.getTime() - firstDayOfYear.getTime()) / (1000 * 60 * 60 * 24);
+  return `${d.getFullYear()}-W${Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)}`;
+};
+
+const formatWeekRange = (week: string): string => {
+  const [year, weekNumber] = week.split('-W').map(Number);
+
+  // Calculate the first day of the week (Monday)
+  const firstDayOfYear = new Date(year, 0, 1);
+  const daysOffset = (weekNumber - 1) * 7 - firstDayOfYear.getDay() + 1; // Adjust for ISO week starting on Monday
+  const firstDayOfWeek = new Date(year, 0, 1 + daysOffset);
+
+  // Calculate the last day of the week (Sunday)
+  const lastDayOfWeek = new Date(firstDayOfWeek);
+  lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+
+  // Format the dates as day/month
+  const formatDate = (date: Date) => `${date.getDate()}/${date.getMonth() + 1}`;
+
+  return `${formatDate(firstDayOfWeek)}`; // - ${formatDate(lastDayOfWeek)}`;
+};
