@@ -24,15 +24,23 @@ export const useInsertNutricio = (queryClient: any) => {
     // Insert nutrition data
     for (const periodo of ['Desayuno', 'Comida', 'Cena', 'Snacks']) {
       const macros = periodos_store[periodo]?.macros || {};
-      insertNutricion.mutate({
-        user_id,
-        tipo_nutricion: periodo as Database['public']['Enums']['tipo_nutricion_enum'],
-        calorias: macros.Calorias || 0,
-        proteina: macros.Proteinas || 0,
-        carbohidratos: macros.Carbohidratos || 0,
-        grasa: macros.Grasas || 0,
-        fecha: storedDate,
-      });
+      insertNutricion.mutate(
+        {
+          user_id,
+          tipo_nutricion: periodo as Database['public']['Enums']['tipo_nutricion_enum'],
+          calorias: macros.Calorias || 0,
+          proteina: macros.Proteinas || 0,
+          carbohidratos: macros.Carbohidratos || 0,
+          grasa: macros.Grasas || 0,
+          fecha: storedDate,
+        },
+        {
+          onError: (error) => {
+            console.log(error);
+            return;
+          },
+        }
+      );
     }
 
     // Insert alimentos data

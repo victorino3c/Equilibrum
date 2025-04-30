@@ -30,6 +30,7 @@ type periodosType = Partial<
 const HoyView = () => {
   const [nutricion, setNutricion] = useState<any>(null);
   const [periodos, setPeriodos] = useState<periodosType>({});
+  const [refresh, setRefresh] = useState<boolean>(true);
 
   const { data: alimentos } = useGetAlimentos();
 
@@ -41,12 +42,15 @@ const HoyView = () => {
   const { getNutricion, getPeriodos, fecha, clearAll } = useNutricionStore();
 
   useEffect(() => {
-    const nutricionData = getNutricion();
-    const periodosNutricion = getPeriodos();
-    const objetivosNutricion = appStore.getState().objetivosNutricion;
-    setNutricion({ ...nutricionData, ...objetivosNutricion });
-    setPeriodos(periodosNutricion);
-  }, []);
+    if (refresh === true) {
+      const nutricionData = getNutricion();
+      const periodosNutricion = getPeriodos();
+      const objetivosNutricion = appStore.getState().objetivosNutricion;
+      setNutricion({ ...nutricionData, ...objetivosNutricion });
+      setPeriodos(periodosNutricion);
+      setRefresh(false);
+    }
+  }, [refresh]);
 
   const handleButton = () => {
     Alert.alert(
@@ -78,6 +82,7 @@ const HoyView = () => {
       //TEMP funciona pero no se suben los alimentos ver por que
       await insertNutricio({ user_id, periodos_store, storedDate: today, today });
       clearAll();
+      setRefresh(true);
     } catch (error) {
       console.error('Error inserting nutricion:', error);
       return;
