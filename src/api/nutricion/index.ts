@@ -121,7 +121,7 @@ export const useInsertNutricion = (queryClient: any) => {
 
       const { data, error } = await supabase
         .from('nutricion')
-        .insert([
+        .upsert([
           { user_id: user_id, calorias, proteina, carbohidratos, grasa, tipo_nutricion, fecha },
         ])
         .select()
@@ -153,7 +153,7 @@ export const useInsertAlimento = (queryclient: any) => {
 
       const { data, error } = await supabase
         .from('nutricion_alimento')
-        .insert([{ user_id: user_id, id_alimento, cantidad, fecha_nutricion, tipo_nutricion }])
+        .upsert([{ user_id: user_id, id_alimento, cantidad, fecha_nutricion, tipo_nutricion }])
         .select()
         .single();
 

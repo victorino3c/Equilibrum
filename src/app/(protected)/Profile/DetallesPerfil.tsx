@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,11 +6,32 @@ import { Ionicons } from '@expo/vector-icons';
 import UserCard from '@components/Profile/UserCard';
 import Objetivos from '@components/Profile/Objetivos';
 import InformacionDetallada from '@components/Profile/InformacionDetallada';
+import IconButton from '@components/Buttons/IconButton';
+import { useAuth } from '@providers/AuthProvider';
+
+const iconLogout = <Ionicons name="settings-outline" size={24} color="#d00" />;
 
 const DetallesPerfil = () => {
   const { editar: editarParam } = useLocalSearchParams();
+  const { signOut, session } = useAuth();
 
   const [editar, setEditar] = useState(editarParam === 'false');
+
+  const handleButton = () => {
+    Alert.alert('Confirmación', '¿Estás seguro de que deseas cerrar sesión?', [
+      {
+        text: 'Si',
+        onPress: () => {
+          handleSignOut();
+        },
+      },
+      { text: 'No', style: 'cancel' },
+    ]);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   useEffect(() => {
     if (editarParam === 'true') {
@@ -48,6 +69,13 @@ const DetallesPerfil = () => {
       <InformacionDetallada editar={editar} />
       <Text style={styles.title}>Objetivos</Text>
       <Objetivos editar={editar} />
+      <IconButton
+        icon={iconLogout}
+        text="Cerrar sesión"
+        onPress={handleButton}
+        textStyle={{ color: '#d00' }}
+        style={{ backgroundColor: '#fff' }}
+      />
     </View>
   );
 };
