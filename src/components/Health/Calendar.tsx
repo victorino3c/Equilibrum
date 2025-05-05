@@ -5,8 +5,9 @@ import Feather from '@expo/vector-icons/Feather';
 import moment from 'moment';
 
 //TEMP
-import { getNutricionDatesByUser } from '~/assets/nutricion/nutricion';
-
+//import { getNutricionDatesByUser } from '~/assets/nutricion/nutricion';
+//import { useGetUserNutriciones } from '@api/nutricion';
+import { Database } from '~/src/database.types';
 const Colores = {
   1: '#34E5E5', //Solo entrenamiento
   2: '#A1FF08', // Solo nutricion
@@ -17,7 +18,8 @@ type CustomCalendarProps = {
   selected: string;
   onCalendarChange: (value: string) => void;
   onSelectDate: (value: moment.Moment) => void;
-  entrenamientos: { id: string; fecha: string }[] | undefined;
+  entrenamientos: Database['public']['Tables']['entrenamiento']['Row'][] | undefined;
+  nutriciones: Database['public']['Tables']['nutricion']['Row'][] | undefined;
   loading?: boolean;
 };
 
@@ -26,6 +28,7 @@ export default function CustomCalendar({
   onCalendarChange,
   onSelectDate,
   entrenamientos = [],
+  nutriciones = [],
   loading = false,
 }: CustomCalendarProps) {
   const [markedDates, setMarkedDates] = useState({});
@@ -42,30 +45,32 @@ export default function CustomCalendar({
     };
 
     //CAMBIAR
-    const nutriciones = getNutricionDatesByUser('victorino_3c');
+    //const { data: nutriciones } = useGetUserNutriciones();
 
-    //TODO: Cuando cambie nutriciones a API, cambiar esto
     const entrenamientosNutricion = entrenamientos
       .map((entrenamiento) => {
-        if (nutriciones.includes(moment(entrenamiento.fecha).format('YYYY-MM-DD'))) {
+        if (
+          nutriciones
+            ?.map((nutricion) => moment(nutricion.fecha).format('YYYY-MM-DD')) // Extract and format the 'fecha' property
+            .includes(moment(entrenamiento.fecha).format('YYYY-MM-DD')) // Compare formatted dates
+        ) {
           return moment(entrenamiento.fecha).format('YYYY-MM-DD');
         }
       })
       .filter((date) => date !== undefined);
 
-    const entrenamientosSolo = entrenamientos
-      .map((entrenamiento) => {
-        if (!nutriciones.includes(moment(entrenamiento.fecha).format('YYYY-MM-DD'))) {
-          return moment(entrenamiento.fecha).format('YYYY-MM-DD');
-        }
-      })
-      .filter((date) => date !== undefined);
+    const entrenamientosSolo = entrenamientos?.filter(
+      (entrenamiento) =>
+        !nutriciones
+          .map((nutricion) => moment(nutricion.fecha).format('YYYY-MM-DD'))
+          .includes(moment(entrenamiento.fecha).format('YYYY-MM-DD'))
+    );
 
-    const nutricionesSolo = nutriciones.filter(
-      (date) =>
+    const nutricionesSolo = nutriciones?.filter(
+      (nutricion) =>
         !entrenamientos
           .map((entrenamiento) => moment(entrenamiento.fecha).format('YYYY-MM-DD'))
-          .includes(date)
+          .includes(moment(nutricion.fecha).format('YYYY-MM-DD'))
     );
 
     entrenamientosNutricion.forEach((date) => {
@@ -80,10 +85,10 @@ export default function CustomCalendar({
       };
     });
 
-    entrenamientosSolo.forEach((date) => {
+    entrenamientosSolo?.forEach((entrenamiento) => {
       newMarkedDates = {
         ...newMarkedDates,
-        [date]: {
+        [moment(entrenamiento.fecha).format('YYYY-MM-DD')]: {
           selected: true,
           selectedColor: Colores[1],
           selectedDayTextColor: 'white',
@@ -91,10 +96,10 @@ export default function CustomCalendar({
       };
     });
 
-    nutricionesSolo.forEach((date) => {
+    nutricionesSolo?.forEach((nutricion) => {
       newMarkedDates = {
         ...newMarkedDates,
-        [date]: {
+        [nutricion.fecha]: {
           selected: true,
           selectedColor: Colores[2],
           selectedDayTextColor: 'white',

@@ -101,6 +101,7 @@ export default function HealthLayout() {
             onSelectDate={(date) => setSelectedDate(date)}
             onCalendarChange={setCalendar}
             entrenamientos={entrenamientos}
+            nutriciones={nutriciones}
             selected={selectedDate.format('YYYY-MM-DD')}
             //loading={isLoadingObjetivos && isLoadingEntrenamientos}
             loading={isLoadingEntrenamientos}

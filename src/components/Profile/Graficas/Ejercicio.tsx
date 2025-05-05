@@ -40,7 +40,7 @@ const Ejercicio = () => {
   const { data: volume } = getVolumeLiftedSinceDate(
     moment().subtract(7, 'days').format('YYYY-MM-DD')
   );
-  const { data: volumenMes, isLoading } = getVolumePerWeekForGivenMonths(1);
+  const { data: volumenMes, isLoading } = getVolumePerWeekForGivenMonths(2);
 
   //Get maxValue from the volumenMes data
   const getMaxVolumeValue = () => {
