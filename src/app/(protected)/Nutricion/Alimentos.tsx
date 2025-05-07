@@ -71,6 +71,7 @@ const Alimentos = () => {
             </Text>
           )}
         </View>
+        <View style={{ height: 20, width: '100%' }}></View>
       </ScrollView>
     </>
   );
