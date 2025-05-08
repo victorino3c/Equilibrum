@@ -9,10 +9,13 @@ import InformacionDetallada from '@components/Profile/InformacionDetallada';
 import IconButton from '@components/Buttons/IconButton';
 import { useAuth } from '@providers/AuthProvider';
 
+import { appStore } from '@store/AppStore';
+
 const iconLogout = <Ionicons name="settings-outline" size={24} color="#d00" />;
 
 const DetallesPerfil = () => {
   const { editar: editarParam } = useLocalSearchParams();
+  const { setHasEnteredUserInfo } = appStore();
   const { signOut, session } = useAuth();
 
   const [editar, setEditar] = useState(editarParam === 'false');
@@ -31,6 +34,7 @@ const DetallesPerfil = () => {
 
   const handleSignOut = async () => {
     await signOut();
+    setHasEnteredUserInfo(false);
   };
 
   useEffect(() => {
